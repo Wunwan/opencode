@@ -1,0 +1,9 @@
+{
+  "name": "My Dev Container",
+  "image": "oven/bun:1.3",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  }
+}

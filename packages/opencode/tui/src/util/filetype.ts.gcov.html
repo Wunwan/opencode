@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../tui/src/util/filetype.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../tui/src/util">../tui/src/util</a> - filetype.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">96.8&nbsp;%</td>
+            <td class="headerCovTableEntry">126</td>
+            <td class="headerCovTableEntry">122</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          29 : import path from &quot;node:path&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          37 : export const LANGUAGE_EXTENSIONS: Record&lt;string, string&gt; = {</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          18 :   &quot;.abap&quot;: &quot;abap&quot;,</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          16 :   &quot;.bat&quot;: &quot;bat&quot;,</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          19 :   &quot;.bib&quot;: &quot;bibtex&quot;,</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          22 :   &quot;.bibtex&quot;: &quot;bibtex&quot;,</span></span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          20 :   &quot;.clj&quot;: &quot;clojure&quot;,</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          21 :   &quot;.cljs&quot;: &quot;clojure&quot;,</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">          21 :   &quot;.cljc&quot;: &quot;clojure&quot;,</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          20 :   &quot;.edn&quot;: &quot;clojure&quot;,</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">          28 :   &quot;.coffee&quot;: &quot;coffeescript&quot;,</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">          12 :   &quot;.c&quot;: &quot;c&quot;,</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">          16 :   &quot;.cpp&quot;: &quot;cpp&quot;,</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          16 :   &quot;.cxx&quot;: &quot;cpp&quot;,</span></span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">          15 :   &quot;.cc&quot;: &quot;cpp&quot;,</span></span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">          16 :   &quot;.c++&quot;: &quot;cpp&quot;,</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          18 :   &quot;.cs&quot;: &quot;csharp&quot;,</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          19 :   &quot;.csx&quot;: &quot;csharp&quot;,</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          16 :   &quot;.css&quot;: &quot;css&quot;,</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          12 :   &quot;.d&quot;: &quot;d&quot;,</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          19 :   &quot;.pas&quot;: &quot;pascal&quot;,</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          22 :   &quot;.pascal&quot;: &quot;pascal&quot;,</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          18 :   &quot;.diff&quot;: &quot;diff&quot;,</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          19 :   &quot;.patch&quot;: &quot;diff&quot;,</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">          18 :   &quot;.dart&quot;: &quot;dart&quot;,</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          30 :   &quot;.dockerfile&quot;: &quot;dockerfile&quot;,</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          18 :   &quot;.ex&quot;: &quot;elixir&quot;,</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          19 :   &quot;.exs&quot;: &quot;elixir&quot;,</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">          19 :   &quot;.erl&quot;: &quot;erlang&quot;,</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          23 :   &quot;.ets&quot;: &quot;typescript&quot;,</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">          19 :   &quot;.hrl&quot;: &quot;erlang&quot;,</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">          18 :   &quot;.fs&quot;: &quot;fsharp&quot;,</span></span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaGNC">          19 :   &quot;.fsi&quot;: &quot;fsharp&quot;,</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          19 :   &quot;.fsx&quot;: &quot;fsharp&quot;,</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">          24 :   &quot;.fsscript&quot;: &quot;fsharp&quot;,</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          29 :   &quot;.gitcommit&quot;: &quot;git-commit&quot;,</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          29 :   &quot;.gitrebase&quot;: &quot;git-rebase&quot;,</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          14 :   &quot;.go&quot;: &quot;go&quot;,</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaGNC">          22 :   &quot;.groovy&quot;: &quot;groovy&quot;,</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          20 :   &quot;.gleam&quot;: &quot;gleam&quot;,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">          23 :   &quot;.hbs&quot;: &quot;handlebars&quot;,</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">          30 :   &quot;.handlebars&quot;: &quot;handlebars&quot;,</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">          19 :   &quot;.hs&quot;: &quot;haskell&quot;,</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">          20 :   &quot;.lhs&quot;: &quot;haskell&quot;,</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">          18 :   &quot;.html&quot;: &quot;html&quot;,</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaGNC">          17 :   &quot;.htm&quot;: &quot;html&quot;,</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">          16 :   &quot;.ini&quot;: &quot;ini&quot;,</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">          18 :   &quot;.java&quot;: &quot;java&quot;,</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">          17 :   &quot;.jl&quot;: &quot;julia&quot;,</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">          22 :   &quot;.js&quot;: &quot;javascript&quot;,</span></span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaGNC">          18 :   &quot;.kt&quot;: &quot;kotlin&quot;,</span></span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">          19 :   &quot;.kts&quot;: &quot;kotlin&quot;,</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaGNC">          28 :   &quot;.jsx&quot;: &quot;javascriptreact&quot;,</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaGNC">          18 :   &quot;.json&quot;: &quot;json&quot;,</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaGNC">          18 :   &quot;.tex&quot;: &quot;latex&quot;,</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">          20 :   &quot;.latex&quot;: &quot;latex&quot;,</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">          18 :   &quot;.less&quot;: &quot;less&quot;,</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaGNC">          16 :   &quot;.lua&quot;: &quot;lua&quot;,</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">          26 :   &quot;.makefile&quot;: &quot;makefile&quot;,</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaGNC">          23 :   makefile: &quot;makefile&quot;,</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaGNC">          20 :   &quot;.md&quot;: &quot;markdown&quot;,</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          26 :   &quot;.markdown&quot;: &quot;markdown&quot;,</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaGNC">          22 :   &quot;.m&quot;: &quot;objective-c&quot;,</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">          25 :   &quot;.mm&quot;: &quot;objective-cpp&quot;,</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaGNC">          16 :   &quot;.pl&quot;: &quot;perl&quot;,</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">          16 :   &quot;.pm&quot;: &quot;perl&quot;,</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaGNC">          18 :   &quot;.pm6&quot;: &quot;perl6&quot;,</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaGNC">          16 :   &quot;.php&quot;: &quot;php&quot;,</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaGNC">          23 :   &quot;.ps1&quot;: &quot;powershell&quot;,</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaGNC">          24 :   &quot;.psm1&quot;: &quot;powershell&quot;,</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaGNC">          17 :   &quot;.pug&quot;: &quot;jade&quot;,</span></span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaGNC">          18 :   &quot;.jade&quot;: &quot;jade&quot;,</span></span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">          18 :   &quot;.py&quot;: &quot;python&quot;,</span></span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaGNC">          12 :   &quot;.r&quot;: &quot;r&quot;,</span></span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">          21 :   &quot;.cshtml&quot;: &quot;razor&quot;,</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaGNC">          20 :   &quot;.razor&quot;: &quot;razor&quot;,</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaGNC">          16 :   &quot;.rb&quot;: &quot;ruby&quot;,</span></span>
+<span id="L79"><span class="lineNum">      79</span> <span class="tlaGNC">          18 :   &quot;.rake&quot;: &quot;ruby&quot;,</span></span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          21 :   &quot;.gemspec&quot;: &quot;ruby&quot;,</span></span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">          16 :   &quot;.ru&quot;: &quot;ruby&quot;,</span></span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">          16 :   &quot;.erb&quot;: &quot;erb&quot;,</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          21 :   &quot;.html.erb&quot;: &quot;erb&quot;,</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          19 :   &quot;.js.erb&quot;: &quot;erb&quot;,</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">          20 :   &quot;.css.erb&quot;: &quot;erb&quot;,</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">          21 :   &quot;.json.erb&quot;: &quot;erb&quot;,</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          16 :   &quot;.rs&quot;: &quot;rust&quot;,</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          18 :   &quot;.scss&quot;: &quot;scss&quot;,</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          18 :   &quot;.sass&quot;: &quot;sass&quot;,</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          20 :   &quot;.scala&quot;: &quot;scala&quot;,</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">          25 :   &quot;.shader&quot;: &quot;shaderlab&quot;,</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">          23 :   &quot;.sh&quot;: &quot;shellscript&quot;,</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaGNC">          25 :   &quot;.bash&quot;: &quot;shellscript&quot;,</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          24 :   &quot;.zsh&quot;: &quot;shellscript&quot;,</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          24 :   &quot;.ksh&quot;: &quot;shellscript&quot;,</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          16 :   &quot;.sql&quot;: &quot;sql&quot;,</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">          22 :   &quot;.svelte&quot;: &quot;svelte&quot;,</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaGNC">          20 :   &quot;.swift&quot;: &quot;swift&quot;,</span></span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaGNC">          22 :   &quot;.ts&quot;: &quot;typescript&quot;,</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaGNC">          28 :   &quot;.tsx&quot;: &quot;typescriptreact&quot;,</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaGNC">          23 :   &quot;.mts&quot;: &quot;typescript&quot;,</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">          23 :   &quot;.cts&quot;: &quot;typescript&quot;,</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          29 :   &quot;.mtsx&quot;: &quot;typescriptreact&quot;,</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">          29 :   &quot;.ctsx&quot;: &quot;typescriptreact&quot;,</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">          16 :   &quot;.xml&quot;: &quot;xml&quot;,</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaGNC">          16 :   &quot;.xsl&quot;: &quot;xsl&quot;,</span></span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaGNC">          18 :   &quot;.yaml&quot;: &quot;yaml&quot;,</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">          17 :   &quot;.yml&quot;: &quot;yaml&quot;,</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaGNC">          23 :   &quot;.mjs&quot;: &quot;javascript&quot;,</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaGNC">          23 :   &quot;.cjs&quot;: &quot;javascript&quot;,</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">          16 :   &quot;.vue&quot;: &quot;vue&quot;,</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaGNC">          16 :   &quot;.zig&quot;: &quot;zig&quot;,</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaGNC">          16 :   &quot;.zon&quot;: &quot;zig&quot;,</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaGNC">          20 :   &quot;.astro&quot;: &quot;astro&quot;,</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaGNC">          17 :   &quot;.ml&quot;: &quot;ocaml&quot;,</span></span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaGNC">          18 :   &quot;.mli&quot;: &quot;ocaml&quot;,</span></span>
+<span id="L117"><span class="lineNum">     117</span> <span class="tlaGNC">          21 :   &quot;.tf&quot;: &quot;terraform&quot;,</span></span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaGNC">          30 :   &quot;.tfvars&quot;: &quot;terraform-vars&quot;,</span></span>
+<span id="L119"><span class="lineNum">     119</span> <span class="tlaGNC">          16 :   &quot;.hcl&quot;: &quot;hcl&quot;,</span></span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaGNC">          16 :   &quot;.nix&quot;: &quot;nix&quot;,</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">          18 :   &quot;.typ&quot;: &quot;typst&quot;,</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaGNC">          17 :   &quot;.typc&quot;: &quot;typst&quot;,</span></span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaGNC">           2 : }</span></span>
+<span id="L124"><span class="lineNum">     124</span>              : </span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaUNC">           0 : export function filetype(input?: string) {</span></span>
+<span id="L126"><span class="lineNum">     126</span> <span class="tlaUNC">           0 :   if (!input) return &quot;none&quot;</span></span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaUNC">           0 :   const language = LANGUAGE_EXTENSIONS[path.extname(input)]</span></span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaUNC">           0 :   if ([&quot;typescriptreact&quot;, &quot;javascriptreact&quot;, &quot;javascript&quot;].includes(language)) return &quot;typescript&quot;</span></span>
+<span id="L129"><span class="lineNum">     129</span>              :   return language</span>
+<span id="L130"><span class="lineNum">     130</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

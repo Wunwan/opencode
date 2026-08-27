@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/fs-util.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src">../core/src</a> - fs-util.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">93.1&nbsp;%</td>
+            <td class="headerCovTableEntry">202</td>
+            <td class="headerCovTableEntry">188</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import { NodeFileSystem } from &quot;@effect/platform-node&quot;</span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          93 : import { dirname, isAbsolute, join, relative, resolve as pathResolve, sep } from &quot;path&quot;</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          39 : import { realpathSync } from &quot;fs&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          40 : import * as NFS from &quot;fs/promises&quot;</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          36 : import { lookup } from &quot;mime-types&quot;</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          68 : import { Context, Effect, FileSystem, Layer, Schema } from &quot;effect&quot;</span></span>
+<span id="L7"><span class="lineNum">       7</span>              : import type { PlatformError } from &quot;effect/PlatformError&quot;</span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          35 : import { Glob } from &quot;./util/glob&quot;</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          50 : import { serviceUse } from &quot;./effect/service-use&quot;</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">          51 : import { makeGlobalNode } from &quot;./effect/app-node&quot;</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          56 : import { filesystem } from &quot;./effect/app-node-platform&quot;</span></span>
+<span id="L12"><span class="lineNum">      12</span>              : </span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">          48 : export namespace FSUtil {</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">         123 :   export class FileSystemError extends Schema.TaggedErrorClass&lt;FileSystemError&gt;()(&quot;FileSystemError&quot;, {</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          26 :     method: Schema.String,</span></span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">          41 :     cause: Schema.optional(Schema.Defect()),</span></span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           7 :   }) {</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          10 :     override get message() {</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          68 :       const detail = this.cause instanceof Error ? this.cause.message : this.cause &amp;&amp; String(this.cause)</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          77 :       return `Filesystem operation failed: ${this.method}${detail ? `: ${detail}` : &quot;&quot;}`</span></span>
+<span id="L21"><span class="lineNum">      21</span>              :     }</span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           3 :   }</span></span>
+<span id="L23"><span class="lineNum">      23</span>              : </span>
+<span id="L24"><span class="lineNum">      24</span>              :   export type Error = PlatformError | FileSystemError</span>
+<span id="L25"><span class="lineNum">      25</span>              : </span>
+<span id="L26"><span class="lineNum">      26</span>              :   export interface DirEntry {</span>
+<span id="L27"><span class="lineNum">      27</span>              :     readonly name: string</span>
+<span id="L28"><span class="lineNum">      28</span>              :     readonly type: &quot;file&quot; | &quot;directory&quot; | &quot;symlink&quot; | &quot;other&quot;</span>
+<span id="L29"><span class="lineNum">      29</span>              :   }</span>
+<span id="L30"><span class="lineNum">      30</span>              : </span>
+<span id="L31"><span class="lineNum">      31</span>              :   export interface Interface extends FileSystem.FileSystem {</span>
+<span id="L32"><span class="lineNum">      32</span>              :     readonly isDir: (path: string) =&gt; Effect.Effect&lt;boolean&gt;</span>
+<span id="L33"><span class="lineNum">      33</span>              :     readonly isFile: (path: string) =&gt; Effect.Effect&lt;boolean&gt;</span>
+<span id="L34"><span class="lineNum">      34</span>              :     readonly existsSafe: (path: string) =&gt; Effect.Effect&lt;boolean&gt;</span>
+<span id="L35"><span class="lineNum">      35</span>              :     readonly readFileStringSafe: (path: string) =&gt; Effect.Effect&lt;string | undefined, Error&gt;</span>
+<span id="L36"><span class="lineNum">      36</span>              :     readonly readJson: (path: string) =&gt; Effect.Effect&lt;unknown, Error&gt;</span>
+<span id="L37"><span class="lineNum">      37</span>              :     readonly writeJson: (path: string, data: unknown, mode?: number) =&gt; Effect.Effect&lt;void, Error&gt;</span>
+<span id="L38"><span class="lineNum">      38</span>              :     readonly ensureDir: (path: string) =&gt; Effect.Effect&lt;void, Error&gt;</span>
+<span id="L39"><span class="lineNum">      39</span>              :     readonly writeWithDirs: (path: string, content: string | Uint8Array, mode?: number) =&gt; Effect.Effect&lt;void, Error&gt;</span>
+<span id="L40"><span class="lineNum">      40</span>              :     readonly readDirectoryEntries: (path: string) =&gt; Effect.Effect&lt;DirEntry[], Error&gt;</span>
+<span id="L41"><span class="lineNum">      41</span>              :     readonly resolve: (path: string) =&gt; Effect.Effect&lt;string&gt;</span>
+<span id="L42"><span class="lineNum">      42</span>              :     readonly findUp: (target: string, start: string, stop?: string) =&gt; Effect.Effect&lt;string[], Error&gt;</span>
+<span id="L43"><span class="lineNum">      43</span>              :     readonly up: (options: { targets: string[]; start: string; stop?: string }) =&gt; Effect.Effect&lt;string[], Error&gt;</span>
+<span id="L44"><span class="lineNum">      44</span>              :     readonly globUp: (pattern: string, start: string, stop?: string) =&gt; Effect.Effect&lt;string[], Error&gt;</span>
+<span id="L45"><span class="lineNum">      45</span>              :     readonly glob: (pattern: string, options?: Glob.Options) =&gt; Effect.Effect&lt;string[], Error&gt;</span>
+<span id="L46"><span class="lineNum">      46</span>              :     readonly globMatch: (pattern: string, filepath: string) =&gt; boolean</span>
+<span id="L47"><span class="lineNum">      47</span>              :   }</span>
+<span id="L48"><span class="lineNum">      48</span>              : </span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">          97 :   export class Service extends Context.Service&lt;Service, Interface&gt;()(&quot;@opencode/FileSystem&quot;) {}</span></span>
+<span id="L50"><span class="lineNum">      50</span>              : </span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">          35 :   export const use = serviceUse(Service)</span></span>
+<span id="L52"><span class="lineNum">      52</span>              : </span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">          27 :   const layer = Layer.effect(</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaGNC">           9 :     Service,</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaGNC">          17 :     Effect.gen(function* () {</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaGNC">          44 :       const fs = yield* FileSystem.FileSystem</span></span>
+<span id="L57"><span class="lineNum">      57</span>              : </span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">          66 :       const existsSafe = Effect.fn(&quot;FileSystem.existsSafe&quot;)(function* (path: string) {</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaGNC">          58 :         return yield* fs.exists(path).pipe(Effect.orElseSucceed(() =&gt; false))</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L61"><span class="lineNum">      61</span>              : </span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaGNC">          82 :       const readFileStringSafe = Effect.fn(&quot;FileSystem.readFileStringSafe&quot;)(function* (path: string) {</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          43 :         return yield* fs.readFileString(path).pipe(</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaGNC">          80 :           Effect.catchReason(&quot;PlatformError&quot;, &quot;NotFound&quot;, () =&gt; Effect.succeed(undefined)),</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">          56 :           Effect.catchReason(&quot;PlatformError&quot;, &quot;PermissionDenied&quot;, () =&gt; Effect.succeed(undefined)),</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaGNC">           2 :         )</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L68"><span class="lineNum">      68</span>              : </span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaGNC">          56 :       const isDir = Effect.fn(&quot;FileSystem.isDir&quot;)(function* (path: string) {</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaGNC">          76 :         const info = yield* fs.stat(path).pipe(Effect.catch(() =&gt; Effect.void))</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaGNC">          34 :         return info?.type === &quot;Directory&quot;</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L73"><span class="lineNum">      73</span>              : </span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">          58 :       const isFile = Effect.fn(&quot;FileSystem.isFile&quot;)(function* (path: string) {</span></span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaGNC">          76 :         const info = yield* fs.stat(path).pipe(Effect.catch(() =&gt; Effect.void))</span></span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">          29 :         return info?.type === &quot;File&quot;</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L78"><span class="lineNum">      78</span>              : </span>
+<span id="L79"><span class="lineNum">      79</span> <span class="tlaGNC">          89 :       const readDirectoryEntries = Effect.fn(&quot;FileSystem.readDirectoryEntries&quot;)(function* (dirPath: string) {</span></span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          41 :         return yield* Effect.tryPromise({</span></span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">          20 :           try: async () =&gt; {</span></span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">          78 :             const entries = await NFS.readdir(dirPath, { withFileTypes: true })</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          18 :             return entries.map(</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          21 :               (e): DirEntry =&gt; ({</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">          25 :                 name: e.name,</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">          85 :                 type: e.isDirectory() ? &quot;directory&quot; : e.isSymbolicLink() ? &quot;symlink&quot; : e.isFile() ? &quot;file&quot; : &quot;other&quot;,</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">           1 :               }),</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          11 :             )</span></span>
+<span id="L89"><span class="lineNum">      89</span>              :           },</span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          12 :           catch: (cause) =&gt; new FileSystemError({ method: &quot;readDirectoryEntries&quot;, cause }),</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">           3 :         })</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L93"><span class="lineNum">      93</span>              : </span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          60 :       const resolve = Effect.fn(&quot;FileSystem.resolve&quot;)(function* (path: string) {</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          54 :         const resolved = pathResolve(windowsPath(path))</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          41 :         return yield* fs.realPath(resolved).pipe(</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">          79 :           Effect.catchReason(&quot;PlatformError&quot;, &quot;NotFound&quot;, () =&gt; Effect.succeed(resolved)),</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaGNC">          12 :           Effect.orDie,</span></span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaGNC">           2 :         )</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L101"><span class="lineNum">     101</span>              : </span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">          62 :       const readJson = Effect.fn(&quot;FileSystem.readJson&quot;)(function* (path: string) {</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          50 :         const text = yield* fs.readFileString(path)</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">          34 :         return yield* Effect.try({</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">          34 :           try: () =&gt; JSON.parse(text),</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaGNC">          72 :           catch: (cause) =&gt; new FileSystemError({ method: &quot;readJson&quot;, cause }),</span></span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaGNC">           3 :         })</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L109"><span class="lineNum">     109</span>              : </span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaGNC">          76 :       const writeJson = Effect.fn(&quot;FileSystem.writeJson&quot;)(function* (path: string, data: unknown, mode?: number) {</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">          52 :         const content = JSON.stringify(data, null, 2)</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaGNC">          47 :         yield* fs.writeFileString(path, content)</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaGNC">          48 :         if (mode) yield* fs.chmod(path, mode)</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L115"><span class="lineNum">     115</span>              : </span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaGNC">          64 :       const ensureDir = Effect.fn(&quot;FileSystem.ensureDir&quot;)(function* (path: string) {</span></span>
+<span id="L117"><span class="lineNum">     117</span> <span class="tlaGNC">          56 :         yield* fs.makeDirectory(path, { recursive: true }).pipe(</span></span>
+<span id="L118"><span class="lineNum">     118</span>              :           // Bun on Windows can throw EEXIST here despite recursive mode.</span>
+<span id="L119"><span class="lineNum">     119</span>              :           // https://github.com/oven-sh/bun/issues/21901</span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaGNC">          14 :           Effect.catchIf(</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">           1 :             (error) =&gt; error.reason._tag === &quot;AlreadyExists&quot;,</span></span>
+<span id="L122"><span class="lineNum">     122</span>              :             (error) =&gt; isDir(path).pipe(Effect.flatMap((exists) =&gt; (exists ? Effect.void : Effect.fail(error)))),</span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaGNC">           1 :           ),</span></span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaGNC">           7 :         )</span></span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L126"><span class="lineNum">     126</span>              : </span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaGNC">          60 :       const writeWithDirs = Effect.fn(&quot;FileSystem.writeWithDirs&quot;)(function* (</span></span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaGNC">           6 :         path: string,</span></span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaGNC">           9 :         content: string | Uint8Array,</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaGNC">           5 :         mode?: number,</span></span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaGNC">           7 :       ) {</span></span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">         111 :         const write = typeof content === &quot;string&quot; ? fs.writeFileString(path, content) : fs.writeFile(path, content)</span></span>
+<span id="L133"><span class="lineNum">     133</span>              : </span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaGNC">          18 :         yield* write.pipe(</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">          14 :           Effect.catchIf(</span></span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaGNC">          35 :             (e) =&gt; e.reason._tag === &quot;NotFound&quot;,</span></span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">           6 :             () =&gt;</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">          21 :               Effect.gen(function* () {</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">          68 :                 yield* fs.makeDirectory(dirname(path), { recursive: true })</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">          20 :                 yield* write</span></span>
+<span id="L141"><span class="lineNum">     141</span>              :               }),</span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">           1 :           ),</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">           8 :         )</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">          21 :         if (mode) yield* fs.chmod(path, mode)</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L146"><span class="lineNum">     146</span>              : </span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaGNC">          66 :       const glob = Effect.fn(&quot;FileSystem.glob&quot;)(function* (pattern: string, options?: Glob.Options) {</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaGNC">          41 :         return yield* Effect.tryPromise({</span></span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">          45 :           try: () =&gt; Glob.scan(pattern, options),</span></span>
+<span id="L150"><span class="lineNum">     150</span> <span class="tlaGNC">          12 :           catch: (cause) =&gt; new FileSystemError({ method: &quot;glob&quot;, cause }),</span></span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaGNC">           3 :         })</span></span>
+<span id="L152"><span class="lineNum">     152</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L153"><span class="lineNum">     153</span>              : </span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaGNC">          73 :       const findUp = Effect.fn(&quot;FileSystem.findUp&quot;)(function* (target: string, start: string, stop?: string) {</span></span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaGNC">          24 :         const result: string[] = []</span></span>
+<span id="L156"><span class="lineNum">     156</span> <span class="tlaGNC">          26 :         let current = start</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaGNC">          21 :         while (true) {</span></span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaGNC">          45 :           const search = join(current, target)</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaGNC">          65 :           if (yield* fs.exists(search)) result.push(search)</span></span>
+<span id="L160"><span class="lineNum">     160</span> <span class="tlaGNC">          43 :           if (stop === current) break</span></span>
+<span id="L161"><span class="lineNum">     161</span> <span class="tlaGNC">          40 :           const parent = dirname(current)</span></span>
+<span id="L162"><span class="lineNum">     162</span> <span class="tlaGNC">          45 :           if (parent === current) break</span></span>
+<span id="L163"><span class="lineNum">     163</span> <span class="tlaGNC">          23 :           current = parent</span></span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaGNC">           6 :         }</span></span>
+<span id="L165"><span class="lineNum">     165</span> <span class="tlaGNC">          14 :         return result</span></span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L167"><span class="lineNum">     167</span>              : </span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaGNC">          53 :       const up = Effect.fn(&quot;FileSystem.up&quot;)(function* (options: { targets: string[]; start: string; stop?: string }) {</span></span>
+<span id="L169"><span class="lineNum">     169</span> <span class="tlaGNC">          24 :         const result: string[] = []</span></span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaGNC">          34 :         let current = options.start</span></span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaGNC">          21 :         while (true) {</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaGNC">          48 :           for (const target of options.targets) {</span></span>
+<span id="L173"><span class="lineNum">     173</span> <span class="tlaGNC">          47 :             const search = join(current, target)</span></span>
+<span id="L174"><span class="lineNum">     174</span> <span class="tlaGNC">          67 :             if (yield* fs.exists(search)) result.push(search)</span></span>
+<span id="L175"><span class="lineNum">     175</span> <span class="tlaGNC">           8 :           }</span></span>
+<span id="L176"><span class="lineNum">     176</span> <span class="tlaGNC">          51 :           if (options.stop === current) break</span></span>
+<span id="L177"><span class="lineNum">     177</span> <span class="tlaGNC">          40 :           const parent = dirname(current)</span></span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaGNC">          45 :           if (parent === current) break</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaGNC">          23 :           current = parent</span></span>
+<span id="L180"><span class="lineNum">     180</span> <span class="tlaGNC">           6 :         }</span></span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaGNC">          14 :         return result</span></span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L183"><span class="lineNum">     183</span>              : </span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaGNC">          74 :       const globUp = Effect.fn(&quot;FileSystem.globUp&quot;)(function* (pattern: string, start: string, stop?: string) {</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">          24 :         const result: string[] = []</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaGNC">          26 :         let current = start</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">          21 :         while (true) {</span></span>
+<span id="L188"><span class="lineNum">     188</span> <span class="tlaGNC">         104 :           const matches = yield* glob(pattern, { cwd: current, absolute: true, include: &quot;file&quot;, dot: true }).pipe(</span></span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          13 :             Effect.catch(() =&gt; Effect.succeed([] as string[])),</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaGNC">          10 :           )</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">          32 :           result.push(...matches)</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaGNC">          43 :           if (stop === current) break</span></span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaGNC">          40 :           const parent = dirname(current)</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaGNC">          45 :           if (parent === current) break</span></span>
+<span id="L195"><span class="lineNum">     195</span> <span class="tlaGNC">          23 :           current = parent</span></span>
+<span id="L196"><span class="lineNum">     196</span> <span class="tlaGNC">           6 :         }</span></span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaGNC">          14 :         return result</span></span>
+<span id="L198"><span class="lineNum">     198</span> <span class="tlaGNC">           6 :       })</span></span>
+<span id="L199"><span class="lineNum">     199</span>              : </span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaGNC">          28 :       return Service.of({</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaGNC">           9 :         ...fs,</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaGNC">          17 :         existsSafe,</span></span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaGNC">          25 :         readFileStringSafe,</span></span>
+<span id="L204"><span class="lineNum">     204</span> <span class="tlaGNC">          12 :         isDir,</span></span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaGNC">          13 :         isFile,</span></span>
+<span id="L206"><span class="lineNum">     206</span> <span class="tlaGNC">          27 :         readDirectoryEntries,</span></span>
+<span id="L207"><span class="lineNum">     207</span> <span class="tlaGNC">          14 :         resolve,</span></span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaGNC">          15 :         readJson,</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">          16 :         writeJson,</span></span>
+<span id="L210"><span class="lineNum">     210</span> <span class="tlaGNC">          16 :         ensureDir,</span></span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaGNC">          20 :         writeWithDirs,</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaGNC">          13 :         findUp,</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaGNC">           9 :         up,</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaGNC">          13 :         globUp,</span></span>
+<span id="L215"><span class="lineNum">     215</span> <span class="tlaGNC">          11 :         glob,</span></span>
+<span id="L216"><span class="lineNum">     216</span> <span class="tlaGNC">          25 :         globMatch: Glob.match,</span></span>
+<span id="L217"><span class="lineNum">     217</span> <span class="tlaGNC">           3 :       })</span></span>
+<span id="L218"><span class="lineNum">     218</span> <span class="tlaGNC">           1 :     }),</span></span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaGNC">           4 :   )</span></span>
+<span id="L220"><span class="lineNum">     220</span>              : </span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaGNC">          79 :   export const node = makeGlobalNode({ service: Service, layer: layer, deps: [filesystem] })</span></span>
+<span id="L222"><span class="lineNum">     222</span>              : </span>
+<span id="L223"><span class="lineNum">     223</span>              :   // Pure helpers that don't need Effect (path manipulation, sync operations)</span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaGNC">          37 :   export function mimeType(p: string): string {</span></span>
+<span id="L225"><span class="lineNum">     225</span> <span class="tlaGNC">          48 :     return lookup(p) || &quot;application/octet-stream&quot;</span></span>
+<span id="L226"><span class="lineNum">     226</span>              :   }</span>
+<span id="L227"><span class="lineNum">     227</span>              : </span>
+<span id="L228"><span class="lineNum">     228</span> <span class="tlaGNC">          47 :   export function normalizePath(p: string): string {</span></span>
+<span id="L229"><span class="lineNum">     229</span> <span class="tlaGNC">          46 :     if (process.platform !== &quot;win32&quot;) return p</span></span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaUNC">           0 :     const resolved = pathResolve(windowsPath(p))</span></span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaUNC">           0 :     try {</span></span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaUNC">           0 :       return realpathSync.native(resolved)</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaUNC">           0 :     } catch {</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaGNC">           2 :       return resolved</span></span>
+<span id="L235"><span class="lineNum">     235</span>              :     }</span>
+<span id="L236"><span class="lineNum">     236</span>              :   }</span>
+<span id="L237"><span class="lineNum">     237</span>              : </span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaUNC">           0 :   export function normalizePathPattern(p: string): string {</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaUNC">           0 :     if (process.platform !== &quot;win32&quot;) return p</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaUNC">           0 :     if (p === &quot;*&quot;) return p</span></span>
+<span id="L241"><span class="lineNum">     241</span> <span class="tlaUNC">           0 :     const match = p.match(/^(.*)[\\/]\*$/)</span></span>
+<span id="L242"><span class="lineNum">     242</span> <span class="tlaUNC">           0 :     if (!match) return normalizePath(p)</span></span>
+<span id="L243"><span class="lineNum">     243</span> <span class="tlaUNC">           0 :     const dir = /^[A-Za-z]:$/.test(match[1]) ? match[1] + &quot;\\&quot; : match[1]</span></span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaGNC">           2 :     return join(normalizePath(dir), &quot;*&quot;)</span></span>
+<span id="L245"><span class="lineNum">     245</span>              :   }</span>
+<span id="L246"><span class="lineNum">     246</span>              : </span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC">          35 :   export function resolve(p: string): string {</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaGNC">          49 :     const resolved = pathResolve(windowsPath(p))</span></span>
+<span id="L249"><span class="lineNum">     249</span> <span class="tlaGNC">          11 :     try {</span></span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaGNC">          45 :       return normalizePath(realpathSync(resolved))</span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaGNC">          17 :     } catch (e: any) {</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaGNC">          62 :       if (e?.code === &quot;ENOENT&quot;) return normalizePath(resolved)</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaGNC">           2 :       throw e</span></span>
+<span id="L254"><span class="lineNum">     254</span>              :     }</span>
+<span id="L255"><span class="lineNum">     255</span>              :   }</span>
+<span id="L256"><span class="lineNum">     256</span>              : </span>
+<span id="L257"><span class="lineNum">     257</span> <span class="tlaGNC">          43 :   export function windowsPath(p: string): string {</span></span>
+<span id="L258"><span class="lineNum">     258</span> <span class="tlaGNC">          46 :     if (process.platform !== &quot;win32&quot;) return p</span></span>
+<span id="L259"><span class="lineNum">     259</span> <span class="tlaUNC">           0 :     return p</span></span>
+<span id="L260"><span class="lineNum">     260</span> <span class="tlaUNC">           0 :       .replace(/^\/([a-zA-Z]):(?:[\\/]|$)/, (_, drive) =&gt; `${drive.toUpperCase()}:/`)</span></span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaUNC">           0 :       .replace(/^\/([a-zA-Z])(?:\/|$)/, (_, drive) =&gt; `${drive.toUpperCase()}:/`)</span></span>
+<span id="L262"><span class="lineNum">     262</span> <span class="tlaUNC">           0 :       .replace(/^\/cygdrive\/([a-zA-Z])(?:\/|$)/, (_, drive) =&gt; `${drive.toUpperCase()}:/`)</span></span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaGNC">           2 :       .replace(/^\/mnt\/([a-zA-Z])(?:\/|$)/, (_, drive) =&gt; `${drive.toUpperCase()}:/`)</span></span>
+<span id="L264"><span class="lineNum">     264</span>              :   }</span>
+<span id="L265"><span class="lineNum">     265</span>              : </span>
+<span id="L266"><span class="lineNum">     266</span> <span class="tlaGNC">          40 :   export function overlaps(a: string, b: string) {</span></span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaGNC">          41 :     return contains(a, b) || contains(b, a)</span></span>
+<span id="L268"><span class="lineNum">     268</span>              :   }</span>
+<span id="L269"><span class="lineNum">     269</span>              : </span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaGNC">          51 :   export function contains(parent: string, child: string) {</span></span>
+<span id="L271"><span class="lineNum">     271</span> <span class="tlaGNC">          43 :     const result = relative(parent, child)</span></span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaGNC">          98 :     return result === &quot;&quot; || (!isAbsolute(result) &amp;&amp; result !== &quot;..&quot; &amp;&amp; !result.startsWith(`..${sep}`))</span></span>
+<span id="L273"><span class="lineNum">     273</span>              :   }</span>
+<span id="L274"><span class="lineNum">     274</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

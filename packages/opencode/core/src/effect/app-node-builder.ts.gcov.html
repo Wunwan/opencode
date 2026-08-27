@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/effect/app-node-builder.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src/effect">../core/src/effect</a> - app-node-builder.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryMed">80.0&nbsp;%</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">12</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          63 : import { buildLocationServiceMap } from &quot;../location-services&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          61 : import { LocationServiceMap } from &quot;../location-service-map&quot;</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          41 : import { LayerNode } from &quot;./layer-node&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          44 : import { makeGlobalNode } from &quot;./app-node&quot;</span></span>
+<span id="L5"><span class="lineNum">       5</span>              : </span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          34 : export function build&lt;A, E&gt;(root: LayerNode.Node&lt;A, E, any&gt;, replacements: LayerNode.Replacements = []) {</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          37 :   let allReplacements = replacements</span></span>
+<span id="L8"><span class="lineNum">       8</span>              : </span>
+<span id="L9"><span class="lineNum">       9</span>              :   // Only build the location service map if it's actually needed</span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">         114 :   if (LayerNode.hasUnbound(root, LocationServiceMap.node) &amp;&amp; !hasReplacement(replacements, LocationServiceMap.node)) {</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaUNC">           0 :     const locationMap = buildLocationServiceMap(replacements)</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaUNC">           0 :     const locationMapNode = makeGlobalNode({ service: LocationServiceMap.Service, layer: locationMap, deps: [] })</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaUNC">           0 :     allReplacements = replacements.concat([[LocationServiceMap.node, locationMapNode]])</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L15"><span class="lineNum">      15</span>              : </span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">          47 :   return LayerNode.compile(root, allReplacements)</span></span>
+<span id="L17"><span class="lineNum">      17</span>              : }</span>
+<span id="L18"><span class="lineNum">      18</span>              : </span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          24 : function hasReplacement(replacements: LayerNode.Replacements, node: LayerNode.Node&lt;unknown, unknown, any&gt;) {</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          64 :   return replacements.some(([source]) =&gt; source.name === node.name)</span></span>
+<span id="L21"><span class="lineNum">      21</span>              : }</span>
+<span id="L22"><span class="lineNum">      22</span>              : </span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          52 : export * as AppNodeBuilder from &quot;./app-node-builder&quot;</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

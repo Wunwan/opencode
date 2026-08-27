@@ -1,0 +1,352 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/oauth/page.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src/oauth">../core/src/oauth</a> - page.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryMed">80.8&nbsp;%</td>
+            <td class="headerCovTableEntry">78</td>
+            <td class="headerCovTableEntry">63</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : // Branded HTML pages for local OAuth callback servers.</span>
+<span id="L2"><span class="lineNum">       2</span>              : //</span>
+<span id="L3"><span class="lineNum">       3</span>              : // These are served by the loopback HTTP servers that finish an OAuth exchange</span>
+<span id="L4"><span class="lineNum">       4</span>              : // (MCP, Codex/ChatGPT, xAI, Snowflake, DigitalOcean, ...). The functions return</span>
+<span id="L5"><span class="lineNum">       5</span>              : // a fully self-contained HTML string with no external assets, so they work</span>
+<span id="L6"><span class="lineNum">       6</span>              : // offline and drop into any transport (`res.end(...)`, Effect `response.end`,</span>
+<span id="L7"><span class="lineNum">       7</span>              : // etc.).</span>
+<span id="L8"><span class="lineNum">       8</span>              : //</span>
+<span id="L9"><span class="lineNum">       9</span>              : // The visual language mirrors the OpenCode app: the design tokens are a curated</span>
+<span id="L10"><span class="lineNum">      10</span>              : // subset of the OC-2 semantic tokens in `packages/ui/src/styles/theme.css`, and</span>
+<span id="L11"><span class="lineNum">      11</span>              : // the wordmark is the same geometry as `packages/ui/src/components/logo.tsx`.</span>
+<span id="L12"><span class="lineNum">      12</span>              : // Keep this file in sync with those sources when the brand changes.</span>
+<span id="L13"><span class="lineNum">      13</span>              : </span>
+<span id="L14"><span class="lineNum">      14</span>              : export interface CallbackPageOptions {</span>
+<span id="L15"><span class="lineNum">      15</span>              :   /** Friendly integration name shown as a subtitle, e.g. &quot;xAI&quot;, &quot;Snowflake&quot;, &quot;MCP&quot;. */</span>
+<span id="L16"><span class="lineNum">      16</span>              :   provider?: string</span>
+<span id="L17"><span class="lineNum">      17</span>              :   /** Attempt to close the window shortly after success. Defaults to true. */</span>
+<span id="L18"><span class="lineNum">      18</span>              :   autoClose?: boolean</span>
+<span id="L19"><span class="lineNum">      19</span>              : }</span>
+<span id="L20"><span class="lineNum">      20</span>              : </span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          18 : export function success(options?: CallbackPageOptions) {</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          37 :   const provider = options?.provider</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          27 :   return renderDocument({</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          38 :     title: &quot;Authorization successful&quot;,</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          24 :     body: renderCard({</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">          24 :       status: &quot;success&quot;,</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          43 :       headline: &quot;Authorization successful&quot;,</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          80 :       message: provider ? `OpenCode is now connected to ${escapeHtml(provider)}.` : &quot;OpenCode is now authorized.&quot;,</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          42 :       footnote: &quot;You can close this window.&quot;,</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">           7 :     }),</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          58 :     script: options?.autoClose === false ? undefined : AUTO_CLOSE_SCRIPT,</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">           3 :   })</span></span>
+<span id="L33"><span class="lineNum">      33</span>              : }</span>
+<span id="L34"><span class="lineNum">      34</span>              : </span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          26 : export function error(detail: string, options?: CallbackPageOptions) {</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">          37 :   const provider = options?.provider</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          27 :   return renderDocument({</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          34 :     title: &quot;Authorization failed&quot;,</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          24 :     body: renderCard({</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaGNC">          22 :       status: &quot;error&quot;,</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          39 :       headline: &quot;Authorization failed&quot;,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">          19 :       message: provider</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">          65 :         ? `OpenCode couldn't finish connecting to ${escapeHtml(provider)}.`</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           6 :         : &quot;OpenCode couldn't complete authorization.&quot;,</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">          13 :       detail,</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">          62 :       footnote: &quot;Close this window and try again from OpenCode.&quot;,</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaGNC">           4 :     }),</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">           3 :   })</span></span>
+<span id="L49"><span class="lineNum">      49</span>              : }</span>
+<span id="L50"><span class="lineNum">      50</span>              : </span>
+<span id="L51"><span class="lineNum">      51</span>              : export interface BootstrapOptions {</span>
+<span id="L52"><span class="lineNum">      52</span>              :   /** Same-origin path the in-browser script POSTs the parsed callback to. */</span>
+<span id="L53"><span class="lineNum">      53</span>              :   tokenPath: string</span>
+<span id="L54"><span class="lineNum">      54</span>              :   provider?: string</span>
+<span id="L55"><span class="lineNum">      55</span>              : }</span>
+<span id="L56"><span class="lineNum">      56</span>              : </span>
+<span id="L57"><span class="lineNum">      57</span>              : // For flows where the credential arrives in the URL fragment (implicit grant),</span>
+<span id="L58"><span class="lineNum">      58</span>              : // the browser must relay it back to the loopback server. This renders a pending</span>
+<span id="L59"><span class="lineNum">      59</span>              : // page whose script reads the fragment, POSTs it to `tokenPath`, then resolves</span>
+<span id="L60"><span class="lineNum">      60</span>              : // to the success or error state in place.</span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaUNC">           0 : export function bootstrap(options: BootstrapOptions) {</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaUNC">           0 :   return renderDocument({</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaUNC">           0 :     title: &quot;Finishing sign-in&quot;,</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :     body: renderCard({</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaUNC">           0 :       status: &quot;pending&quot;,</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaUNC">           0 :       headline: &quot;Finishing sign-in&quot;,</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaUNC">           0 :       message: options.provider</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :         ? `Completing your ${escapeHtml(options.provider)} authorization.`</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :         : &quot;Completing authorization.&quot;,</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :       footnote: &quot;You can close this window once sign-in finishes.&quot;,</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaUNC">           0 :     }),</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaUNC">           0 :     script: bootstrapScript(options),</span></span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaGNC">           1 :   })</span></span>
+<span id="L74"><span class="lineNum">      74</span>              : }</span>
+<span id="L75"><span class="lineNum">      75</span>              : </span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">          43 : export * as OauthCallbackPage from &quot;./page&quot;</span></span>
+<span id="L77"><span class="lineNum">      77</span>              : </span>
+<span id="L78"><span class="lineNum">      78</span>              : type Status = &quot;pending&quot; | &quot;success&quot; | &quot;error&quot;</span>
+<span id="L79"><span class="lineNum">      79</span>              : </span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          11 : function renderCard(input: { status: Status; headline: string; message: string; detail?: string; footnote: string }) {</span></span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">          38 :   const detail = input.detail?.trim()</span></span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">         130 :   return `&lt;main class=&quot;card&quot; id=&quot;oc-card&quot; data-status=&quot;${input.status}&quot; role=&quot;status&quot; aria-live=&quot;polite&quot;&gt;</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">         102 :       &lt;div class=&quot;brand&quot;&gt;${WORDMARK}&lt;/div&gt;</span></span>
+<span id="L84"><span class="lineNum">      84</span>              :       &lt;div class=&quot;status&quot; aria-hidden=&quot;true&quot;&gt;</span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">          62 :         &lt;span class=&quot;icon icon-pending&quot;&gt;${ICON_SPINNER}&lt;/span&gt;</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">          58 :         &lt;span class=&quot;icon icon-success&quot;&gt;${ICON_CHECK}&lt;/span&gt;</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          76 :         &lt;span class=&quot;icon icon-error&quot;&gt;${ICON_CROSS}&lt;/span&gt;</span></span>
+<span id="L88"><span class="lineNum">      88</span>              :       &lt;/div&gt;</span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          75 :       &lt;h1 class=&quot;headline&quot; id=&quot;oc-headline&quot;&gt;${escapeHtml(input.headline)}&lt;/h1&gt;</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          60 :       &lt;p class=&quot;message&quot; id=&quot;oc-message&quot;&gt;${input.message}&lt;/p&gt;</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">         105 :       &lt;pre class=&quot;detail&quot; id=&quot;oc-detail&quot;${detail ? &quot;&quot; : &quot; hidden&quot;}&gt;${detail ? escapeHtml(detail) : &quot;&quot;}&lt;/pre&gt;</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">          43 :       &lt;p class=&quot;footnote&quot; id=&quot;oc-footnote&quot;&gt;${escapeHtml(input.footnote)}&lt;/p&gt;</span></span>
+<span id="L93"><span class="lineNum">      93</span>              :     &lt;/main&gt;`</span>
+<span id="L94"><span class="lineNum">      94</span>              : }</span>
+<span id="L95"><span class="lineNum">      95</span>              : </span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          11 : function renderDocument(input: { title: string; body: string; script?: string }) {</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">         206 :   return `&lt;!doctype html&gt;</span></span>
+<span id="L98"><span class="lineNum">      98</span>              : &lt;html lang=&quot;en&quot;&gt;</span>
+<span id="L99"><span class="lineNum">      99</span>              :   &lt;head&gt;</span>
+<span id="L100"><span class="lineNum">     100</span>              :     &lt;meta charset=&quot;utf-8&quot; /&gt;</span>
+<span id="L101"><span class="lineNum">     101</span>              :     &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;</span>
+<span id="L102"><span class="lineNum">     102</span>              :     &lt;meta name=&quot;robots&quot; content=&quot;noindex&quot; /&gt;</span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          59 :     &lt;title&gt;${escapeHtml(input.title)} · OpenCode&lt;/title&gt;</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">          38 :     &lt;style&gt;${STYLES}&lt;/style&gt;</span></span>
+<span id="L105"><span class="lineNum">     105</span>              :   &lt;/head&gt;</span>
+<span id="L106"><span class="lineNum">     106</span>              :   &lt;body&gt;</span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaGNC">          87 :     ${input.body}${input.script ? `\n    &lt;script&gt;${input.script}&lt;/script&gt;` : &quot;&quot;}</span></span>
+<span id="L108"><span class="lineNum">     108</span>              :   &lt;/body&gt;</span>
+<span id="L109"><span class="lineNum">     109</span>              : &lt;/html&gt;`</span>
+<span id="L110"><span class="lineNum">     110</span>              : }</span>
+<span id="L111"><span class="lineNum">     111</span>              : </span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaGNC">          86 : const AUTO_CLOSE_SCRIPT = `setTimeout(function(){try{window.close()}catch(e){}},2500)`</span></span>
+<span id="L113"><span class="lineNum">     113</span>              : </span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 : function bootstrapScript(options: BootstrapOptions) {</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaUNC">           0 :   return `var PROVIDER=${scriptString(options.provider ?? &quot;&quot;)};</span></span>
+<span id="L116"><span class="lineNum">     116</span>              : var TOKEN_URL=new URL(${scriptString(options.tokenPath)},window.location.origin).href;</span>
+<span id="L117"><span class="lineNum">     117</span>              : (function(){</span>
+<span id="L118"><span class="lineNum">     118</span>              :   var card=document.getElementById(&quot;oc-card&quot;),headline=document.getElementById(&quot;oc-headline&quot;),message=document.getElementById(&quot;oc-message&quot;),detail=document.getElementById(&quot;oc-detail&quot;),footnote=document.getElementById(&quot;oc-footnote&quot;);</span>
+<span id="L119"><span class="lineNum">     119</span>              :   function fail(text){card.dataset.status=&quot;error&quot;;headline.textContent=&quot;Authorization failed&quot;;message.textContent=PROVIDER?(&quot;OpenCode couldn't finish connecting to &quot;+PROVIDER+&quot;.&quot;):&quot;OpenCode couldn't complete authorization.&quot;;if(text){detail.textContent=text;detail.hidden=false}footnote.textContent=&quot;Close this window and try again from OpenCode.&quot;}</span>
+<span id="L120"><span class="lineNum">     120</span>              :   function ok(){card.dataset.status=&quot;success&quot;;headline.textContent=&quot;Authorization successful&quot;;message.textContent=PROVIDER?(&quot;OpenCode is now connected to &quot;+PROVIDER+&quot;.&quot;):&quot;OpenCode is now authorized.&quot;;detail.hidden=true;footnote.textContent=&quot;You can close this window.&quot;;setTimeout(function(){try{window.close()}catch(e){}},2500)}</span>
+<span id="L121"><span class="lineNum">     121</span>              :   try{</span>
+<span id="L122"><span class="lineNum">     122</span>              :     var hash=new URLSearchParams((window.location.hash||&quot;&quot;).slice(1));</span>
+<span id="L123"><span class="lineNum">     123</span>              :     var search=new URLSearchParams(window.location.search||&quot;&quot;);</span>
+<span id="L124"><span class="lineNum">     124</span>              :     var err=hash.get(&quot;error&quot;)||search.get(&quot;error&quot;);</span>
+<span id="L125"><span class="lineNum">     125</span>              :     var errDescription=hash.get(&quot;error_description&quot;)||search.get(&quot;error_description&quot;);</span>
+<span id="L126"><span class="lineNum">     126</span>              :     var body=err?{error:err,error_description:errDescription||&quot;&quot;}:{access_token:hash.get(&quot;access_token&quot;)||&quot;&quot;,expires_in:hash.get(&quot;expires_in&quot;)||&quot;0&quot;,state:hash.get(&quot;state&quot;)||&quot;&quot;};</span>
+<span id="L127"><span class="lineNum">     127</span>              :     fetch(TOKEN_URL,{method:&quot;POST&quot;,headers:{&quot;Content-Type&quot;:&quot;application/json&quot;},body:JSON.stringify(body)}).then(function(res){</span>
+<span id="L128"><span class="lineNum">     128</span>              :       if(!res.ok)return res.text().catch(function(){return&quot;&quot;}).then(function(t){throw new Error(t||(&quot;callback failed (&quot;+res.status+&quot;)&quot;))});</span>
+<span id="L129"><span class="lineNum">     129</span>              :       if(err){fail(errDescription||err);return}</span>
+<span id="L130"><span class="lineNum">     130</span>              :       ok();</span>
+<span id="L131"><span class="lineNum">     131</span>              :     }).catch(function(e){fail(String(e&amp;&amp;e.message?e.message:e))});</span>
+<span id="L132"><span class="lineNum">     132</span>              :   }catch(e){fail(String(e&amp;&amp;e.message?e.message:e))}</span>
+<span id="L133"><span class="lineNum">     133</span>              : })()`</span>
+<span id="L134"><span class="lineNum">     134</span>              : }</span>
+<span id="L135"><span class="lineNum">     135</span>              : </span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaUNC">           0 : function scriptString(value: string) {</span></span>
+<span id="L137"><span class="lineNum">     137</span>              :   return JSON.stringify(value).replaceAll(&quot;&lt;&quot;, &quot;\\u003c&quot;)</span>
+<span id="L138"><span class="lineNum">     138</span>              : }</span>
+<span id="L139"><span class="lineNum">     139</span>              : </span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">          11 : function escapeHtml(value: string) {</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaGNC">          13 :   return value</span></span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">          25 :     .replaceAll(&quot;&amp;&quot;, &quot;&amp;amp;&quot;)</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">          24 :     .replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;)</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">          24 :     .replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;)</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">          26 :     .replaceAll('&quot;', &quot;&amp;quot;&quot;)</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaGNC">          25 :     .replaceAll(&quot;'&quot;, &quot;&amp;#39;&quot;)</span></span>
+<span id="L147"><span class="lineNum">     147</span>              : }</span>
+<span id="L148"><span class="lineNum">     148</span>              : </span>
+<span id="L149"><span class="lineNum">     149</span>              : // Curated subset of OC-2 tokens (packages/ui/src/styles/theme.css). Default is</span>
+<span id="L150"><span class="lineNum">     150</span>              : // light; dark applies via prefers-color-scheme. The [data-theme] selectors let a</span>
+<span id="L151"><span class="lineNum">     151</span>              : // host force a scheme without changing the default.</span>
+<span id="L152"><span class="lineNum">     152</span> <span class="tlaGNC">         488 : const LIGHT_VARS = `</span></span>
+<span id="L153"><span class="lineNum">     153</span>              :     --oc-bg: #f8f8f8;</span>
+<span id="L154"><span class="lineNum">     154</span>              :     --oc-card: #fcfcfc;</span>
+<span id="L155"><span class="lineNum">     155</span>              :     --oc-text-strong: #171717;</span>
+<span id="L156"><span class="lineNum">     156</span>              :     --oc-text-base: #6f6f6f;</span>
+<span id="L157"><span class="lineNum">     157</span>              :     --oc-text-weak: #8f8f8f;</span>
+<span id="L158"><span class="lineNum">     158</span>              :     --oc-border-weak: #e5e5e5;</span>
+<span id="L159"><span class="lineNum">     159</span>              :     --oc-icon-strong: #171717;</span>
+<span id="L160"><span class="lineNum">     160</span>              :     --oc-icon-base: #8f8f8f;</span>
+<span id="L161"><span class="lineNum">     161</span>              :     --oc-icon-weak: #dbdbdb;</span>
+<span id="L162"><span class="lineNum">     162</span>              :     --oc-success: #2dba26;</span>
+<span id="L163"><span class="lineNum">     163</span>              :     --oc-error: #ed4831;</span>
+<span id="L164"><span class="lineNum">     164</span>              :     --oc-detail-bg: #fff8f6;</span>
+<span id="L165"><span class="lineNum">     165</span>              :     --oc-detail-border: #fdc3b7;</span>
+<span id="L166"><span class="lineNum">     166</span>              :     --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.10), 0 6px 12px -2px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.06);`</span>
+<span id="L167"><span class="lineNum">     167</span>              : </span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaGNC">         531 : const DARK_VARS = `</span></span>
+<span id="L169"><span class="lineNum">     169</span>              :     --oc-bg: #101010;</span>
+<span id="L170"><span class="lineNum">     170</span>              :     --oc-card: #161616;</span>
+<span id="L171"><span class="lineNum">     171</span>              :     --oc-text-strong: rgba(255,255,255,.936);</span>
+<span id="L172"><span class="lineNum">     172</span>              :     --oc-text-base: rgba(255,255,255,.618);</span>
+<span id="L173"><span class="lineNum">     173</span>              :     --oc-text-weak: rgba(255,255,255,.422);</span>
+<span id="L174"><span class="lineNum">     174</span>              :     --oc-border-weak: #282828;</span>
+<span id="L175"><span class="lineNum">     175</span>              :     --oc-icon-strong: #ededed;</span>
+<span id="L176"><span class="lineNum">     176</span>              :     --oc-icon-base: #7e7e7e;</span>
+<span id="L177"><span class="lineNum">     177</span>              :     --oc-icon-weak: #343434;</span>
+<span id="L178"><span class="lineNum">     178</span>              :     --oc-success: #12c905;</span>
+<span id="L179"><span class="lineNum">     179</span>              :     --oc-error: #fc533a;</span>
+<span id="L180"><span class="lineNum">     180</span>              :     --oc-detail-bg: #28110c;</span>
+<span id="L181"><span class="lineNum">     181</span>              :     --oc-detail-border: #6a1206;</span>
+<span id="L182"><span class="lineNum">     182</span>              :     --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.55), 0 6px 12px -2px rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.4);`</span>
+<span id="L183"><span class="lineNum">     183</span>              : </span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaGNC">          52 : const STYLES = `</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">         312 :   :root { color-scheme: light dark;${LIGHT_VARS}</span></span>
+<span id="L186"><span class="lineNum">     186</span>              :     --oc-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;</span>
+<span id="L187"><span class="lineNum">     187</span>              :     --oc-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;</span>
+<span id="L188"><span class="lineNum">     188</span>              :   }</span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          44 :   @media (prefers-color-scheme: dark) { :root:not([data-theme=&quot;light&quot;]) {${DARK_VARS} } }</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaGNC">          43 :   :root[data-theme=&quot;dark&quot;] {${DARK_VARS} }</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">        2125 :   :root[data-theme=&quot;light&quot;] {${LIGHT_VARS} }</span></span>
+<span id="L192"><span class="lineNum">     192</span>              : </span>
+<span id="L193"><span class="lineNum">     193</span>              :   * { box-sizing: border-box; }</span>
+<span id="L194"><span class="lineNum">     194</span>              :   html, body { margin: 0; height: 100%; }</span>
+<span id="L195"><span class="lineNum">     195</span>              :   body {</span>
+<span id="L196"><span class="lineNum">     196</span>              :     min-height: 100vh;</span>
+<span id="L197"><span class="lineNum">     197</span>              :     display: grid;</span>
+<span id="L198"><span class="lineNum">     198</span>              :     place-items: center;</span>
+<span id="L199"><span class="lineNum">     199</span>              :     padding: 24px;</span>
+<span id="L200"><span class="lineNum">     200</span>              :     background: var(--oc-bg);</span>
+<span id="L201"><span class="lineNum">     201</span>              :     color: var(--oc-text-base);</span>
+<span id="L202"><span class="lineNum">     202</span>              :     font-family: var(--oc-font-sans);</span>
+<span id="L203"><span class="lineNum">     203</span>              :     line-height: 1.5;</span>
+<span id="L204"><span class="lineNum">     204</span>              :     -webkit-font-smoothing: antialiased;</span>
+<span id="L205"><span class="lineNum">     205</span>              :     text-rendering: optimizeLegibility;</span>
+<span id="L206"><span class="lineNum">     206</span>              :   }</span>
+<span id="L207"><span class="lineNum">     207</span>              :   .card {</span>
+<span id="L208"><span class="lineNum">     208</span>              :     width: min(100%, 28rem);</span>
+<span id="L209"><span class="lineNum">     209</span>              :     padding: 2.25rem 2rem 1.75rem;</span>
+<span id="L210"><span class="lineNum">     210</span>              :     background: var(--oc-card);</span>
+<span id="L211"><span class="lineNum">     211</span>              :     border: 1px solid var(--oc-border-weak);</span>
+<span id="L212"><span class="lineNum">     212</span>              :     border-radius: 14px;</span>
+<span id="L213"><span class="lineNum">     213</span>              :     box-shadow: var(--oc-shadow);</span>
+<span id="L214"><span class="lineNum">     214</span>              :     text-align: center;</span>
+<span id="L215"><span class="lineNum">     215</span>              :   }</span>
+<span id="L216"><span class="lineNum">     216</span>              :   .brand { display: flex; justify-content: center; margin-bottom: 1.75rem; }</span>
+<span id="L217"><span class="lineNum">     217</span>              :   .brand svg { height: 19px; width: auto; }</span>
+<span id="L218"><span class="lineNum">     218</span>              :   .status { display: flex; justify-content: center; margin-bottom: 1.125rem; }</span>
+<span id="L219"><span class="lineNum">     219</span>              :   .icon { display: none; line-height: 0; }</span>
+<span id="L220"><span class="lineNum">     220</span>              :   .icon svg { display: block; }</span>
+<span id="L221"><span class="lineNum">     221</span>              :   .card[data-status=&quot;pending&quot;] .icon-pending,</span>
+<span id="L222"><span class="lineNum">     222</span>              :   .card[data-status=&quot;success&quot;] .icon-success,</span>
+<span id="L223"><span class="lineNum">     223</span>              :   .card[data-status=&quot;error&quot;] .icon-error { display: block; }</span>
+<span id="L224"><span class="lineNum">     224</span>              :   .icon-success { color: var(--oc-success); }</span>
+<span id="L225"><span class="lineNum">     225</span>              :   .icon-error { color: var(--oc-error); }</span>
+<span id="L226"><span class="lineNum">     226</span>              :   .icon-pending { color: var(--oc-text-weak); }</span>
+<span id="L227"><span class="lineNum">     227</span>              :   .headline { margin: 0; font-size: 1.1875rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em; color: var(--oc-text-strong); }</span>
+<span id="L228"><span class="lineNum">     228</span>              :   .message { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--oc-text-base); }</span>
+<span id="L229"><span class="lineNum">     229</span>              :   .detail {</span>
+<span id="L230"><span class="lineNum">     230</span>              :     margin: 1.25rem 0 0;</span>
+<span id="L231"><span class="lineNum">     231</span>              :     padding: 0.75rem 0.875rem;</span>
+<span id="L232"><span class="lineNum">     232</span>              :     text-align: left;</span>
+<span id="L233"><span class="lineNum">     233</span>              :     font-family: var(--oc-font-mono);</span>
+<span id="L234"><span class="lineNum">     234</span>              :     font-size: 0.8125rem;</span>
+<span id="L235"><span class="lineNum">     235</span>              :     line-height: 1.55;</span>
+<span id="L236"><span class="lineNum">     236</span>              :     color: var(--oc-text-strong);</span>
+<span id="L237"><span class="lineNum">     237</span>              :     background: var(--oc-detail-bg);</span>
+<span id="L238"><span class="lineNum">     238</span>              :     border: 1px solid var(--oc-detail-border);</span>
+<span id="L239"><span class="lineNum">     239</span>              :     border-radius: 8px;</span>
+<span id="L240"><span class="lineNum">     240</span>              :     white-space: pre-wrap;</span>
+<span id="L241"><span class="lineNum">     241</span>              :     word-break: break-word;</span>
+<span id="L242"><span class="lineNum">     242</span>              :     max-height: 9.5rem;</span>
+<span id="L243"><span class="lineNum">     243</span>              :     overflow: auto;</span>
+<span id="L244"><span class="lineNum">     244</span>              :   }</span>
+<span id="L245"><span class="lineNum">     245</span>              :   .detail[hidden] { display: none; }</span>
+<span id="L246"><span class="lineNum">     246</span>              :   .footnote { margin: 1.5rem 0 0; font-size: 0.8125rem; color: var(--oc-text-weak); }</span>
+<span id="L247"><span class="lineNum">     247</span>              :   .spinner { animation: oc-spin 0.8s linear infinite; transform-origin: center; }</span>
+<span id="L248"><span class="lineNum">     248</span>              :   @keyframes oc-spin { to { transform: rotate(360deg); } }</span>
+<span id="L249"><span class="lineNum">     249</span>              :   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }</span>
+<span id="L250"><span class="lineNum">     250</span>              : `</span>
+<span id="L251"><span class="lineNum">     251</span>              : </span>
+<span id="L252"><span class="lineNum">     252</span>              : // OpenCode wordmark — same path geometry as packages/ui/src/components/logo.tsx (Logo).</span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaGNC">        1455 : const WORDMARK = `&lt;svg class=&quot;wordmark&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 234 42&quot; fill=&quot;none&quot; aria-label=&quot;OpenCode&quot; role=&quot;img&quot;&gt;</span></span>
+<span id="L254"><span class="lineNum">     254</span>              :         &lt;path d=&quot;M18 30H6V18H18V30Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L255"><span class="lineNum">     255</span>              :         &lt;path d=&quot;M18 12H6V30H18V12ZM24 36H0V6H24V36Z&quot; fill=&quot;var(--oc-icon-base)&quot; /&gt;</span>
+<span id="L256"><span class="lineNum">     256</span>              :         &lt;path d=&quot;M48 30H36V18H48V30Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L257"><span class="lineNum">     257</span>              :         &lt;path d=&quot;M36 30H48V12H36V30ZM54 36H36V42H30V6H54V36Z&quot; fill=&quot;var(--oc-icon-base)&quot; /&gt;</span>
+<span id="L258"><span class="lineNum">     258</span>              :         &lt;path d=&quot;M84 24V30H66V24H84Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L259"><span class="lineNum">     259</span>              :         &lt;path d=&quot;M84 24H66V30H84V36H60V6H84V24ZM66 18H78V12H66V18Z&quot; fill=&quot;var(--oc-icon-base)&quot; /&gt;</span>
+<span id="L260"><span class="lineNum">     260</span>              :         &lt;path d=&quot;M108 36H96V18H108V36Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L261"><span class="lineNum">     261</span>              :         &lt;path d=&quot;M108 12H96V36H90V6H108V12ZM114 36H108V12H114V36Z&quot; fill=&quot;var(--oc-icon-base)&quot; /&gt;</span>
+<span id="L262"><span class="lineNum">     262</span>              :         &lt;path d=&quot;M144 30H126V18H144V30Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L263"><span class="lineNum">     263</span>              :         &lt;path d=&quot;M144 12H126V30H144V36H120V6H144V12Z&quot; fill=&quot;var(--oc-icon-strong)&quot; /&gt;</span>
+<span id="L264"><span class="lineNum">     264</span>              :         &lt;path d=&quot;M168 30H156V18H168V30Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L265"><span class="lineNum">     265</span>              :         &lt;path d=&quot;M168 12H156V30H168V12ZM174 36H150V6H174V36Z&quot; fill=&quot;var(--oc-icon-strong)&quot; /&gt;</span>
+<span id="L266"><span class="lineNum">     266</span>              :         &lt;path d=&quot;M198 30H186V18H198V30Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L267"><span class="lineNum">     267</span>              :         &lt;path d=&quot;M198 12H186V30H198V12ZM204 36H180V6H198V0H204V36Z&quot; fill=&quot;var(--oc-icon-strong)&quot; /&gt;</span>
+<span id="L268"><span class="lineNum">     268</span>              :         &lt;path d=&quot;M234 24V30H216V24H234Z&quot; fill=&quot;var(--oc-icon-weak)&quot; /&gt;</span>
+<span id="L269"><span class="lineNum">     269</span>              :         &lt;path d=&quot;M216 12V18H228V12H216ZM234 24H216V30H234V36H210V6H234V24Z&quot; fill=&quot;var(--oc-icon-strong)&quot; /&gt;</span>
+<span id="L270"><span class="lineNum">     270</span>              :       &lt;/svg&gt;`</span>
+<span id="L271"><span class="lineNum">     271</span>              : </span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaGNC">         244 : const ICON_CHECK = `&lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;30&quot; height=&quot;30&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot; /&gt;&lt;path d=&quot;m8.5 12.5 2.4 2.4 4.6-5.4&quot; /&gt;&lt;/svg&gt;`</span></span>
+<span id="L273"><span class="lineNum">     273</span>              : </span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaGNC">         235 : const ICON_CROSS = `&lt;svg viewBox=&quot;0 0 24 24&quot; width=&quot;30&quot; height=&quot;30&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot; /&gt;&lt;path d=&quot;m9 9 6 6m0-6-6 6&quot; /&gt;&lt;/svg&gt;`</span></span>
+<span id="L275"><span class="lineNum">     275</span>              : </span>
+<span id="L276"><span class="lineNum">     276</span> <span class="tlaGNC">         246 : const ICON_SPINNER = `&lt;svg class=&quot;spinner&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;30&quot; height=&quot;30&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot; opacity=&quot;0.2&quot; /&gt;&lt;path d=&quot;M21 12a9 9 0 0 0-9-9&quot; /&gt;&lt;/svg&gt;`</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

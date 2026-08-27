@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../codemode/src/stdlib/value.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../codemode/src/stdlib">../codemode/src/stdlib</a> - value.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">55.4&nbsp;%</td>
+            <td class="headerCovTableEntry">65</td>
+            <td class="headerCovTableEntry">36</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          43 : export const errorConstructors = new Set([</span></span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          10 :   &quot;Error&quot;,</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          14 :   &quot;TypeError&quot;,</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          15 :   &quot;RangeError&quot;,</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          16 :   &quot;SyntaxError&quot;,</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          19 :   &quot;ReferenceError&quot;,</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          14 :   &quot;EvalError&quot;,</span></span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          11 :   &quot;URIError&quot;,</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">           3 : ])</span></span>
+<span id="L10"><span class="lineNum">      10</span>              : </span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">         101 : export const valueConstructors = new Set([&quot;Date&quot;, &quot;RegExp&quot;, &quot;Map&quot;, &quot;Set&quot;, &quot;URL&quot;, &quot;URLSearchParams&quot;])</span></span>
+<span id="L12"><span class="lineNum">      12</span>              : </span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">         120 : export const compoundOperators = new Set([&quot;+=&quot;, &quot;-=&quot;, &quot;*=&quot;, &quot;/=&quot;, &quot;%=&quot;, &quot;**=&quot;, &quot;&amp;=&quot;, &quot;|=&quot;, &quot;^=&quot;, &quot;&lt;&lt;=&quot;, &quot;&gt;&gt;=&quot;, &quot;&gt;&gt;&gt;=&quot;])</span></span>
+<span id="L14"><span class="lineNum">      14</span>              : </span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          44 : const ErrorBrand: unique symbol = Symbol(&quot;codemode.error&quot;)</span></span>
+<span id="L16"><span class="lineNum">      16</span>              : </span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">          52 : export const createErrorValue = (name: string, message: string): SafeObject =&gt; {</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          70 :   const value = Object.assign(Object.create(null) as SafeObject, { name, message })</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          60 :   Object.defineProperty(value, ErrorBrand, { value: name })</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          14 :   return value</span></span>
+<span id="L21"><span class="lineNum">      21</span>              : }</span>
+<span id="L22"><span class="lineNum">      22</span>              : </span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaUNC">           0 : export const errorBrandName = (value: unknown): string | undefined =&gt;</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaUNC">           0 :   value !== null &amp;&amp; typeof value === &quot;object&quot;</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaUNC">           0 :     ? ((value as Record&lt;PropertyKey, unknown&gt;)[ErrorBrand] as string | undefined)</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">           2 :     : undefined</span></span>
+<span id="L27"><span class="lineNum">      27</span>              : </span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          70 : export const boundedData = (value: unknown, label: string): unknown =&gt; copyIn(value, label, true)</span></span>
+<span id="L29"><span class="lineNum">      29</span>              : </span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">          42 : export const coerceToString = (value: unknown): string =&gt; {</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          24 :   if (value === null) return &quot;null&quot;</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">          29 :   if (value === undefined) return &quot;undefined&quot;</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">          36 :   if (value instanceof SandboxDate)</span></span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaGNC">           2 :     return Number.isFinite(value.time) ? new Date(value.time).toISOString() : &quot;Invalid Date&quot;</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          40 :   if (value instanceof SandboxRegExp) return `/${value.regex.source}/${value.regex.flags}`</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">          37 :   if (value instanceof SandboxMap) return &quot;[object Map]&quot;</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          37 :   if (value instanceof SandboxSet) return &quot;[object Set]&quot;</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          37 :   if (value instanceof SandboxURL) return value.url.href</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          49 :   if (value instanceof SandboxURLSearchParams) return value.params.toString()</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaGNC">          30 :   if (typeof value === &quot;object&quot;) {</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaUNC">           0 :     return Array.isArray(value)</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaUNC">           0 :       ? value.map((item) =&gt; (item === null || item === undefined ? &quot;&quot; : coerceToString(item))).join(&quot;,&quot;)</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaUNC">           0 :       : &quot;[object Object]&quot;</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">          22 :   return String(value)</span></span>
+<span id="L46"><span class="lineNum">      46</span>              : }</span>
+<span id="L47"><span class="lineNum">      47</span>              : </span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 : export const coerceToNumber = (value: unknown): number =&gt; {</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaUNC">           0 :   if (value instanceof SandboxDate) return value.time</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaUNC">           0 :   if (isSandboxValue(value)) return Number.NaN</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">           2 :   return value !== null &amp;&amp; typeof value === &quot;object&quot; &amp;&amp; !Array.isArray(value) ? Number.NaN : Number(value)</span></span>
+<span id="L52"><span class="lineNum">      52</span>              : }</span>
+<span id="L53"><span class="lineNum">      53</span>              : </span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaUNC">           0 : export const invokeCoercion = (ref: CoercionFunction, args: Array&lt;unknown&gt;, node: AstNode): unknown =&gt; {</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaUNC">           0 :   const raw = args[0]</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaUNC">           0 :   if (isSandboxValue(raw)) {</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :     if (ref.name === &quot;Boolean&quot;) return true</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :     if (ref.name === &quot;Number&quot;) return coerceToNumber(raw)</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaUNC">           0 :     if (ref.name === &quot;String&quot;) return coerceToString(raw)</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaUNC">           0 :     if (ref.name === &quot;parseInt&quot;) return parseInt(coerceToString(raw))</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaUNC">           0 :     return parseFloat(coerceToString(raw))</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaUNC">           0 :   const value = boundedData(args[0], `${ref.name} input`)</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :   if (ref.name === &quot;Number&quot;) return coerceToNumber(value)</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaUNC">           0 :   if (ref.name === &quot;Boolean&quot;) return Boolean(value)</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaUNC">           0 :   if (ref.name === &quot;parseInt&quot;) {</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaUNC">           0 :     const radix = args[1]</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :     if (radix !== undefined &amp;&amp; typeof radix !== &quot;number&quot;) {</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :       throw new InterpreterRuntimeError(&quot;parseInt expects a numeric radix.&quot;, node)</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaUNC">           0 :     return parseInt(coerceToString(value), radix)</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaUNC">           0 :   if (ref.name === &quot;parseFloat&quot;) return parseFloat(coerceToString(value))</span></span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">           2 :   return coerceToString(value)</span></span>
+<span id="L75"><span class="lineNum">      75</span>              : }</span>
+<span id="L76"><span class="lineNum">      76</span> <span class="tlaGNC">          66 : import { type AstNode, CoercionFunction, InterpreterRuntimeError } from &quot;../interpreter/model.js&quot;</span></span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaGNC">          44 : import { copyIn, type SafeObject } from &quot;../tool-runtime.js&quot;</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaGNC">         139 : import {</span></span>
+<span id="L79"><span class="lineNum">      79</span>              :   isSandboxValue,</span>
+<span id="L80"><span class="lineNum">      80</span>              :   SandboxDate,</span>
+<span id="L81"><span class="lineNum">      81</span>              :   SandboxMap,</span>
+<span id="L82"><span class="lineNum">      82</span>              :   SandboxRegExp,</span>
+<span id="L83"><span class="lineNum">      83</span>              :   SandboxSet,</span>
+<span id="L84"><span class="lineNum">      84</span>              :   SandboxURL,</span>
+<span id="L85"><span class="lineNum">      85</span>              :   SandboxURLSearchParams,</span>
+<span id="L86"><span class="lineNum">      86</span>              : } from &quot;../values.js&quot;</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

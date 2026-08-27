@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/snapshot.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src">../core/src</a> - snapshot.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">55.5&nbsp;%</td>
+            <td class="headerCovTableEntry">164</td>
+            <td class="headerCovTableEntry">91</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">           1 : export * as Snapshot from &quot;./snapshot&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          53 : import { makeLocationNode } from &quot;./effect/app-node&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          29 : import path from &quot;path&quot;</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          56 : import { Context, Effect, Layer, Schema } from &quot;effect&quot;</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          34 : import { Config } from &quot;./config&quot;</span></span>
+<span id="L7"><span class="lineNum">       7</span>              : import { File } from &quot;./file&quot;</span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          35 : import { FSUtil } from &quot;./fs-util&quot;</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          28 : import { Git } from &quot;./git&quot;</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">          34 : import { Global } from &quot;./global&quot;</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          38 : import { Location } from &quot;./location&quot;</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">          54 : import { AbsolutePath, RelativePath } from &quot;./schema&quot;</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">          35 : import { Hash } from &quot;./util/hash&quot;</span></span>
+<span id="L14"><span class="lineNum">      14</span>              : </span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          66 : export const ID = Schema.String.pipe(Schema.brand(&quot;Snapshot.ID&quot;))</span></span>
+<span id="L16"><span class="lineNum">      16</span>              : export type ID = typeof ID.Type</span>
+<span id="L17"><span class="lineNum">      17</span>              : </span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          73 : export class Error extends Schema.TaggedErrorClass&lt;Error&gt;()(&quot;Snapshot.Error&quot;, {</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          81 :   operation: Schema.Literals([&quot;capture&quot;, &quot;files&quot;, &quot;diff&quot;, &quot;preview&quot;, &quot;restore&quot;]),</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          25 :   message: Schema.String,</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          40 :   cause: Schema.optional(Schema.Defect()),</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">           5 : }) {}</span></span>
+<span id="L23"><span class="lineNum">      23</span>              : </span>
+<span id="L24"><span class="lineNum">      24</span>              : export interface CompareInput {</span>
+<span id="L25"><span class="lineNum">      25</span>              :   readonly from: ID</span>
+<span id="L26"><span class="lineNum">      26</span>              :   readonly to: ID</span>
+<span id="L27"><span class="lineNum">      27</span>              : }</span>
+<span id="L28"><span class="lineNum">      28</span>              : </span>
+<span id="L29"><span class="lineNum">      29</span>              : export interface DiffInput extends CompareInput {</span>
+<span id="L30"><span class="lineNum">      30</span>              :   readonly context?: number</span>
+<span id="L31"><span class="lineNum">      31</span>              :   readonly paths?: readonly RelativePath[]</span>
+<span id="L32"><span class="lineNum">      32</span>              : }</span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span>              : export interface RestoreInput {</span>
+<span id="L35"><span class="lineNum">      35</span>              :   /** Paths are relative to the project root. */</span>
+<span id="L36"><span class="lineNum">      36</span>              :   readonly files: ReadonlyMap&lt;RelativePath, ID&gt;</span>
+<span id="L37"><span class="lineNum">      37</span>              : }</span>
+<span id="L38"><span class="lineNum">      38</span>              : </span>
+<span id="L39"><span class="lineNum">      39</span>              : export interface PreviewInput extends RestoreInput {</span>
+<span id="L40"><span class="lineNum">      40</span>              :   readonly context?: number</span>
+<span id="L41"><span class="lineNum">      41</span>              : }</span>
+<span id="L42"><span class="lineNum">      42</span>              : </span>
+<span id="L43"><span class="lineNum">      43</span>              : export interface Interface {</span>
+<span id="L44"><span class="lineNum">      44</span>              :   /**</span>
+<span id="L45"><span class="lineNum">      45</span>              :    * Capture the current Location-scoped filesystem state as a content-addressed</span>
+<span id="L46"><span class="lineNum">      46</span>              :    * tree. Returns `undefined` when snapshots are disabled, unsupported, or the</span>
+<span id="L47"><span class="lineNum">      47</span>              :    * best-effort capture fails.</span>
+<span id="L48"><span class="lineNum">      48</span>              :    */</span>
+<span id="L49"><span class="lineNum">      49</span>              :   readonly capture: () =&gt; Effect.Effect&lt;ID | undefined&gt;</span>
+<span id="L50"><span class="lineNum">      50</span>              : </span>
+<span id="L51"><span class="lineNum">      51</span>              :   /**</span>
+<span id="L52"><span class="lineNum">      52</span>              :    * List project-relative paths changed between two captured trees without</span>
+<span id="L53"><span class="lineNum">      53</span>              :    * loading file contents or generating patches.</span>
+<span id="L54"><span class="lineNum">      54</span>              :    */</span>
+<span id="L55"><span class="lineNum">      55</span>              :   readonly files: (input: CompareInput) =&gt; Effect.Effect&lt;readonly RelativePath[], Error&gt;</span>
+<span id="L56"><span class="lineNum">      56</span>              : </span>
+<span id="L57"><span class="lineNum">      57</span>              :   /**</span>
+<span id="L58"><span class="lineNum">      58</span>              :    * Generate structured per-file diffs between two captured trees. `context`</span>
+<span id="L59"><span class="lineNum">      59</span>              :    * controls unchanged lines around each unified diff hunk.</span>
+<span id="L60"><span class="lineNum">      60</span>              :    */</span>
+<span id="L61"><span class="lineNum">      61</span>              :   readonly diff: (input: DiffInput) =&gt; Effect.Effect&lt;readonly File.Diff[], Error&gt;</span>
+<span id="L62"><span class="lineNum">      62</span>              : </span>
+<span id="L63"><span class="lineNum">      63</span>              :   /**</span>
+<span id="L64"><span class="lineNum">      64</span>              :    * Preview the filesystem result of a selective restore without modifying the</span>
+<span id="L65"><span class="lineNum">      65</span>              :    * worktree. Each project-relative path maps to the tree it would be restored</span>
+<span id="L66"><span class="lineNum">      66</span>              :    * from.</span>
+<span id="L67"><span class="lineNum">      67</span>              :    */</span>
+<span id="L68"><span class="lineNum">      68</span>              :   readonly preview: (input: PreviewInput) =&gt; Effect.Effect&lt;readonly File.Diff[], Error&gt;</span>
+<span id="L69"><span class="lineNum">      69</span>              : </span>
+<span id="L70"><span class="lineNum">      70</span>              :   /**</span>
+<span id="L71"><span class="lineNum">      71</span>              :    * Restore selected project-relative paths from their associated trees. A path</span>
+<span id="L72"><span class="lineNum">      72</span>              :    * absent from its selected tree is removed; paths outside the map are untouched.</span>
+<span id="L73"><span class="lineNum">      73</span>              :    */</span>
+<span id="L74"><span class="lineNum">      74</span>              :   readonly restore: (input: RestoreInput) =&gt; Effect.Effect&lt;void, Error&gt;</span>
+<span id="L75"><span class="lineNum">      75</span>              : </span>
+<span id="L76"><span class="lineNum">      76</span>              :   /**</span>
+<span id="L77"><span class="lineNum">      77</span>              :    * Replace the snapshot index with a captured tree and check out all its entries.</span>
+<span id="L78"><span class="lineNum">      78</span>              :    * Files absent from the tree remain untouched. Prefer selective `restore` when</span>
+<span id="L79"><span class="lineNum">      79</span>              :    * only known paths should change.</span>
+<span id="L80"><span class="lineNum">      80</span>              :    */</span>
+<span id="L81"><span class="lineNum">      81</span>              :   readonly checkout: (snapshot: ID) =&gt; Effect.Effect&lt;void, Error&gt;</span>
+<span id="L82"><span class="lineNum">      82</span>              : }</span>
+<span id="L83"><span class="lineNum">      83</span>              : </span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          74 : export class Service extends Context.Service&lt;Service, Interface&gt;()(&quot;@opencode/v2/Snapshot&quot;) {}</span></span>
+<span id="L85"><span class="lineNum">      85</span>              : </span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">          26 : const layer = Layer.effect(</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">           9 :   Service,</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          15 :   Effect.gen(function* () {</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          39 :     const config = yield* Config.Service</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          35 :     const fs = yield* FSUtil.Service</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">          33 :     const git = yield* Git.Service</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">          39 :     const global = yield* Global.Service</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaGNC">          43 :     const location = yield* Location.Service</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          70 :     const source = yield* git.repo.discover(location.project.directory)</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          25 :     const worktree = source</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          75 :       ? AbsolutePath.make(yield* fs.realPath(source.worktree).pipe(Effect.orDie))</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">          28 :       : location.project.directory</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaGNC">         119 :     const gitDirectory = AbsolutePath.make(path.join(global.data, &quot;snapshot&quot;, location.project.id, Hash.fast(worktree)))</span></span>
+<span id="L99"><span class="lineNum">      99</span>              : </span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaUNC">           0 :     const scope = Effect.fnUntraced(function* () {</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaUNC">           0 :       const relative = path.relative(worktree, location.directory)</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaUNC">           0 :       if (relative.startsWith(&quot;..&quot;) || path.isAbsolute(relative))</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaUNC">           0 :         return yield* new Error({ operation: &quot;capture&quot;, message: &quot;Location is outside the project&quot; })</span></span>
+<span id="L104"><span class="lineNum">     104</span>              :       return RelativePath.make(relative.replaceAll(&quot;\\&quot;, &quot;/&quot;) || &quot;.&quot;)</span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L106"><span class="lineNum">     106</span>              : </span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaGNC">          43 :     const repository = Effect.fnUntraced(function* () {</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">          21 :       if (!source) return yield* new Error({ operation: &quot;capture&quot;, message: &quot;Project is not a Git repository&quot; })</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaGNC">          63 :       if (yield* fs.existsSafe(path.join(gitDirectory, &quot;HEAD&quot;)))</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaUNC">           0 :         return new Git.Repository({</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaUNC">           0 :           worktree,</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaUNC">           0 :           gitDirectory,</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaUNC">           0 :           commonDirectory: gitDirectory,</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaGNC">           4 :         })</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaGNC">          23 :       return yield* git.repo</span></span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaGNC">          14 :         .create({</span></span>
+<span id="L117"><span class="lineNum">     117</span> <span class="tlaGNC">          15 :           worktree,</span></span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaGNC">          19 :           gitDirectory,</span></span>
+<span id="L119"><span class="lineNum">     119</span> <span class="tlaGNC">          16 :           seed: source,</span></span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaGNC">           3 :         })</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">          23 :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;capture&quot;, cause)))</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L123"><span class="lineNum">     123</span>              : </span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaGNC">          40 :     const enabled = Effect.fnUntraced(function* () {</span></span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaGNC">          42 :       if (location.vcs?.type !== &quot;git&quot;) return false</span></span>
+<span id="L126"><span class="lineNum">     126</span> <span class="tlaGNC">          69 :       return Config.latest(yield* config.entries(), &quot;snapshots&quot;) !== false</span></span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L128"><span class="lineNum">     128</span>              : </span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaGNC">          52 :     const capture = Effect.fn(&quot;Snapshot.capture&quot;)(function* () {</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaGNC">          33 :       if (!(yield* enabled())) return undefined</span></span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaGNC">          33 :       return yield* Effect.gen(function* () {</span></span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">          39 :         const repo = yield* repository()</span></span>
+<span id="L133"><span class="lineNum">     133</span> <span class="tlaGNC">          15 :         return ID.make(</span></span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaGNC">          33 :           yield* git.tree.capture({</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">          25 :             repository: repo,</span></span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaGNC">          33 :             scopes: [yield* scope()],</span></span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">          24 :             ignores: source,</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">          40 :             maximumUntrackedFileBytes: 2 * 1024 * 1024,</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">           2 :           }),</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">           2 :         )</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaGNC">           7 :       }).pipe(</span></span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">          13 :         Effect.catch((cause) =&gt; Effect.logWarning(&quot;failed to capture snapshot&quot;, { cause }).pipe(Effect.as(undefined))),</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">           2 :       )</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L145"><span class="lineNum">     145</span>              : </span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaUNC">           0 :     const compare = Effect.fnUntraced(function* (operation: &quot;files&quot; | &quot;diff&quot;, input: CompareInput) {</span></span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaUNC">           0 :       const repo = yield* repository().pipe(Effect.mapError((cause) =&gt; failure(operation, cause)))</span></span>
+<span id="L148"><span class="lineNum">     148</span>              :       return { repository: repo, from: Git.TreeID.make(input.from), to: Git.TreeID.make(input.to) }</span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L150"><span class="lineNum">     150</span>              : </span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaUNC">           0 :     const files = Effect.fn(&quot;Snapshot.files&quot;)(function* (input: CompareInput) {</span></span>
+<span id="L152"><span class="lineNum">     152</span> <span class="tlaUNC">           0 :       const comparison = yield* compare(&quot;files&quot;, input)</span></span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaUNC">           0 :       const files = yield* git.tree.files(comparison).pipe(Effect.mapError((cause) =&gt; failure(&quot;files&quot;, cause)))</span></span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaUNC">           0 :       if (!source) return files</span></span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaUNC">           0 :       const ignored = yield* git.index</span></span>
+<span id="L156"><span class="lineNum">     156</span> <span class="tlaUNC">           0 :         .ignored({ repository: source, paths: files })</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaUNC">           0 :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;files&quot;, cause)))</span></span>
+<span id="L158"><span class="lineNum">     158</span>              :       return files.filter((file) =&gt; !ignored.has(file))</span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L160"><span class="lineNum">     160</span>              : </span>
+<span id="L161"><span class="lineNum">     161</span> <span class="tlaUNC">           0 :     const diff = Effect.fn(&quot;Snapshot.diff&quot;)(function* (input: DiffInput) {</span></span>
+<span id="L162"><span class="lineNum">     162</span> <span class="tlaUNC">           0 :       const comparison = yield* compare(&quot;diff&quot;, input)</span></span>
+<span id="L163"><span class="lineNum">     163</span> <span class="tlaUNC">           0 :       const files = yield* git.tree.files(comparison).pipe(Effect.mapError((cause) =&gt; failure(&quot;diff&quot;, cause)))</span></span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaUNC">           0 :       const ignored = source</span></span>
+<span id="L165"><span class="lineNum">     165</span> <span class="tlaUNC">           0 :         ? yield* git.index</span></span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaUNC">           0 :             .ignored({ repository: source, paths: files })</span></span>
+<span id="L167"><span class="lineNum">     167</span> <span class="tlaUNC">           0 :             .pipe(Effect.mapError((cause) =&gt; failure(&quot;diff&quot;, cause)))</span></span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaUNC">           0 :         : new Set&lt;RelativePath&gt;()</span></span>
+<span id="L169"><span class="lineNum">     169</span> <span class="tlaUNC">           0 :       return yield* git.tree</span></span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaUNC">           0 :         .diff({</span></span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaUNC">           0 :           ...comparison,</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaUNC">           0 :           context: input.context,</span></span>
+<span id="L173"><span class="lineNum">     173</span> <span class="tlaUNC">           0 :           paths: (input.paths ?? files).filter((file) =&gt; !ignored.has(file)),</span></span>
+<span id="L174"><span class="lineNum">     174</span> <span class="tlaUNC">           0 :         })</span></span>
+<span id="L175"><span class="lineNum">     175</span>              :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;diff&quot;, cause)))</span>
+<span id="L176"><span class="lineNum">     176</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L177"><span class="lineNum">     177</span>              : </span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaUNC">           0 :     const plan = Effect.fnUntraced(function* (operation: &quot;preview&quot; | &quot;restore&quot;, input: RestoreInput) {</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaUNC">           0 :       const files = new Map&lt;RelativePath, Git.TreeID&gt;()</span></span>
+<span id="L180"><span class="lineNum">     180</span> <span class="tlaUNC">           0 :       for (const [file, snapshot] of input.files) {</span></span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaUNC">           0 :         const absolute = path.resolve(worktree, file)</span></span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaUNC">           0 :         if (!FSUtil.contains(worktree, absolute))</span></span>
+<span id="L183"><span class="lineNum">     183</span> <span class="tlaUNC">           0 :           return yield* new Error({ operation, message: `Path escapes the project: ${file}` })</span></span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaUNC">           0 :         files.set(file, Git.TreeID.make(snapshot))</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L186"><span class="lineNum">     186</span>              :       return files</span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L188"><span class="lineNum">     188</span>              : </span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaUNC">           0 :     const preview = Effect.fn(&quot;Snapshot.preview&quot;)(function* (input: PreviewInput) {</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaUNC">           0 :       if (!(yield* enabled())) return yield* new Error({ operation: &quot;preview&quot;, message: &quot;Snapshots are disabled&quot; })</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaUNC">           0 :       const repo = yield* repository().pipe(Effect.mapError((cause) =&gt; failure(&quot;preview&quot;, cause)))</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaUNC">           0 :       const files = yield* plan(&quot;preview&quot;, input)</span></span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaUNC">           0 :       const current = yield* git.tree</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaUNC">           0 :         .capture({</span></span>
+<span id="L195"><span class="lineNum">     195</span> <span class="tlaUNC">           0 :           repository: repo,</span></span>
+<span id="L196"><span class="lineNum">     196</span> <span class="tlaUNC">           0 :           scopes: Array.from(files.keys()),</span></span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaUNC">           0 :           ignores: source,</span></span>
+<span id="L198"><span class="lineNum">     198</span> <span class="tlaUNC">           0 :           maximumUntrackedFileBytes: 2 * 1024 * 1024,</span></span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaUNC">           0 :         })</span></span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaUNC">           0 :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;preview&quot;, cause)))</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaUNC">           0 :       return yield* git.tree</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaUNC">           0 :         .preview({</span></span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaUNC">           0 :           repository: repo,</span></span>
+<span id="L204"><span class="lineNum">     204</span> <span class="tlaUNC">           0 :           current,</span></span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaUNC">           0 :           files,</span></span>
+<span id="L206"><span class="lineNum">     206</span> <span class="tlaUNC">           0 :           context: input.context,</span></span>
+<span id="L207"><span class="lineNum">     207</span> <span class="tlaUNC">           0 :         })</span></span>
+<span id="L208"><span class="lineNum">     208</span>              :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;preview&quot;, cause)))</span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L210"><span class="lineNum">     210</span>              : </span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaUNC">           0 :     const restore = Effect.fn(&quot;Snapshot.restore&quot;)(function* (input: RestoreInput) {</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaUNC">           0 :       if (!(yield* enabled())) return yield* new Error({ operation: &quot;restore&quot;, message: &quot;Snapshots are disabled&quot; })</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaUNC">           0 :       const repo = yield* repository().pipe(Effect.mapError((cause) =&gt; failure(&quot;restore&quot;, cause)))</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaUNC">           0 :       yield* git.tree</span></span>
+<span id="L215"><span class="lineNum">     215</span> <span class="tlaUNC">           0 :         .restore({ repository: repo, files: yield* plan(&quot;restore&quot;, input) })</span></span>
+<span id="L216"><span class="lineNum">     216</span>              :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;restore&quot;, cause)))</span>
+<span id="L217"><span class="lineNum">     217</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L218"><span class="lineNum">     218</span>              : </span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaUNC">           0 :     const checkout = Effect.fn(&quot;Snapshot.checkout&quot;)(function* (snapshot: ID) {</span></span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaUNC">           0 :       const repo = yield* repository().pipe(Effect.mapError((cause) =&gt; failure(&quot;restore&quot;, cause)))</span></span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaUNC">           0 :       yield* git.tree</span></span>
+<span id="L222"><span class="lineNum">     222</span> <span class="tlaUNC">           0 :         .checkout({ repository: repo, tree: Git.TreeID.make(snapshot) })</span></span>
+<span id="L223"><span class="lineNum">     223</span>              :         .pipe(Effect.mapError((cause) =&gt; failure(&quot;restore&quot;, cause)))</span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaGNC">           4 :     })</span></span>
+<span id="L225"><span class="lineNum">     225</span>              : </span>
+<span id="L226"><span class="lineNum">     226</span> <span class="tlaGNC">          71 :     return Service.of({ capture, files, diff, preview, restore, checkout })</span></span>
+<span id="L227"><span class="lineNum">     227</span> <span class="tlaGNC">           1 :   }),</span></span>
+<span id="L228"><span class="lineNum">     228</span> <span class="tlaGNC">           3 : )</span></span>
+<span id="L229"><span class="lineNum">     229</span>              : </span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaGNC">          82 : export const locationLayer = layer.pipe(Layer.provideMerge(Config.locationLayer))</span></span>
+<span id="L231"><span class="lineNum">     231</span>              : </span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaGNC">          39 : export const node = makeLocationNode({</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaGNC">          19 :   service: Service,</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaGNC">           8 :   layer,</span></span>
+<span id="L235"><span class="lineNum">     235</span> <span class="tlaGNC">          71 :   deps: [Config.node, FSUtil.node, Git.node, Global.node, Location.node],</span></span>
+<span id="L236"><span class="lineNum">     236</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L237"><span class="lineNum">     237</span>              : </span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaGNC">          38 : export const noopLayer = Layer.succeed(</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaGNC">           9 :   Service,</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaGNC">          14 :   Service.of({</span></span>
+<span id="L241"><span class="lineNum">     241</span> <span class="tlaGNC">          11 :     capture: () =&gt; Effect.succeed(undefined),</span></span>
+<span id="L242"><span class="lineNum">     242</span> <span class="tlaGNC">           9 :     files: () =&gt; Effect.succeed([]),</span></span>
+<span id="L243"><span class="lineNum">     243</span> <span class="tlaGNC">           8 :     diff: () =&gt; Effect.succeed([]),</span></span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaGNC">          11 :     preview: () =&gt; Effect.succeed([]),</span></span>
+<span id="L245"><span class="lineNum">     245</span> <span class="tlaGNC">          11 :     restore: () =&gt; Effect.void,</span></span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaGNC">          10 :     checkout: () =&gt; Effect.void,</span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC">           1 :   }),</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaGNC">           2 : )</span></span>
+<span id="L249"><span class="lineNum">     249</span>              : </span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaUNC">           0 : function failure(operation: Error[&quot;operation&quot;], cause: unknown) {</span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaUNC">           0 :   if (cause instanceof Error &amp;&amp; cause.operation === operation) return cause</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaUNC">           0 :   return new Error({</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaUNC">           0 :     operation,</span></span>
+<span id="L254"><span class="lineNum">     254</span> <span class="tlaUNC">           0 :     message: cause instanceof globalThis.Error ? cause.message : String(cause),</span></span>
+<span id="L255"><span class="lineNum">     255</span> <span class="tlaUNC">           0 :     cause,</span></span>
+<span id="L256"><span class="lineNum">     256</span>              :   })</span>
+<span id="L257"><span class="lineNum">     257</span>              : }</span>
+<span id="L258"><span class="lineNum">     258</span>              : </span>
+<span id="L259"><span class="lineNum">     259</span>              : /** Legacy persisted session diff shape. */</span>
+<span id="L260"><span class="lineNum">     260</span>              : export type LegacyFileDiff = {</span>
+<span id="L261"><span class="lineNum">     261</span>              :   file?: string</span>
+<span id="L262"><span class="lineNum">     262</span>              :   patch?: string</span>
+<span id="L263"><span class="lineNum">     263</span>              :   additions: number</span>
+<span id="L264"><span class="lineNum">     264</span>              :   deletions: number</span>
+<span id="L265"><span class="lineNum">     265</span>              :   status?: &quot;added&quot; | &quot;deleted&quot; | &quot;modified&quot;</span>
+<span id="L266"><span class="lineNum">     266</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

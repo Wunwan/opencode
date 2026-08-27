@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../sdk/js/src/error-interceptor.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../sdk/js/src">../sdk/js/src</a> - error-interceptor.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">55.2&nbsp;%</td>
+            <td class="headerCovTableEntry">29</td>
+            <td class="headerCovTableEntry">16</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : /**</span>
+<span id="L2"><span class="lineNum">       2</span>              :  * Wrap whatever the generated client decoded from a non-2xx error body</span>
+<span id="L3"><span class="lineNum">       3</span>              :  * into a real `Error` so downstream formatters (TUI, plugins) get a</span>
+<span id="L4"><span class="lineNum">       4</span>              :  * useful `.message` instead of `[object Object]` or blank. The original</span>
+<span id="L5"><span class="lineNum">       5</span>              :  * parsed body and status live under `.cause` for callers that need</span>
+<span id="L6"><span class="lineNum">       6</span>              :  * structured fields.</span>
+<span id="L7"><span class="lineNum">       7</span>              :  *</span>
+<span id="L8"><span class="lineNum">       8</span>              :  * Only fires when the caller used `{ throwOnError: true }`. Callers that</span>
+<span id="L9"><span class="lineNum">       9</span>              :  * read `result.error` directly (the result-tuple path) get the parsed</span>
+<span id="L10"><span class="lineNum">      10</span>              :  * body unchanged so existing field-level reads (`.error.name`,</span>
+<span id="L11"><span class="lineNum">      11</span>              :  * `JSON.stringify(error)`, etc.) are byte-for-byte identical to before.</span>
+<span id="L12"><span class="lineNum">      12</span>              :  */</span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">           6 : export function wrapClientError(</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">           7 :   error: unknown,</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          10 :   response: Response | undefined,</span></span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">           9 :   request: Request | undefined,</span></span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">           6 :   opts: { throwOnError?: boolean } | undefined,</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">           3 : ): unknown {</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          41 :   if (!opts?.throwOnError) return error</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          32 :   if (error instanceof Error) return error</span></span>
+<span id="L21"><span class="lineNum">      21</span>              : </span>
+<span id="L22"><span class="lineNum">      22</span>              :   // NamedError-shaped responses (the common case for opencode 4xx) come</span>
+<span id="L23"><span class="lineNum">      23</span>              :   // through as POJOs — extract a useful message first, then wrap.</span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          86 :   if (typeof error === &quot;object&quot; &amp;&amp; error !== null &amp;&amp; Object.keys(error).length &gt; 0) {</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          22 :     const obj = error as { data?: { message?: unknown }; message?: unknown; name?: unknown }</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">          16 :     const message =</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          61 :       (typeof obj.data?.message === &quot;string&quot; &amp;&amp; obj.data.message) ||</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          50 :       (typeof obj.message === &quot;string&quot; &amp;&amp; obj.message) ||</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          44 :       (typeof obj.name === &quot;string&quot; &amp;&amp; obj.name) ||</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">          32 :       describe(request, response)</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          79 :     return new Error(message, { cause: { body: error, status: response?.status } })</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaUNC">           0 :   if (typeof error === &quot;string&quot; &amp;&amp; error.length &gt; 0) {</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC">           0 :     return new Error(error, { cause: { body: error, status: response?.status } })</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L37"><span class="lineNum">      37</span>              : </span>
+<span id="L38"><span class="lineNum">      38</span>              :   // Empty body / network failure / undefined / null / empty object.</span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :   const reason = response ? &quot;(empty response body)&quot; : &quot;network error (no response)&quot;</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :   return new Error(`opencode server ${describe(request, response)}: ${reason}`, {</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaUNC">           0 :     cause: { body: error, status: response?.status },</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaUNC">           0 :   })</span></span>
+<span id="L43"><span class="lineNum">      43</span>              : }</span>
+<span id="L44"><span class="lineNum">      44</span>              : </span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaUNC">           0 : function describe(request: Request | undefined, response: Response | undefined) {</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaUNC">           0 :   const method = request?.method ?? &quot;?&quot;</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :   const url = request?.url ?? &quot;?&quot;</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :   const status = response?.status</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaUNC">           0 :   const statusText = response?.statusText</span></span>
+<span id="L50"><span class="lineNum">      50</span>              :   return `${method} ${url}${status ? &quot; → &quot; + status : &quot;&quot;}${statusText ? &quot; &quot; + statusText : &quot;&quot;}`</span>
+<span id="L51"><span class="lineNum">      51</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

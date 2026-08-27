@@ -1,0 +1,396 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/system-context/index.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src/system-context">../core/src/system-context</a> - index.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">54.5&nbsp;%</td>
+            <td class="headerCovTableEntry">176</td>
+            <td class="headerCovTableEntry">96</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">           3 : export * as SystemContext from &quot;./index&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          48 : import { Effect, Option, Schema } from &quot;effect&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span>              : </span>
+<span id="L5"><span class="lineNum">       5</span>              : /**</span>
+<span id="L6"><span class="lineNum">       6</span>              :  * Models privileged system context as independently refreshable typed sources.</span>
+<span id="L7"><span class="lineNum">       7</span>              :  *</span>
+<span id="L8"><span class="lineNum">       8</span>              :  * `Source&lt;A&gt;` describes how to observe, compare, and render one value. `make`</span>
+<span id="L9"><span class="lineNum">       9</span>              :  * closes over `A`, producing an opaque `SystemContext` that composes uniformly</span>
+<span id="L10"><span class="lineNum">      10</span>              :  * with contexts built from other value types. Interpreters observe the composed</span>
+<span id="L11"><span class="lineNum">      11</span>              :  * context once, then produce a durable structured</span>
+<span id="L12"><span class="lineNum">      12</span>              :  * `Snapshot` alongside the exact model-visible baseline or update text.</span>
+<span id="L13"><span class="lineNum">      13</span>              :  *</span>
+<span id="L14"><span class="lineNum">      14</span>              :  * Returning `unavailable` means observation failed temporarily. It differs from</span>
+<span id="L15"><span class="lineNum">      15</span>              :  * removing a source from the context: refresh preserves the admitted snapshot,</span>
+<span id="L16"><span class="lineNum">      16</span>              :  * and replacement waits rather than silently constructing an incomplete baseline.</span>
+<span id="L17"><span class="lineNum">      17</span>              :  *</span>
+<span id="L18"><span class="lineNum">      18</span>              :  * @module</span>
+<span id="L19"><span class="lineNum">      19</span>              :  */</span>
+<span id="L20"><span class="lineNum">      20</span>              : </span>
+<span id="L21"><span class="lineNum">      21</span>              : /** Stable namespaced identity for one independently refreshable context source. */</span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">         110 : export const Key = Schema.String.check(Schema.isPattern(/^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._/-]*$/)).pipe(</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          33 :   Schema.brand(&quot;SystemContext.Key&quot;),</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">           3 : )</span></span>
+<span id="L25"><span class="lineNum">      25</span>              : export type Key = typeof Key.Type</span>
+<span id="L26"><span class="lineNum">      26</span>              : </span>
+<span id="L27"><span class="lineNum">      27</span>              : /** Indicates that a source could not be observed without treating it as removed. */</span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          77 : export const unavailable = Symbol.for(&quot;@opencode/SystemContext.Unavailable&quot;)</span></span>
+<span id="L29"><span class="lineNum">      29</span>              : export type Unavailable = typeof unavailable</span>
+<span id="L30"><span class="lineNum">      30</span>              : </span>
+<span id="L31"><span class="lineNum">      31</span>              : /** Defines one typed source before its value type is hidden by `make`. */</span>
+<span id="L32"><span class="lineNum">      32</span>              : export interface Source&lt;A&gt; {</span>
+<span id="L33"><span class="lineNum">      33</span>              :   readonly key: Key</span>
+<span id="L34"><span class="lineNum">      34</span>              :   readonly codec: Schema.Codec&lt;A, Schema.Json, never, never&gt;</span>
+<span id="L35"><span class="lineNum">      35</span>              :   readonly load: Effect.Effect&lt;A | Unavailable&gt;</span>
+<span id="L36"><span class="lineNum">      36</span>              :   readonly baseline: (current: A) =&gt; string</span>
+<span id="L37"><span class="lineNum">      37</span>              :   readonly update: (previous: A, current: A) =&gt; string</span>
+<span id="L38"><span class="lineNum">      38</span>              :   readonly removed?: (previous: A) =&gt; string</span>
+<span id="L39"><span class="lineNum">      39</span>              : }</span>
+<span id="L40"><span class="lineNum">      40</span>              : </span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          60 : const ContextTypeId: unique symbol = Symbol.for(&quot;@opencode/SystemContext&quot;)</span></span>
+<span id="L42"><span class="lineNum">      42</span>              : </span>
+<span id="L43"><span class="lineNum">      43</span>              : /** Opaque carrier for composable system context sources. */</span>
+<span id="L44"><span class="lineNum">      44</span>              : export interface SystemContext {</span>
+<span id="L45"><span class="lineNum">      45</span>              :   readonly [ContextTypeId]: ReadonlyArray&lt;PackedSource&gt;</span>
+<span id="L46"><span class="lineNum">      46</span>              : }</span>
+<span id="L47"><span class="lineNum">      47</span>              : </span>
+<span id="L48"><span class="lineNum">      48</span>              : /** Durable comparison state for one admitted source. */</span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">          46 : export const SourceSnapshot = Schema.Struct({</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">          21 :   value: Schema.Json,</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">          48 :   removed: Schema.optional(Schema.NonEmptyString),</span></span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L53"><span class="lineNum">      53</span>              : export type SourceSnapshot = typeof SourceSnapshot.Type</span>
+<span id="L54"><span class="lineNum">      54</span>              : </span>
+<span id="L55"><span class="lineNum">      55</span>              : /** Durable structured comparison state for one active context generation. */</span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaGNC">          59 : export const Snapshot = Schema.Record(Key, SourceSnapshot)</span></span>
+<span id="L57"><span class="lineNum">      57</span>              : export type Snapshot = Readonly&lt;Record&lt;string, SourceSnapshot&gt;&gt;</span>
+<span id="L58"><span class="lineNum">      58</span>              : </span>
+<span id="L59"><span class="lineNum">      59</span>              : export interface Generation {</span>
+<span id="L60"><span class="lineNum">      60</span>              :   readonly baseline: string</span>
+<span id="L61"><span class="lineNum">      61</span>              :   readonly snapshot: Snapshot</span>
+<span id="L62"><span class="lineNum">      62</span>              : }</span>
+<span id="L63"><span class="lineNum">      63</span>              : </span>
+<span id="L64"><span class="lineNum">      64</span>              : export interface Updated {</span>
+<span id="L65"><span class="lineNum">      65</span>              :   readonly _tag: &quot;Updated&quot;</span>
+<span id="L66"><span class="lineNum">      66</span>              :   readonly text: string</span>
+<span id="L67"><span class="lineNum">      67</span>              :   readonly snapshot: Snapshot</span>
+<span id="L68"><span class="lineNum">      68</span>              : }</span>
+<span id="L69"><span class="lineNum">      69</span>              : </span>
+<span id="L70"><span class="lineNum">      70</span>              : export interface ReplacementReady {</span>
+<span id="L71"><span class="lineNum">      71</span>              :   readonly _tag: &quot;ReplacementReady&quot;</span>
+<span id="L72"><span class="lineNum">      72</span>              :   readonly generation: Generation</span>
+<span id="L73"><span class="lineNum">      73</span>              : }</span>
+<span id="L74"><span class="lineNum">      74</span>              : </span>
+<span id="L75"><span class="lineNum">      75</span>              : export interface ReplacementBlocked {</span>
+<span id="L76"><span class="lineNum">      76</span>              :   readonly _tag: &quot;ReplacementBlocked&quot;</span>
+<span id="L77"><span class="lineNum">      77</span>              : }</span>
+<span id="L78"><span class="lineNum">      78</span>              : </span>
+<span id="L79"><span class="lineNum">      79</span>              : export type ReplacementResult = ReplacementReady | ReplacementBlocked</span>
+<span id="L80"><span class="lineNum">      80</span>              : export type ReconcileResult = { readonly _tag: &quot;Unchanged&quot; } | Updated | ReplacementResult</span>
+<span id="L81"><span class="lineNum">      81</span>              : </span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">          68 : export class InitializationBlocked extends Schema.TaggedErrorClass&lt;InitializationBlocked&gt;()(</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          39 :   &quot;SystemContext.InitializationBlocked&quot;,</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          27 :   { keys: Schema.Array(Key) },</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaUNC">           0 : ) {</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaUNC">           0 :   override get message() {</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">           1 :     return `System context initialization blocked by unavailable sources: ${this.keys.join(&quot;, &quot;)}`</span></span>
+<span id="L88"><span class="lineNum">      88</span>              :   }</span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">           1 : }</span></span>
+<span id="L90"><span class="lineNum">      90</span>              : </span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">         102 : export class DuplicateKeyError extends Schema.TaggedErrorClass&lt;DuplicateKeyError&gt;()(&quot;SystemContext.DuplicateKeyError&quot;, {</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">           9 :   key: Key,</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaUNC">           0 : }) {</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaUNC">           0 :   override get message() {</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">           1 :     return `Duplicate system context key: ${this.key}`</span></span>
+<span id="L96"><span class="lineNum">      96</span>              :   }</span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">           1 : }</span></span>
+<span id="L98"><span class="lineNum">      98</span>              : </span>
+<span id="L99"><span class="lineNum">      99</span>              : interface PackedSource {</span>
+<span id="L100"><span class="lineNum">     100</span>              :   readonly key: Key</span>
+<span id="L101"><span class="lineNum">     101</span>              :   readonly load: Effect.Effect&lt;Loaded | Unavailable&gt;</span>
+<span id="L102"><span class="lineNum">     102</span>              : }</span>
+<span id="L103"><span class="lineNum">     103</span>              : </span>
+<span id="L104"><span class="lineNum">     104</span>              : interface Loaded {</span>
+<span id="L105"><span class="lineNum">     105</span>              :   readonly baseline: () =&gt; Rendered</span>
+<span id="L106"><span class="lineNum">     106</span>              :   readonly compare: (previous: Schema.Json) =&gt; Compared</span>
+<span id="L107"><span class="lineNum">     107</span>              : }</span>
+<span id="L108"><span class="lineNum">     108</span>              : </span>
+<span id="L109"><span class="lineNum">     109</span>              : interface Rendered {</span>
+<span id="L110"><span class="lineNum">     110</span>              :   readonly text: string</span>
+<span id="L111"><span class="lineNum">     111</span>              :   readonly snapshot: SourceSnapshot</span>
+<span id="L112"><span class="lineNum">     112</span>              : }</span>
+<span id="L113"><span class="lineNum">     113</span>              : </span>
+<span id="L114"><span class="lineNum">     114</span>              : type Compared =</span>
+<span id="L115"><span class="lineNum">     115</span>              :   | { readonly _tag: &quot;Incompatible&quot; }</span>
+<span id="L116"><span class="lineNum">     116</span>              :   | { readonly _tag: &quot;Unchanged&quot; }</span>
+<span id="L117"><span class="lineNum">     117</span>              :   | { readonly _tag: &quot;Updated&quot;; readonly render: () =&gt; Rendered }</span>
+<span id="L118"><span class="lineNum">     118</span>              : </span>
+<span id="L119"><span class="lineNum">     119</span>              : interface AvailableEntry extends Loaded {</span>
+<span id="L120"><span class="lineNum">     120</span>              :   readonly _tag: &quot;Available&quot;</span>
+<span id="L121"><span class="lineNum">     121</span>              :   readonly key: Key</span>
+<span id="L122"><span class="lineNum">     122</span>              : }</span>
+<span id="L123"><span class="lineNum">     123</span>              : </span>
+<span id="L124"><span class="lineNum">     124</span>              : interface UnavailableEntry {</span>
+<span id="L125"><span class="lineNum">     125</span>              :   readonly _tag: &quot;Unavailable&quot;</span>
+<span id="L126"><span class="lineNum">     126</span>              :   readonly key: Key</span>
+<span id="L127"><span class="lineNum">     127</span>              : }</span>
+<span id="L128"><span class="lineNum">     128</span>              : </span>
+<span id="L129"><span class="lineNum">     129</span>              : type Entry = AvailableEntry | UnavailableEntry</span>
+<span id="L130"><span class="lineNum">     130</span>              : </span>
+<span id="L131"><span class="lineNum">     131</span>              : /** The identity context. */</span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">          33 : export const empty = context([])</span></span>
+<span id="L133"><span class="lineNum">     133</span>              : </span>
+<span id="L134"><span class="lineNum">     134</span>              : /** Closes a typed source into a context that composes with differently typed sources. */</span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">          17 : export function make&lt;A&gt;(source: Source&lt;A&gt;): SystemContext {</span></span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaGNC">          58 :   const decode = Schema.decodeUnknownOption(source.codec)</span></span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">          49 :   const encode = Schema.encodeSync(source.codec)</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">          56 :   const equivalent = Schema.toEquivalence(source.codec)</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">          20 :   return context([</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">           7 :     {</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaGNC">          22 :       key: source.key,</span></span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">          23 :       load: source.load.pipe(</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">          30 :         Effect.map((value) =&gt; {</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">          42 :           if (isUnavailable(value)) return value</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">          34 :           const snapshot = (): SourceSnapshot =&gt; ({</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaGNC">          34 :             value: encode(value),</span></span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaGNC">          97 :             ...(source.removed ? { removed: requireText(source.key, &quot;removal&quot;, source.removed(value)) } : {}),</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaGNC">          10 :           })</span></span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">          18 :           return {</span></span>
+<span id="L150"><span class="lineNum">     150</span> <span class="tlaGNC">          29 :             baseline: (): Rendered =&gt; ({</span></span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaGNC">          78 :               text: requireText(source.key, &quot;baseline&quot;, source.baseline(value)),</span></span>
+<span id="L152"><span class="lineNum">     152</span> <span class="tlaGNC">          30 :               snapshot: snapshot(),</span></span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaGNC">          12 :             }),</span></span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaUNC">           0 :             compare: (previous): Compared =&gt;</span></span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaUNC">           0 :               Option.match(decode(previous), {</span></span>
+<span id="L156"><span class="lineNum">     156</span> <span class="tlaUNC">           0 :                 onNone: (): Compared =&gt; ({ _tag: &quot;Incompatible&quot; }),</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaUNC">           0 :                 onSome: (decoded): Compared =&gt;</span></span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaUNC">           0 :                   equivalent(decoded, value)</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaUNC">           0 :                     ? { _tag: &quot;Unchanged&quot; }</span></span>
+<span id="L160"><span class="lineNum">     160</span> <span class="tlaUNC">           0 :                     : {</span></span>
+<span id="L161"><span class="lineNum">     161</span> <span class="tlaUNC">           0 :                         _tag: &quot;Updated&quot;,</span></span>
+<span id="L162"><span class="lineNum">     162</span> <span class="tlaUNC">           0 :                         render: () =&gt; ({</span></span>
+<span id="L163"><span class="lineNum">     163</span> <span class="tlaUNC">           0 :                           text: requireText(source.key, &quot;update&quot;, source.update(decoded, value)),</span></span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaUNC">           0 :                           snapshot: snapshot(),</span></span>
+<span id="L165"><span class="lineNum">     165</span> <span class="tlaUNC">           0 :                         }),</span></span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaUNC">           0 :                       },</span></span>
+<span id="L167"><span class="lineNum">     167</span> <span class="tlaGNC">           8 :               }),</span></span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaGNC">           1 :           }</span></span>
+<span id="L169"><span class="lineNum">     169</span> <span class="tlaGNC">           1 :         }),</span></span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaGNC">           5 :       ),</span></span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaGNC">           3 :     },</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaGNC">           3 :   ])</span></span>
+<span id="L173"><span class="lineNum">     173</span>              : }</span>
+<span id="L174"><span class="lineNum">     174</span>              : </span>
+<span id="L175"><span class="lineNum">     175</span>              : /** Combines contexts in order and rejects duplicate source keys immediately. */</span>
+<span id="L176"><span class="lineNum">     176</span> <span class="tlaGNC">          17 : export function combine(values: ReadonlyArray&lt;SystemContext&gt;): SystemContext {</span></span>
+<span id="L177"><span class="lineNum">     177</span> <span class="tlaGNC">          64 :   const sources = values.flatMap((value) =&gt; value[ContextTypeId])</span></span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaGNC">          28 :   assertUniqueKeys(sources)</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaGNC">          24 :   return context(sources)</span></span>
+<span id="L180"><span class="lineNum">     180</span>              : }</span>
+<span id="L181"><span class="lineNum">     181</span>              : </span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaGNC">          25 : const observe = (value: SystemContext) =&gt;</span></span>
+<span id="L183"><span class="lineNum">     183</span> <span class="tlaGNC">          15 :   Effect.forEach(</span></span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaGNC">          21 :     value[ContextTypeId],</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">          12 :     (source) =&gt;</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaGNC">          17 :       source.load.pipe(</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">          10 :         Effect.map(</span></span>
+<span id="L188"><span class="lineNum">     188</span> <span class="tlaGNC">          12 :           (result): Entry =&gt;</span></span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          24 :             result === unavailable</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaGNC">           2 :               ? { _tag: &quot;Unavailable&quot;, key: source.key }</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">          49 :               : { _tag: &quot;Available&quot;, key: source.key, ...result },</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaGNC">           1 :         ),</span></span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaGNC">           2 :       ),</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaGNC">          28 :     { concurrency: &quot;unbounded&quot; },</span></span>
+<span id="L195"><span class="lineNum">     195</span> <span class="tlaGNC">           2 :   )</span></span>
+<span id="L196"><span class="lineNum">     196</span>              : </span>
+<span id="L197"><span class="lineNum">     197</span>              : /** Creates the immutable baseline and durable snapshot for a new generation. */</span>
+<span id="L198"><span class="lineNum">     198</span> <span class="tlaGNC">          16 : export function initialize(value: SystemContext): Effect.Effect&lt;Generation, InitializationBlocked&gt; {</span></span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaGNC">          27 :   return observe(value).pipe(</span></span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaGNC">          32 :     Effect.flatMap((entries) =&gt; {</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaGNC">          86 :       const unavailable = entries.flatMap((entry) =&gt; (entry._tag === &quot;Unavailable&quot; ? [entry.key] : []))</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaGNC">          36 :       if (unavailable.length &gt; 0) return new InitializationBlocked({ keys: unavailable })</span></span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaGNC">          53 :       return Effect.succeed(initializeObservation(entries))</span></span>
+<span id="L204"><span class="lineNum">     204</span> <span class="tlaGNC">           1 :     }),</span></span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaGNC">           1 :   )</span></span>
+<span id="L206"><span class="lineNum">     206</span>              : }</span>
+<span id="L207"><span class="lineNum">     207</span>              : </span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaGNC">          13 : function initializeObservation(entries: ReadonlyArray&lt;Entry&gt;): Generation {</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">          72 :   const available = entries.filter((entry): entry is AvailableEntry =&gt; entry._tag === &quot;Available&quot;)</span></span>
+<span id="L210"><span class="lineNum">     210</span> <span class="tlaGNC">          73 :   const rendered = available.map((entry) =&gt; [entry.key, entry.baseline()] as const)</span></span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaGNC">          62 :     baseline: render(rendered.map(([, result]) =&gt; result.text)),</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaGNC">          85 :     snapshot: Object.fromEntries(rendered.map(([key, result]) =&gt; [key, result.snapshot])),</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L215"><span class="lineNum">     215</span>              : }</span>
+<span id="L216"><span class="lineNum">     216</span>              : </span>
+<span id="L217"><span class="lineNum">     217</span>              : /** Reconciles current source values with one active generation. */</span>
+<span id="L218"><span class="lineNum">     218</span> <span class="tlaUNC">           0 : export function reconcile(value: SystemContext, previous: Snapshot): Effect.Effect&lt;ReconcileResult&gt; {</span></span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaUNC">           0 :   return observe(value).pipe(</span></span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaUNC">           0 :     Effect.map((entries): ReconcileResult =&gt; {</span></span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaUNC">           0 :       const result = reconcileObservation(entries, previous)</span></span>
+<span id="L222"><span class="lineNum">     222</span> <span class="tlaUNC">           0 :       if (result._tag === &quot;Unchanged&quot; || result._tag === &quot;Updated&quot;) return result</span></span>
+<span id="L223"><span class="lineNum">     223</span> <span class="tlaUNC">           0 :       return replaceObservation(entries, previous)</span></span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaUNC">           0 :     }),</span></span>
+<span id="L225"><span class="lineNum">     225</span>              :   )</span>
+<span id="L226"><span class="lineNum">     226</span>              : }</span>
+<span id="L227"><span class="lineNum">     227</span>              : </span>
+<span id="L228"><span class="lineNum">     228</span> <span class="tlaUNC">           0 : function reconcileObservation(</span></span>
+<span id="L229"><span class="lineNum">     229</span> <span class="tlaUNC">           0 :   entries: ReadonlyArray&lt;Entry&gt;,</span></span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaUNC">           0 :   previous: Snapshot,</span></span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaUNC">           0 : ): { readonly _tag: &quot;Unchanged&quot; } | Updated | { readonly _tag: &quot;Replace&quot; } {</span></span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaUNC">           0 :   const keys = new Set(entries.map((entry) =&gt; entry.key))</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaUNC">           0 :   const comparisons = new Map&lt;Key, Compared&gt;()</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaUNC">           0 :   for (const entry of entries) {</span></span>
+<span id="L235"><span class="lineNum">     235</span> <span class="tlaUNC">           0 :     if (entry._tag === &quot;Unavailable&quot;) continue</span></span>
+<span id="L236"><span class="lineNum">     236</span> <span class="tlaUNC">           0 :     const stored = getSnapshot(previous, entry.key)</span></span>
+<span id="L237"><span class="lineNum">     237</span> <span class="tlaUNC">           0 :     if (!stored) continue</span></span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaUNC">           0 :     const compared = entry.compare(stored.value)</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaUNC">           0 :     if (compared._tag === &quot;Incompatible&quot;) return { _tag: &quot;Replace&quot; }</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaUNC">           0 :     comparisons.set(entry.key, compared)</span></span>
+<span id="L241"><span class="lineNum">     241</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L242"><span class="lineNum">     242</span> <span class="tlaUNC">           0 :   for (const key of Object.keys(previous).sort()) {</span></span>
+<span id="L243"><span class="lineNum">     243</span> <span class="tlaUNC">           0 :     if (keys.has(Key.make(key))) continue</span></span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaUNC">           0 :     if (previous[key].removed === undefined) return { _tag: &quot;Replace&quot; }</span></span>
+<span id="L245"><span class="lineNum">     245</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaUNC">           0 :   const snapshot: Record&lt;string, SourceSnapshot&gt; = {}</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaUNC">           0 :   const updates: string[] = []</span></span>
+<span id="L249"><span class="lineNum">     249</span> <span class="tlaUNC">           0 :   for (const entry of entries) {</span></span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaUNC">           0 :     const stored = getSnapshot(previous, entry.key)</span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaUNC">           0 :     if (entry._tag === &quot;Unavailable&quot;) {</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaUNC">           0 :       if (stored) snapshot[entry.key] = stored</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L254"><span class="lineNum">     254</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L255"><span class="lineNum">     255</span> <span class="tlaUNC">           0 :     if (!stored) {</span></span>
+<span id="L256"><span class="lineNum">     256</span> <span class="tlaUNC">           0 :       const rendered = entry.baseline()</span></span>
+<span id="L257"><span class="lineNum">     257</span> <span class="tlaUNC">           0 :       updates.push(rendered.text)</span></span>
+<span id="L258"><span class="lineNum">     258</span> <span class="tlaUNC">           0 :       snapshot[entry.key] = rendered.snapshot</span></span>
+<span id="L259"><span class="lineNum">     259</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L260"><span class="lineNum">     260</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaUNC">           0 :     const compared = comparisons.get(entry.key)</span></span>
+<span id="L262"><span class="lineNum">     262</span> <span class="tlaUNC">           0 :     if (!compared || compared._tag === &quot;Incompatible&quot;)</span></span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaUNC">           0 :       throw new Error(`Missing comparison for system context source ${entry.key}`)</span></span>
+<span id="L264"><span class="lineNum">     264</span> <span class="tlaUNC">           0 :     if (compared._tag === &quot;Unchanged&quot;) {</span></span>
+<span id="L265"><span class="lineNum">     265</span> <span class="tlaUNC">           0 :       snapshot[entry.key] = stored</span></span>
+<span id="L266"><span class="lineNum">     266</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L268"><span class="lineNum">     268</span> <span class="tlaUNC">           0 :     const rendered = compared.render()</span></span>
+<span id="L269"><span class="lineNum">     269</span> <span class="tlaUNC">           0 :     updates.push(rendered.text)</span></span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaUNC">           0 :     snapshot[entry.key] = rendered.snapshot</span></span>
+<span id="L271"><span class="lineNum">     271</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaUNC">           0 :   for (const key of Object.keys(previous).sort()) {</span></span>
+<span id="L273"><span class="lineNum">     273</span> <span class="tlaUNC">           0 :     if (keys.has(Key.make(key))) continue</span></span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaUNC">           0 :     const removed = previous[key].removed</span></span>
+<span id="L275"><span class="lineNum">     275</span> <span class="tlaUNC">           0 :     if (removed === undefined) throw new Error(`Missing removal rendering for system context source ${key}`)</span></span>
+<span id="L276"><span class="lineNum">     276</span> <span class="tlaUNC">           0 :     updates.push(removed)</span></span>
+<span id="L277"><span class="lineNum">     277</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L278"><span class="lineNum">     278</span> <span class="tlaUNC">           0 :   if (updates.length === 0) return { _tag: &quot;Unchanged&quot; }</span></span>
+<span id="L279"><span class="lineNum">     279</span> <span class="tlaGNC">           1 :   return { _tag: &quot;Updated&quot;, text: render(updates), snapshot }</span></span>
+<span id="L280"><span class="lineNum">     280</span>              : }</span>
+<span id="L281"><span class="lineNum">     281</span>              : </span>
+<span id="L282"><span class="lineNum">     282</span>              : /** Creates a complete replacement generation or blocks while admitted context is unavailable. */</span>
+<span id="L283"><span class="lineNum">     283</span> <span class="tlaUNC">           0 : export function replace(value: SystemContext, previous: Snapshot): Effect.Effect&lt;ReplacementResult&gt; {</span></span>
+<span id="L284"><span class="lineNum">     284</span>              :   return observe(value).pipe(Effect.map((entries) =&gt; replaceObservation(entries, previous)))</span>
+<span id="L285"><span class="lineNum">     285</span>              : }</span>
+<span id="L286"><span class="lineNum">     286</span>              : </span>
+<span id="L287"><span class="lineNum">     287</span> <span class="tlaUNC">           0 : function replaceObservation(entries: ReadonlyArray&lt;Entry&gt;, previous: Snapshot): ReplacementResult {</span></span>
+<span id="L288"><span class="lineNum">     288</span> <span class="tlaUNC">           0 :   if (entries.some((entry) =&gt; entry._tag === &quot;Unavailable&quot; &amp;&amp; getSnapshot(previous, entry.key) !== undefined))</span></span>
+<span id="L289"><span class="lineNum">     289</span> <span class="tlaUNC">           0 :     return { _tag: &quot;ReplacementBlocked&quot; }</span></span>
+<span id="L290"><span class="lineNum">     290</span>              :   return { _tag: &quot;ReplacementReady&quot;, generation: initializeObservation(entries) }</span>
+<span id="L291"><span class="lineNum">     291</span>              : }</span>
+<span id="L292"><span class="lineNum">     292</span>              : </span>
+<span id="L293"><span class="lineNum">     293</span> <span class="tlaGNC">          13 : function context(sources: ReadonlyArray&lt;PackedSource&gt;): SystemContext {</span></span>
+<span id="L294"><span class="lineNum">     294</span> <span class="tlaGNC">          35 :   return { [ContextTypeId]: sources }</span></span>
+<span id="L295"><span class="lineNum">     295</span>              : }</span>
+<span id="L296"><span class="lineNum">     296</span>              : </span>
+<span id="L297"><span class="lineNum">     297</span> <span class="tlaGNC">          11 : function render(parts: ReadonlyArray&lt;string&gt;) {</span></span>
+<span id="L298"><span class="lineNum">     298</span> <span class="tlaGNC">          21 :   return parts.join(&quot;\n\n&quot;)</span></span>
+<span id="L299"><span class="lineNum">     299</span>              : }</span>
+<span id="L300"><span class="lineNum">     300</span>              : </span>
+<span id="L301"><span class="lineNum">     301</span> <span class="tlaUNC">           0 : function getSnapshot(snapshot: Snapshot, key: Key) {</span></span>
+<span id="L302"><span class="lineNum">     302</span>              :   return Object.hasOwn(snapshot, key) ? snapshot[key] : undefined</span>
+<span id="L303"><span class="lineNum">     303</span>              : }</span>
+<span id="L304"><span class="lineNum">     304</span>              : </span>
+<span id="L305"><span class="lineNum">     305</span> <span class="tlaGNC">          11 : function isUnavailable(value: unknown): value is Unavailable {</span></span>
+<span id="L306"><span class="lineNum">     306</span> <span class="tlaGNC">          28 :   return value === unavailable</span></span>
+<span id="L307"><span class="lineNum">     307</span>              : }</span>
+<span id="L308"><span class="lineNum">     308</span>              : </span>
+<span id="L309"><span class="lineNum">     309</span> <span class="tlaGNC">          21 : function requireText(key: Key, kind: string, text: string) {</span></span>
+<span id="L310"><span class="lineNum">     310</span> <span class="tlaGNC">          27 :   if (text.length === 0) throw new Error(`System context source ${key} rendered an empty ${kind}`)</span></span>
+<span id="L311"><span class="lineNum">     311</span> <span class="tlaGNC">          11 :   return text</span></span>
+<span id="L312"><span class="lineNum">     312</span>              : }</span>
+<span id="L313"><span class="lineNum">     313</span>              : </span>
+<span id="L314"><span class="lineNum">     314</span> <span class="tlaGNC">          13 : function assertUniqueKeys(sources: ReadonlyArray&lt;PackedSource&gt;) {</span></span>
+<span id="L315"><span class="lineNum">     315</span> <span class="tlaGNC">          23 :   const keys = new Set&lt;Key&gt;()</span></span>
+<span id="L316"><span class="lineNum">     316</span> <span class="tlaGNC">          34 :   for (const source of sources) {</span></span>
+<span id="L317"><span class="lineNum">     317</span> <span class="tlaGNC">          34 :     if (keys.has(source.key)) throw new DuplicateKeyError({ key: source.key })</span></span>
+<span id="L318"><span class="lineNum">     318</span> <span class="tlaGNC">          23 :     keys.add(source.key)</span></span>
+<span id="L319"><span class="lineNum">     319</span> <span class="tlaGNC">           1 :   }</span></span>
+<span id="L320"><span class="lineNum">     320</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../llm/src/protocols/gemini.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../llm/src/protocols">../llm/src/protocols</a> - gemini.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">34.6&nbsp;%</td>
+            <td class="headerCovTableEntry">399</td>
+            <td class="headerCovTableEntry">138</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          40 : import { Effect, Schema } from &quot;effect&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          40 : import { Route } from &quot;../route/client&quot;</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          37 : import { Auth } from &quot;../route/auth&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          45 : import { Endpoint } from &quot;../route/endpoint&quot;</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          43 : import { Framing } from &quot;../route/framing&quot;</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          45 : import { Protocol } from &quot;../route/protocol&quot;</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          45 : import {</span></span>
+<span id="L8"><span class="lineNum">       8</span>              :   LLMEvent,</span>
+<span id="L9"><span class="lineNum">       9</span>              :   Usage,</span>
+<span id="L10"><span class="lineNum">      10</span>              :   type FinishReason,</span>
+<span id="L11"><span class="lineNum">      11</span>              :   type JsonSchema,</span>
+<span id="L12"><span class="lineNum">      12</span>              :   type LLMRequest,</span>
+<span id="L13"><span class="lineNum">      13</span>              :   type MediaPart,</span>
+<span id="L14"><span class="lineNum">      14</span>              :   type ProviderMetadata,</span>
+<span id="L15"><span class="lineNum">      15</span>              :   type TextPart,</span>
+<span id="L16"><span class="lineNum">      16</span>              :   type ToolCallPart,</span>
+<span id="L17"><span class="lineNum">      17</span>              :   type ToolDefinition,</span>
+<span id="L18"><span class="lineNum">      18</span>              :   type ToolContent,</span>
+<span id="L19"><span class="lineNum">      19</span>              : } from &quot;../schema&quot;</span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          69 : import { JsonObject, optionalArray, ProviderShared } from &quot;./shared&quot;</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          62 : import { GeminiToolSchema } from &quot;./utils/gemini-tool-schema&quot;</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          46 : import { Lifecycle } from &quot;./utils/lifecycle&quot;</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          59 : import { ToolSchemaProjection } from &quot;./utils/tool-schema&quot;</span></span>
+<span id="L24"><span class="lineNum">      24</span>              : </span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          25 : const ADAPTER = &quot;gemini&quot;</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">          56 : const MEDIA_MIMES = new Set&lt;string&gt;(ProviderShared.MEDIA_MIMES)</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          83 : export const DEFAULT_BASE_URL = &quot;https://generativelanguage.googleapis.com/v1beta&quot;</span></span>
+<span id="L28"><span class="lineNum">      28</span>              : </span>
+<span id="L29"><span class="lineNum">      29</span>              : // =============================================================================</span>
+<span id="L30"><span class="lineNum">      30</span>              : // Request Body Schema</span>
+<span id="L31"><span class="lineNum">      31</span>              : // =============================================================================</span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">          39 : const GeminiTextPart = Schema.Struct({</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">          22 :   text: Schema.String,</span></span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaGNC">          43 :   thought: Schema.optional(Schema.Boolean),</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          49 :   thoughtSignature: Schema.optional(Schema.String),</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L37"><span class="lineNum">      37</span>              : </span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          45 : const GeminiInlineDataPart = Schema.Struct({</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          31 :   inlineData: Schema.Struct({</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaGNC">          28 :     mimeType: Schema.String,</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          21 :     data: Schema.String,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">           3 :   }),</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L44"><span class="lineNum">      44</span>              : </span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">          47 : const GeminiFunctionCallPart = Schema.Struct({</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">          33 :   functionCall: Schema.Struct({</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaGNC">          24 :     name: Schema.String,</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">          22 :     args: Schema.Unknown,</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">           5 :   }),</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">          49 :   thoughtSignature: Schema.optional(Schema.String),</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L52"><span class="lineNum">      52</span>              : </span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">          51 : const GeminiFunctionResponsePart = Schema.Struct({</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaGNC">          37 :   functionResponse: Schema.Struct({</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaGNC">          24 :     name: Schema.String,</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaGNC">          26 :     response: Schema.Unknown,</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">           3 :   }),</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L59"><span class="lineNum">      59</span>              : </span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">          41 : const GeminiContentPart = Schema.Union([</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaGNC">          17 :   GeminiTextPart,</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaGNC">          23 :   GeminiInlineDataPart,</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          25 :   GeminiFunctionCallPart,</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaGNC">          27 :   GeminiFunctionResponsePart,</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">           3 : ])</span></span>
+<span id="L66"><span class="lineNum">      66</span>              : </span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">          38 : const GeminiContent = Schema.Struct({</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaGNC">          43 :   role: Schema.Literals([&quot;user&quot;, &quot;model&quot;]),</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaGNC">          39 :   parts: Schema.Array(GeminiContentPart),</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L71"><span class="lineNum">      71</span>              : type GeminiContent = Schema.Schema.Type&lt;typeof GeminiContent&gt;</span>
+<span id="L72"><span class="lineNum">      72</span>              : </span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaGNC">          48 : const GeminiSystemInstruction = Schema.Struct({</span></span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">          60 :   parts: Schema.Array(Schema.Struct({ text: Schema.String })),</span></span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L76"><span class="lineNum">      76</span>              : </span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaGNC">          50 : const GeminiFunctionDeclaration = Schema.Struct({</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaGNC">          22 :   name: Schema.String,</span></span>
+<span id="L79"><span class="lineNum">      79</span> <span class="tlaGNC">          29 :   description: Schema.String,</span></span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          40 :   parameters: Schema.optional(JsonObject),</span></span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L82"><span class="lineNum">      82</span>              : </span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          35 : const GeminiTool = Schema.Struct({</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          62 :   functionDeclarations: Schema.Array(GeminiFunctionDeclaration),</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L86"><span class="lineNum">      86</span>              : </span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          41 : const GeminiToolConfig = Schema.Struct({</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          42 :   functionCallingConfig: Schema.Struct({</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          51 :     mode: Schema.Literals([&quot;AUTO&quot;, &quot;NONE&quot;, &quot;ANY&quot;]),</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          52 :     allowedFunctionNames: optionalArray(Schema.String),</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">           3 :   }),</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L93"><span class="lineNum">      93</span>              : </span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          45 : const GeminiThinkingConfig = Schema.Struct({</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          49 :   thinkingBudget: Schema.optional(Schema.Number),</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          49 :   includeThoughts: Schema.optional(Schema.Boolean),</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L98"><span class="lineNum">      98</span>              : </span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaGNC">          47 : const GeminiGenerationConfig = Schema.Struct({</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaGNC">          50 :   maxOutputTokens: Schema.optional(Schema.Number),</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaGNC">          46 :   temperature: Schema.optional(Schema.Number),</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">          39 :   topP: Schema.optional(Schema.Number),</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          39 :   topK: Schema.optional(Schema.Number),</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">          46 :   stopSequences: optionalArray(Schema.String),</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">          54 :   thinkingConfig: Schema.optional(GeminiThinkingConfig),</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L107"><span class="lineNum">     107</span>              : </span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">          27 : const GeminiBodyFields = {</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaGNC">          40 :   contents: Schema.Array(GeminiContent),</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaGNC">          62 :   systemInstruction: Schema.optional(GeminiSystemInstruction),</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">          35 :   tools: optionalArray(GeminiTool),</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaGNC">          48 :   toolConfig: Schema.optional(GeminiToolConfig),</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaGNC">          58 :   generationConfig: Schema.optional(GeminiGenerationConfig),</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaGNC">           2 : }</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaGNC">          51 : const GeminiBody = Schema.Struct(GeminiBodyFields)</span></span>
+<span id="L116"><span class="lineNum">     116</span>              : export type GeminiBody = Schema.Schema.Type&lt;typeof GeminiBody&gt;</span>
+<span id="L117"><span class="lineNum">     117</span>              : </span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaGNC">          36 : const GeminiUsage = Schema.Struct({</span></span>
+<span id="L119"><span class="lineNum">     119</span> <span class="tlaGNC">          58 :   cachedContentTokenCount: Schema.optional(Schema.Number),</span></span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaGNC">          53 :   thoughtsTokenCount: Schema.optional(Schema.Number),</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">          51 :   promptTokenCount: Schema.optional(Schema.Number),</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaGNC">          55 :   candidatesTokenCount: Schema.optional(Schema.Number),</span></span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaGNC">          48 :   totalTokenCount: Schema.optional(Schema.Number),</span></span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L125"><span class="lineNum">     125</span>              : type GeminiUsage = Schema.Schema.Type&lt;typeof GeminiUsage&gt;</span>
+<span id="L126"><span class="lineNum">     126</span>              : </span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaGNC">          40 : const GeminiCandidate = Schema.Struct({</span></span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaGNC">          42 :   content: Schema.optional(GeminiContent),</span></span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaGNC">          45 :   finishReason: Schema.optional(Schema.String),</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L131"><span class="lineNum">     131</span>              : </span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">          36 : const GeminiEvent = Schema.Struct({</span></span>
+<span id="L133"><span class="lineNum">     133</span> <span class="tlaGNC">          45 :   candidates: optionalArray(GeminiCandidate),</span></span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaGNC">          44 :   usageMetadata: Schema.optional(GeminiUsage),</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L136"><span class="lineNum">     136</span>              : type GeminiEvent = Schema.Schema.Type&lt;typeof GeminiEvent&gt;</span>
+<span id="L137"><span class="lineNum">     137</span>              : </span>
+<span id="L138"><span class="lineNum">     138</span>              : interface ParserState {</span>
+<span id="L139"><span class="lineNum">     139</span>              :   readonly finishReason?: string</span>
+<span id="L140"><span class="lineNum">     140</span>              :   readonly hasToolCalls: boolean</span>
+<span id="L141"><span class="lineNum">     141</span>              :   readonly nextToolCallId: number</span>
+<span id="L142"><span class="lineNum">     142</span>              :   readonly usage?: Usage</span>
+<span id="L143"><span class="lineNum">     143</span>              :   readonly lifecycle: Lifecycle.State</span>
+<span id="L144"><span class="lineNum">     144</span>              :   readonly reasoningSignature?: string</span>
+<span id="L145"><span class="lineNum">     145</span>              : }</span>
+<span id="L146"><span class="lineNum">     146</span>              : </span>
+<span id="L147"><span class="lineNum">     147</span>              : // =============================================================================</span>
+<span id="L148"><span class="lineNum">     148</span>              : // Tool Schema Conversion</span>
+<span id="L149"><span class="lineNum">     149</span>              : // =============================================================================</span>
+<span id="L150"><span class="lineNum">     150</span>              : // Tool-schema conversion has two distinct concerns:</span>
+<span id="L151"><span class="lineNum">     151</span>              : //</span>
+<span id="L152"><span class="lineNum">     152</span>              : // 1. Sanitize — fix common authoring mistakes Gemini rejects: integer/number</span>
+<span id="L153"><span class="lineNum">     153</span>              : //    enums (must be strings), `required` entries that don't match a property,</span>
+<span id="L154"><span class="lineNum">     154</span>              : //    untyped arrays (`items` must be present), and `properties`/`required`</span>
+<span id="L155"><span class="lineNum">     155</span>              : //    keys on non-object scalars. Mirrors OpenCode's historical Gemini rules.</span>
+<span id="L156"><span class="lineNum">     156</span>              : //</span>
+<span id="L157"><span class="lineNum">     157</span>              : // 2. Project — lossy mapping from JSON Schema to Gemini's schema dialect:</span>
+<span id="L158"><span class="lineNum">     158</span>              : //    drop empty objects, derive `nullable: true` from `type: [..., &quot;null&quot;]`,</span>
+<span id="L159"><span class="lineNum">     159</span>              : //    coerce `const` to `[const]` enum, recurse properties/items, propagate</span>
+<span id="L160"><span class="lineNum">     160</span>              : //    only an allowlisted set of keys (description, required, format, type,</span>
+<span id="L161"><span class="lineNum">     161</span>              : //    properties, items, allOf, anyOf, oneOf, minLength). Anything outside the</span>
+<span id="L162"><span class="lineNum">     162</span>              : //    allowlist (e.g. `additionalProperties`, `$ref`) is silently dropped.</span>
+<span id="L163"><span class="lineNum">     163</span>              : //</span>
+<span id="L164"><span class="lineNum">     164</span>              : // Sanitize runs first, then project. The implementation lives in</span>
+<span id="L165"><span class="lineNum">     165</span>              : // `utils/gemini-tool-schema` so this protocol keeps the same shape as the other</span>
+<span id="L166"><span class="lineNum">     166</span>              : // provider protocols.</span>
+<span id="L167"><span class="lineNum">     167</span>              : </span>
+<span id="L168"><span class="lineNum">     168</span>              : // =============================================================================</span>
+<span id="L169"><span class="lineNum">     169</span>              : // Request Lowering</span>
+<span id="L170"><span class="lineNum">     170</span>              : // =============================================================================</span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaUNC">           0 : const lowerTool = (tool: ToolDefinition, inputSchema: JsonSchema) =&gt; ({</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaUNC">           0 :   name: tool.name,</span></span>
+<span id="L173"><span class="lineNum">     173</span> <span class="tlaUNC">           0 :   description: tool.description,</span></span>
+<span id="L174"><span class="lineNum">     174</span>              :   parameters: GeminiToolSchema.convert(inputSchema),</span>
+<span id="L175"><span class="lineNum">     175</span> <span class="tlaGNC">           2 : })</span></span>
+<span id="L176"><span class="lineNum">     176</span>              : </span>
+<span id="L177"><span class="lineNum">     177</span> <span class="tlaUNC">           0 : const lowerToolConfig = (toolChoice: NonNullable&lt;LLMRequest[&quot;toolChoice&quot;]&gt;) =&gt;</span></span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaUNC">           0 :   ProviderShared.matchToolChoice(&quot;Gemini&quot;, toolChoice, {</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaUNC">           0 :     auto: () =&gt; ({ functionCallingConfig: { mode: &quot;AUTO&quot; as const } }),</span></span>
+<span id="L180"><span class="lineNum">     180</span> <span class="tlaUNC">           0 :     none: () =&gt; ({ functionCallingConfig: { mode: &quot;NONE&quot; as const } }),</span></span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaUNC">           0 :     required: () =&gt; ({ functionCallingConfig: { mode: &quot;ANY&quot; as const } }),</span></span>
+<span id="L182"><span class="lineNum">     182</span>              :     tool: (name) =&gt; ({ functionCallingConfig: { mode: &quot;ANY&quot; as const, allowedFunctionNames: [name] } }),</span>
+<span id="L183"><span class="lineNum">     183</span> <span class="tlaGNC">           2 :   })</span></span>
+<span id="L184"><span class="lineNum">     184</span>              : </span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaUNC">           0 : const lowerUserPart = Effect.fn(&quot;Gemini.lowerUserPart&quot;)(function* (part: TextPart | MediaPart) {</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaUNC">           0 :   if (part.type === &quot;text&quot;) return { text: part.text }</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaUNC">           0 :   const media = yield* ProviderShared.validateMedia(&quot;Gemini&quot;, part, MEDIA_MIMES)</span></span>
+<span id="L188"><span class="lineNum">     188</span>              :   return { inlineData: { mimeType: media.mime, data: media.base64 } }</span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L190"><span class="lineNum">     190</span>              : </span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">          23 : const googleMetadata = (metadata: Record&lt;string, unknown&gt;): ProviderMetadata =&gt; ({ google: metadata })</span></span>
+<span id="L192"><span class="lineNum">     192</span>              : </span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaUNC">           0 : const thoughtSignature = (providerMetadata: ProviderMetadata | undefined) =&gt; {</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaUNC">           0 :   const google = providerMetadata?.google</span></span>
+<span id="L195"><span class="lineNum">     195</span> <span class="tlaUNC">           0 :   return ProviderShared.isRecord(google) &amp;&amp; typeof google.thoughtSignature === &quot;string&quot;</span></span>
+<span id="L196"><span class="lineNum">     196</span> <span class="tlaUNC">           0 :     ? google.thoughtSignature</span></span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaGNC">           2 :     : undefined</span></span>
+<span id="L198"><span class="lineNum">     198</span>              : }</span>
+<span id="L199"><span class="lineNum">     199</span>              : </span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaUNC">           0 : const lowerToolCall = (part: ToolCallPart) =&gt; ({</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaUNC">           0 :   functionCall: { name: part.name, args: part.input },</span></span>
+<span id="L202"><span class="lineNum">     202</span>              :   thoughtSignature: thoughtSignature(part.providerMetadata),</span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaGNC">           2 : })</span></span>
+<span id="L204"><span class="lineNum">     204</span>              : </span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaUNC">           0 : const lowerMessages = Effect.fn(&quot;Gemini.lowerMessages&quot;)(function* (request: LLMRequest) {</span></span>
+<span id="L206"><span class="lineNum">     206</span> <span class="tlaUNC">           0 :   const contents: GeminiContent[] = []</span></span>
+<span id="L207"><span class="lineNum">     207</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaUNC">           0 :   for (const message of request.messages) {</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaUNC">           0 :     if (message.role === &quot;system&quot;) {</span></span>
+<span id="L210"><span class="lineNum">     210</span> <span class="tlaUNC">           0 :       const part = yield* ProviderShared.wrappedSystemUpdate(&quot;Gemini&quot;, message)</span></span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaUNC">           0 :       const previous = contents.at(-1)</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaUNC">           0 :       if (previous?.role === &quot;user&quot;)</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaUNC">           0 :         contents[contents.length - 1] = { role: &quot;user&quot;, parts: [...previous.parts, { text: part.text }] }</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaUNC">           0 :       else contents.push({ role: &quot;user&quot;, parts: [{ text: part.text }] })</span></span>
+<span id="L215"><span class="lineNum">     215</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L216"><span class="lineNum">     216</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L217"><span class="lineNum">     217</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L218"><span class="lineNum">     218</span> <span class="tlaUNC">           0 :     if (message.role === &quot;user&quot;) {</span></span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaUNC">           0 :       const parts: Array&lt;Schema.Schema.Type&lt;typeof GeminiContentPart&gt;&gt; = []</span></span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaUNC">           0 :       for (const part of message.content) {</span></span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaUNC">           0 :         if (!ProviderShared.supportsContent(part, [&quot;text&quot;, &quot;media&quot;]))</span></span>
+<span id="L222"><span class="lineNum">     222</span> <span class="tlaUNC">           0 :           return yield* ProviderShared.unsupportedContent(&quot;Gemini&quot;, &quot;user&quot;, [&quot;text&quot;, &quot;media&quot;])</span></span>
+<span id="L223"><span class="lineNum">     223</span> <span class="tlaUNC">           0 :         parts.push(yield* lowerUserPart(part))</span></span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L225"><span class="lineNum">     225</span> <span class="tlaUNC">           0 :       contents.push({ role: &quot;user&quot;, parts })</span></span>
+<span id="L226"><span class="lineNum">     226</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L227"><span class="lineNum">     227</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L228"><span class="lineNum">     228</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L229"><span class="lineNum">     229</span> <span class="tlaUNC">           0 :     if (message.role === &quot;assistant&quot;) {</span></span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaUNC">           0 :       const parts: Array&lt;Schema.Schema.Type&lt;typeof GeminiContentPart&gt;&gt; = []</span></span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaUNC">           0 :       for (const part of message.content) {</span></span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaUNC">           0 :         if (!ProviderShared.supportsContent(part, [&quot;text&quot;, &quot;reasoning&quot;, &quot;tool-call&quot;]))</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaUNC">           0 :           return yield* ProviderShared.unsupportedContent(&quot;Gemini&quot;, &quot;assistant&quot;, [&quot;text&quot;, &quot;reasoning&quot;, &quot;tool-call&quot;])</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaUNC">           0 :         if (part.type === &quot;text&quot;) {</span></span>
+<span id="L235"><span class="lineNum">     235</span> <span class="tlaUNC">           0 :           parts.push({ text: part.text })</span></span>
+<span id="L236"><span class="lineNum">     236</span> <span class="tlaUNC">           0 :           continue</span></span>
+<span id="L237"><span class="lineNum">     237</span> <span class="tlaUNC">           0 :         }</span></span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaUNC">           0 :         if (part.type === &quot;reasoning&quot;) {</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaUNC">           0 :           parts.push({ text: part.text, thought: true, thoughtSignature: thoughtSignature(part.providerMetadata) })</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaUNC">           0 :           continue</span></span>
+<span id="L241"><span class="lineNum">     241</span> <span class="tlaUNC">           0 :         }</span></span>
+<span id="L242"><span class="lineNum">     242</span> <span class="tlaUNC">           0 :         if (part.type === &quot;tool-call&quot;) {</span></span>
+<span id="L243"><span class="lineNum">     243</span> <span class="tlaUNC">           0 :           parts.push(lowerToolCall(part))</span></span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaUNC">           0 :           continue</span></span>
+<span id="L245"><span class="lineNum">     245</span> <span class="tlaUNC">           0 :         }</span></span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaUNC">           0 :       contents.push({ role: &quot;model&quot;, parts })</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L249"><span class="lineNum">     249</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaUNC">           0 :     const parts: Array&lt;Schema.Schema.Type&lt;typeof GeminiContentPart&gt;&gt; = []</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaUNC">           0 :     for (const part of message.content) {</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaUNC">           0 :       if (!ProviderShared.supportsContent(part, [&quot;tool-result&quot;]))</span></span>
+<span id="L254"><span class="lineNum">     254</span> <span class="tlaUNC">           0 :         return yield* ProviderShared.unsupportedContent(&quot;Gemini&quot;, &quot;tool&quot;, [&quot;tool-result&quot;])</span></span>
+<span id="L255"><span class="lineNum">     255</span> <span class="tlaUNC">           0 :       if (part.result.type !== &quot;content&quot;) {</span></span>
+<span id="L256"><span class="lineNum">     256</span> <span class="tlaUNC">           0 :         parts.push({</span></span>
+<span id="L257"><span class="lineNum">     257</span> <span class="tlaUNC">           0 :           functionResponse: {</span></span>
+<span id="L258"><span class="lineNum">     258</span> <span class="tlaUNC">           0 :             name: part.name,</span></span>
+<span id="L259"><span class="lineNum">     259</span> <span class="tlaUNC">           0 :             response: {</span></span>
+<span id="L260"><span class="lineNum">     260</span> <span class="tlaUNC">           0 :               name: part.name,</span></span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaUNC">           0 :               content: ProviderShared.toolResultText(part),</span></span>
+<span id="L262"><span class="lineNum">     262</span> <span class="tlaUNC">           0 :             },</span></span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaUNC">           0 :           },</span></span>
+<span id="L264"><span class="lineNum">     264</span> <span class="tlaUNC">           0 :         })</span></span>
+<span id="L265"><span class="lineNum">     265</span> <span class="tlaUNC">           0 :         continue</span></span>
+<span id="L266"><span class="lineNum">     266</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaUNC">           0 :       const content: ReadonlyArray&lt;ToolContent&gt; = part.result.value</span></span>
+<span id="L268"><span class="lineNum">     268</span> <span class="tlaUNC">           0 :       const text = content.filter((item) =&gt; item.type === &quot;text&quot;).map((item) =&gt; item.text)</span></span>
+<span id="L269"><span class="lineNum">     269</span> <span class="tlaUNC">           0 :       parts.push({</span></span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaUNC">           0 :         functionResponse: {</span></span>
+<span id="L271"><span class="lineNum">     271</span> <span class="tlaUNC">           0 :           name: part.name,</span></span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaUNC">           0 :           response: {</span></span>
+<span id="L273"><span class="lineNum">     273</span> <span class="tlaUNC">           0 :             name: part.name,</span></span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaUNC">           0 :             content: text.join(&quot;\n&quot;),</span></span>
+<span id="L275"><span class="lineNum">     275</span> <span class="tlaUNC">           0 :           },</span></span>
+<span id="L276"><span class="lineNum">     276</span> <span class="tlaUNC">           0 :         },</span></span>
+<span id="L277"><span class="lineNum">     277</span> <span class="tlaUNC">           0 :       })</span></span>
+<span id="L278"><span class="lineNum">     278</span> <span class="tlaUNC">           0 :       for (const item of content) {</span></span>
+<span id="L279"><span class="lineNum">     279</span> <span class="tlaUNC">           0 :         if (item.type === &quot;text&quot;) continue</span></span>
+<span id="L280"><span class="lineNum">     280</span> <span class="tlaUNC">           0 :         const media = yield* ProviderShared.validateToolFile(&quot;Gemini&quot;, item, MEDIA_MIMES)</span></span>
+<span id="L281"><span class="lineNum">     281</span> <span class="tlaUNC">           0 :         parts.push({ inlineData: { mimeType: media.mime, data: media.base64 } })</span></span>
+<span id="L282"><span class="lineNum">     282</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L283"><span class="lineNum">     283</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L284"><span class="lineNum">     284</span> <span class="tlaUNC">           0 :     contents.push({ role: &quot;user&quot;, parts })</span></span>
+<span id="L285"><span class="lineNum">     285</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L286"><span class="lineNum">     286</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L287"><span class="lineNum">     287</span>              :   return contents</span>
+<span id="L288"><span class="lineNum">     288</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L289"><span class="lineNum">     289</span>              : </span>
+<span id="L290"><span class="lineNum">     290</span> <span class="tlaGNC">          22 : const geminiOptions = (request: LLMRequest) =&gt; request.providerOptions?.gemini</span></span>
+<span id="L291"><span class="lineNum">     291</span>              : </span>
+<span id="L292"><span class="lineNum">     292</span> <span class="tlaUNC">           0 : const thinkingConfig = (request: LLMRequest) =&gt; {</span></span>
+<span id="L293"><span class="lineNum">     293</span> <span class="tlaUNC">           0 :   const value = geminiOptions(request)?.thinkingConfig</span></span>
+<span id="L294"><span class="lineNum">     294</span> <span class="tlaUNC">           0 :   if (!ProviderShared.isRecord(value)) return undefined</span></span>
+<span id="L295"><span class="lineNum">     295</span> <span class="tlaUNC">           0 :   const result = {</span></span>
+<span id="L296"><span class="lineNum">     296</span> <span class="tlaUNC">           0 :     thinkingBudget: typeof value.thinkingBudget === &quot;number&quot; ? value.thinkingBudget : undefined,</span></span>
+<span id="L297"><span class="lineNum">     297</span> <span class="tlaUNC">           0 :     includeThoughts: typeof value.includeThoughts === &quot;boolean&quot; ? value.includeThoughts : undefined,</span></span>
+<span id="L298"><span class="lineNum">     298</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L299"><span class="lineNum">     299</span> <span class="tlaGNC">           2 :   return Object.values(result).some((item) =&gt; item !== undefined) ? result : undefined</span></span>
+<span id="L300"><span class="lineNum">     300</span>              : }</span>
+<span id="L301"><span class="lineNum">     301</span>              : </span>
+<span id="L302"><span class="lineNum">     302</span> <span class="tlaUNC">           0 : const fromRequest = Effect.fn(&quot;Gemini.fromRequest&quot;)(function* (request: LLMRequest) {</span></span>
+<span id="L303"><span class="lineNum">     303</span> <span class="tlaUNC">           0 :   const toolsEnabled = request.tools.length &gt; 0 &amp;&amp; request.toolChoice?.type !== &quot;none&quot;</span></span>
+<span id="L304"><span class="lineNum">     304</span> <span class="tlaUNC">           0 :   const generation = request.generation</span></span>
+<span id="L305"><span class="lineNum">     305</span> <span class="tlaUNC">           0 :   const toolSchemaCompatibility = request.model.compatibility?.toolSchema</span></span>
+<span id="L306"><span class="lineNum">     306</span> <span class="tlaUNC">           0 :   const generationConfig = {</span></span>
+<span id="L307"><span class="lineNum">     307</span> <span class="tlaUNC">           0 :     maxOutputTokens: generation?.maxTokens,</span></span>
+<span id="L308"><span class="lineNum">     308</span> <span class="tlaUNC">           0 :     temperature: generation?.temperature,</span></span>
+<span id="L309"><span class="lineNum">     309</span> <span class="tlaUNC">           0 :     topP: generation?.topP,</span></span>
+<span id="L310"><span class="lineNum">     310</span> <span class="tlaUNC">           0 :     topK: generation?.topK,</span></span>
+<span id="L311"><span class="lineNum">     311</span> <span class="tlaUNC">           0 :     stopSequences: generation?.stop,</span></span>
+<span id="L312"><span class="lineNum">     312</span> <span class="tlaUNC">           0 :     thinkingConfig: thinkingConfig(request),</span></span>
+<span id="L313"><span class="lineNum">     313</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L314"><span class="lineNum">     314</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L315"><span class="lineNum">     315</span> <span class="tlaUNC">           0 :   return {</span></span>
+<span id="L316"><span class="lineNum">     316</span> <span class="tlaUNC">           0 :     contents: yield* lowerMessages(request),</span></span>
+<span id="L317"><span class="lineNum">     317</span> <span class="tlaUNC">           0 :     systemInstruction:</span></span>
+<span id="L318"><span class="lineNum">     318</span> <span class="tlaUNC">           0 :       request.system.length === 0 ? undefined : { parts: [{ text: ProviderShared.joinText(request.system) }] },</span></span>
+<span id="L319"><span class="lineNum">     319</span> <span class="tlaUNC">           0 :     tools: toolsEnabled</span></span>
+<span id="L320"><span class="lineNum">     320</span> <span class="tlaUNC">           0 :       ? [</span></span>
+<span id="L321"><span class="lineNum">     321</span> <span class="tlaUNC">           0 :           {</span></span>
+<span id="L322"><span class="lineNum">     322</span> <span class="tlaUNC">           0 :             functionDeclarations: request.tools.map((tool) =&gt;</span></span>
+<span id="L323"><span class="lineNum">     323</span> <span class="tlaUNC">           0 :               lowerTool(tool, ToolSchemaProjection.modelCompatibility(tool.inputSchema, toolSchemaCompatibility)),</span></span>
+<span id="L324"><span class="lineNum">     324</span> <span class="tlaUNC">           0 :             ),</span></span>
+<span id="L325"><span class="lineNum">     325</span> <span class="tlaUNC">           0 :           },</span></span>
+<span id="L326"><span class="lineNum">     326</span> <span class="tlaUNC">           0 :         ]</span></span>
+<span id="L327"><span class="lineNum">     327</span> <span class="tlaUNC">           0 :       : undefined,</span></span>
+<span id="L328"><span class="lineNum">     328</span> <span class="tlaUNC">           0 :     toolConfig: toolsEnabled &amp;&amp; request.toolChoice ? yield* lowerToolConfig(request.toolChoice) : undefined,</span></span>
+<span id="L329"><span class="lineNum">     329</span> <span class="tlaUNC">           0 :     generationConfig: Object.values(generationConfig).some((value) =&gt; value !== undefined)</span></span>
+<span id="L330"><span class="lineNum">     330</span> <span class="tlaUNC">           0 :       ? generationConfig</span></span>
+<span id="L331"><span class="lineNum">     331</span> <span class="tlaUNC">           0 :       : undefined,</span></span>
+<span id="L332"><span class="lineNum">     332</span>              :   }</span>
+<span id="L333"><span class="lineNum">     333</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L334"><span class="lineNum">     334</span>              : </span>
+<span id="L335"><span class="lineNum">     335</span>              : // =============================================================================</span>
+<span id="L336"><span class="lineNum">     336</span>              : // Stream Parsing</span>
+<span id="L337"><span class="lineNum">     337</span>              : // =============================================================================</span>
+<span id="L338"><span class="lineNum">     338</span>              : // Gemini reports `promptTokenCount` (inclusive total) with a</span>
+<span id="L339"><span class="lineNum">     339</span>              : // `cachedContentTokenCount` subset. `candidatesTokenCount` is *exclusive*</span>
+<span id="L340"><span class="lineNum">     340</span>              : // of `thoughtsTokenCount` — visible-only, not a total — so we sum the two</span>
+<span id="L341"><span class="lineNum">     341</span>              : // to produce the inclusive `outputTokens` the rest of the contract expects.</span>
+<span id="L342"><span class="lineNum">     342</span> <span class="tlaUNC">           0 : const mapUsage = (usage: GeminiUsage | undefined) =&gt; {</span></span>
+<span id="L343"><span class="lineNum">     343</span> <span class="tlaUNC">           0 :   if (!usage) return undefined</span></span>
+<span id="L344"><span class="lineNum">     344</span> <span class="tlaUNC">           0 :   const cached = usage.cachedContentTokenCount</span></span>
+<span id="L345"><span class="lineNum">     345</span> <span class="tlaUNC">           0 :   const nonCached = ProviderShared.subtractTokens(usage.promptTokenCount, cached)</span></span>
+<span id="L346"><span class="lineNum">     346</span> <span class="tlaUNC">           0 :   // `candidatesTokenCount` is visible-only; sum with thoughts to produce the</span></span>
+<span id="L347"><span class="lineNum">     347</span> <span class="tlaUNC">           0 :   // inclusive `outputTokens` the contract expects. Only compute the total</span></span>
+<span id="L348"><span class="lineNum">     348</span> <span class="tlaUNC">           0 :   // when the visible component is reported — otherwise we'd fabricate an</span></span>
+<span id="L349"><span class="lineNum">     349</span> <span class="tlaUNC">           0 :   // inclusive number from a partial breakdown.</span></span>
+<span id="L350"><span class="lineNum">     350</span> <span class="tlaUNC">           0 :   const outputTokens =</span></span>
+<span id="L351"><span class="lineNum">     351</span> <span class="tlaUNC">           0 :     usage.candidatesTokenCount !== undefined ? usage.candidatesTokenCount + (usage.thoughtsTokenCount ?? 0) : undefined</span></span>
+<span id="L352"><span class="lineNum">     352</span> <span class="tlaUNC">           0 :   return new Usage({</span></span>
+<span id="L353"><span class="lineNum">     353</span> <span class="tlaUNC">           0 :     inputTokens: usage.promptTokenCount,</span></span>
+<span id="L354"><span class="lineNum">     354</span> <span class="tlaUNC">           0 :     outputTokens,</span></span>
+<span id="L355"><span class="lineNum">     355</span> <span class="tlaUNC">           0 :     nonCachedInputTokens: nonCached,</span></span>
+<span id="L356"><span class="lineNum">     356</span> <span class="tlaUNC">           0 :     cacheReadInputTokens: cached,</span></span>
+<span id="L357"><span class="lineNum">     357</span> <span class="tlaUNC">           0 :     reasoningTokens: usage.thoughtsTokenCount,</span></span>
+<span id="L358"><span class="lineNum">     358</span> <span class="tlaUNC">           0 :     totalTokens: ProviderShared.totalTokens(usage.promptTokenCount, outputTokens, usage.totalTokenCount),</span></span>
+<span id="L359"><span class="lineNum">     359</span> <span class="tlaUNC">           0 :     providerMetadata: { google: usage },</span></span>
+<span id="L360"><span class="lineNum">     360</span> <span class="tlaGNC">           2 :   })</span></span>
+<span id="L361"><span class="lineNum">     361</span>              : }</span>
+<span id="L362"><span class="lineNum">     362</span>              : </span>
+<span id="L363"><span class="lineNum">     363</span> <span class="tlaUNC">           0 : const mapFinishReason = (finishReason: string | undefined, hasToolCalls: boolean): FinishReason =&gt; {</span></span>
+<span id="L364"><span class="lineNum">     364</span> <span class="tlaUNC">           0 :   if (finishReason === &quot;STOP&quot;) return hasToolCalls ? &quot;tool-calls&quot; : &quot;stop&quot;</span></span>
+<span id="L365"><span class="lineNum">     365</span> <span class="tlaUNC">           0 :   if (finishReason === &quot;MAX_TOKENS&quot;) return &quot;length&quot;</span></span>
+<span id="L366"><span class="lineNum">     366</span> <span class="tlaUNC">           0 :   if (</span></span>
+<span id="L367"><span class="lineNum">     367</span> <span class="tlaUNC">           0 :     finishReason === &quot;IMAGE_SAFETY&quot; ||</span></span>
+<span id="L368"><span class="lineNum">     368</span> <span class="tlaUNC">           0 :     finishReason === &quot;RECITATION&quot; ||</span></span>
+<span id="L369"><span class="lineNum">     369</span> <span class="tlaUNC">           0 :     finishReason === &quot;SAFETY&quot; ||</span></span>
+<span id="L370"><span class="lineNum">     370</span> <span class="tlaUNC">           0 :     finishReason === &quot;BLOCKLIST&quot; ||</span></span>
+<span id="L371"><span class="lineNum">     371</span> <span class="tlaUNC">           0 :     finishReason === &quot;PROHIBITED_CONTENT&quot; ||</span></span>
+<span id="L372"><span class="lineNum">     372</span> <span class="tlaUNC">           0 :     finishReason === &quot;SPII&quot;</span></span>
+<span id="L373"><span class="lineNum">     373</span> <span class="tlaUNC">           0 :   )</span></span>
+<span id="L374"><span class="lineNum">     374</span> <span class="tlaUNC">           0 :     return &quot;content-filter&quot;</span></span>
+<span id="L375"><span class="lineNum">     375</span> <span class="tlaUNC">           0 :   if (finishReason === &quot;MALFORMED_FUNCTION_CALL&quot;) return &quot;error&quot;</span></span>
+<span id="L376"><span class="lineNum">     376</span> <span class="tlaGNC">           2 :   return &quot;unknown&quot;</span></span>
+<span id="L377"><span class="lineNum">     377</span>              : }</span>
+<span id="L378"><span class="lineNum">     378</span>              : </span>
+<span id="L379"><span class="lineNum">     379</span> <span class="tlaUNC">           0 : const finish = (state: ParserState): ReadonlyArray&lt;LLMEvent&gt; =&gt;</span></span>
+<span id="L380"><span class="lineNum">     380</span> <span class="tlaUNC">           0 :   state.finishReason || state.usage</span></span>
+<span id="L381"><span class="lineNum">     381</span> <span class="tlaUNC">           0 :     ? (() =&gt; {</span></span>
+<span id="L382"><span class="lineNum">     382</span> <span class="tlaUNC">           0 :         const events: LLMEvent[] = []</span></span>
+<span id="L383"><span class="lineNum">     383</span> <span class="tlaUNC">           0 :         const lifecycle = state.reasoningSignature</span></span>
+<span id="L384"><span class="lineNum">     384</span> <span class="tlaUNC">           0 :           ? Lifecycle.reasoningEnd(</span></span>
+<span id="L385"><span class="lineNum">     385</span> <span class="tlaUNC">           0 :               state.lifecycle,</span></span>
+<span id="L386"><span class="lineNum">     386</span> <span class="tlaUNC">           0 :               events,</span></span>
+<span id="L387"><span class="lineNum">     387</span> <span class="tlaUNC">           0 :               &quot;reasoning-0&quot;,</span></span>
+<span id="L388"><span class="lineNum">     388</span> <span class="tlaUNC">           0 :               googleMetadata({ thoughtSignature: state.reasoningSignature }),</span></span>
+<span id="L389"><span class="lineNum">     389</span> <span class="tlaUNC">           0 :             )</span></span>
+<span id="L390"><span class="lineNum">     390</span> <span class="tlaUNC">           0 :           : state.lifecycle</span></span>
+<span id="L391"><span class="lineNum">     391</span> <span class="tlaUNC">           0 :         Lifecycle.finish(lifecycle, events, {</span></span>
+<span id="L392"><span class="lineNum">     392</span> <span class="tlaUNC">           0 :           reason: mapFinishReason(state.finishReason, state.hasToolCalls),</span></span>
+<span id="L393"><span class="lineNum">     393</span> <span class="tlaUNC">           0 :           usage: state.usage,</span></span>
+<span id="L394"><span class="lineNum">     394</span> <span class="tlaUNC">           0 :         })</span></span>
+<span id="L395"><span class="lineNum">     395</span> <span class="tlaUNC">           0 :         return events</span></span>
+<span id="L396"><span class="lineNum">     396</span> <span class="tlaUNC">           0 :       })()</span></span>
+<span id="L397"><span class="lineNum">     397</span> <span class="tlaGNC">           2 :     : []</span></span>
+<span id="L398"><span class="lineNum">     398</span>              : </span>
+<span id="L399"><span class="lineNum">     399</span> <span class="tlaUNC">           0 : const step = (state: ParserState, event: GeminiEvent) =&gt; {</span></span>
+<span id="L400"><span class="lineNum">     400</span> <span class="tlaUNC">           0 :   const nextState = {</span></span>
+<span id="L401"><span class="lineNum">     401</span> <span class="tlaUNC">           0 :     ...state,</span></span>
+<span id="L402"><span class="lineNum">     402</span> <span class="tlaUNC">           0 :     usage: event.usageMetadata ? (mapUsage(event.usageMetadata) ?? state.usage) : state.usage,</span></span>
+<span id="L403"><span class="lineNum">     403</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L404"><span class="lineNum">     404</span> <span class="tlaUNC">           0 :   const candidate = event.candidates?.[0]</span></span>
+<span id="L405"><span class="lineNum">     405</span> <span class="tlaUNC">           0 :   if (!candidate?.content)</span></span>
+<span id="L406"><span class="lineNum">     406</span> <span class="tlaUNC">           0 :     return Effect.succeed([</span></span>
+<span id="L407"><span class="lineNum">     407</span> <span class="tlaUNC">           0 :       { ...nextState, finishReason: candidate?.finishReason ?? nextState.finishReason },</span></span>
+<span id="L408"><span class="lineNum">     408</span> <span class="tlaUNC">           0 :       [],</span></span>
+<span id="L409"><span class="lineNum">     409</span> <span class="tlaUNC">           0 :     ] as const)</span></span>
+<span id="L410"><span class="lineNum">     410</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L411"><span class="lineNum">     411</span> <span class="tlaUNC">           0 :   const events: LLMEvent[] = []</span></span>
+<span id="L412"><span class="lineNum">     412</span> <span class="tlaUNC">           0 :   let hasToolCalls = nextState.hasToolCalls</span></span>
+<span id="L413"><span class="lineNum">     413</span> <span class="tlaUNC">           0 :   let lifecycle = nextState.lifecycle</span></span>
+<span id="L414"><span class="lineNum">     414</span> <span class="tlaUNC">           0 :   let nextToolCallId = nextState.nextToolCallId</span></span>
+<span id="L415"><span class="lineNum">     415</span> <span class="tlaUNC">           0 :   let reasoningSignature = nextState.reasoningSignature</span></span>
+<span id="L416"><span class="lineNum">     416</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L417"><span class="lineNum">     417</span> <span class="tlaUNC">           0 :   for (const part of candidate.content.parts) {</span></span>
+<span id="L418"><span class="lineNum">     418</span> <span class="tlaUNC">           0 :     if (&quot;thoughtSignature&quot; in part &amp;&amp; part.thoughtSignature &amp;&amp; &quot;thought&quot; in part &amp;&amp; part.thought)</span></span>
+<span id="L419"><span class="lineNum">     419</span> <span class="tlaUNC">           0 :       reasoningSignature = part.thoughtSignature</span></span>
+<span id="L420"><span class="lineNum">     420</span> <span class="tlaUNC">           0 :     if (&quot;text&quot; in part &amp;&amp; part.text.length &gt; 0) {</span></span>
+<span id="L421"><span class="lineNum">     421</span> <span class="tlaUNC">           0 :       if (part.thought) {</span></span>
+<span id="L422"><span class="lineNum">     422</span> <span class="tlaUNC">           0 :         lifecycle = Lifecycle.reasoningDelta(</span></span>
+<span id="L423"><span class="lineNum">     423</span> <span class="tlaUNC">           0 :           lifecycle,</span></span>
+<span id="L424"><span class="lineNum">     424</span> <span class="tlaUNC">           0 :           events,</span></span>
+<span id="L425"><span class="lineNum">     425</span> <span class="tlaUNC">           0 :           &quot;reasoning-0&quot;,</span></span>
+<span id="L426"><span class="lineNum">     426</span> <span class="tlaUNC">           0 :           part.text,</span></span>
+<span id="L427"><span class="lineNum">     427</span> <span class="tlaUNC">           0 :           part.thoughtSignature ? googleMetadata({ thoughtSignature: part.thoughtSignature }) : undefined,</span></span>
+<span id="L428"><span class="lineNum">     428</span> <span class="tlaUNC">           0 :         )</span></span>
+<span id="L429"><span class="lineNum">     429</span> <span class="tlaUNC">           0 :         continue</span></span>
+<span id="L430"><span class="lineNum">     430</span> <span class="tlaUNC">           0 :       }</span></span>
+<span id="L431"><span class="lineNum">     431</span> <span class="tlaUNC">           0 :       lifecycle = Lifecycle.reasoningEnd(</span></span>
+<span id="L432"><span class="lineNum">     432</span> <span class="tlaUNC">           0 :         lifecycle,</span></span>
+<span id="L433"><span class="lineNum">     433</span> <span class="tlaUNC">           0 :         events,</span></span>
+<span id="L434"><span class="lineNum">     434</span> <span class="tlaUNC">           0 :         &quot;reasoning-0&quot;,</span></span>
+<span id="L435"><span class="lineNum">     435</span> <span class="tlaUNC">           0 :         reasoningSignature ? googleMetadata({ thoughtSignature: reasoningSignature }) : undefined,</span></span>
+<span id="L436"><span class="lineNum">     436</span> <span class="tlaUNC">           0 :       )</span></span>
+<span id="L437"><span class="lineNum">     437</span> <span class="tlaUNC">           0 :       lifecycle = Lifecycle.textDelta(lifecycle, events, &quot;text-0&quot;, part.text)</span></span>
+<span id="L438"><span class="lineNum">     438</span> <span class="tlaUNC">           0 :       continue</span></span>
+<span id="L439"><span class="lineNum">     439</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L440"><span class="lineNum">     440</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L441"><span class="lineNum">     441</span> <span class="tlaUNC">           0 :     if (&quot;functionCall&quot; in part) {</span></span>
+<span id="L442"><span class="lineNum">     442</span> <span class="tlaUNC">           0 :       const input = part.functionCall.args</span></span>
+<span id="L443"><span class="lineNum">     443</span> <span class="tlaUNC">           0 :       const id = `tool_${nextToolCallId++}`</span></span>
+<span id="L444"><span class="lineNum">     444</span> <span class="tlaUNC">           0 :       lifecycle = Lifecycle.reasoningEnd(</span></span>
+<span id="L445"><span class="lineNum">     445</span> <span class="tlaUNC">           0 :         lifecycle,</span></span>
+<span id="L446"><span class="lineNum">     446</span> <span class="tlaUNC">           0 :         events,</span></span>
+<span id="L447"><span class="lineNum">     447</span> <span class="tlaUNC">           0 :         &quot;reasoning-0&quot;,</span></span>
+<span id="L448"><span class="lineNum">     448</span> <span class="tlaUNC">           0 :         reasoningSignature ? googleMetadata({ thoughtSignature: reasoningSignature }) : undefined,</span></span>
+<span id="L449"><span class="lineNum">     449</span> <span class="tlaUNC">           0 :       )</span></span>
+<span id="L450"><span class="lineNum">     450</span> <span class="tlaUNC">           0 :       lifecycle = Lifecycle.stepStart(lifecycle, events)</span></span>
+<span id="L451"><span class="lineNum">     451</span> <span class="tlaUNC">           0 :       events.push(</span></span>
+<span id="L452"><span class="lineNum">     452</span> <span class="tlaUNC">           0 :         LLMEvent.toolCall({</span></span>
+<span id="L453"><span class="lineNum">     453</span> <span class="tlaUNC">           0 :           id,</span></span>
+<span id="L454"><span class="lineNum">     454</span> <span class="tlaUNC">           0 :           name: part.functionCall.name,</span></span>
+<span id="L455"><span class="lineNum">     455</span> <span class="tlaUNC">           0 :           input,</span></span>
+<span id="L456"><span class="lineNum">     456</span> <span class="tlaUNC">           0 :           providerMetadata: part.thoughtSignature</span></span>
+<span id="L457"><span class="lineNum">     457</span> <span class="tlaUNC">           0 :             ? googleMetadata({ thoughtSignature: part.thoughtSignature })</span></span>
+<span id="L458"><span class="lineNum">     458</span> <span class="tlaUNC">           0 :             : undefined,</span></span>
+<span id="L459"><span class="lineNum">     459</span> <span class="tlaUNC">           0 :         }),</span></span>
+<span id="L460"><span class="lineNum">     460</span> <span class="tlaUNC">           0 :       )</span></span>
+<span id="L461"><span class="lineNum">     461</span> <span class="tlaUNC">           0 :       hasToolCalls = true</span></span>
+<span id="L462"><span class="lineNum">     462</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L463"><span class="lineNum">     463</span> <span class="tlaUNC">           0 :   }</span></span>
+<span id="L464"><span class="lineNum">     464</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L465"><span class="lineNum">     465</span> <span class="tlaUNC">           0 :   return Effect.succeed([</span></span>
+<span id="L466"><span class="lineNum">     466</span> <span class="tlaUNC">           0 :     {</span></span>
+<span id="L467"><span class="lineNum">     467</span> <span class="tlaUNC">           0 :       ...nextState,</span></span>
+<span id="L468"><span class="lineNum">     468</span> <span class="tlaUNC">           0 :       hasToolCalls,</span></span>
+<span id="L469"><span class="lineNum">     469</span> <span class="tlaUNC">           0 :       lifecycle,</span></span>
+<span id="L470"><span class="lineNum">     470</span> <span class="tlaUNC">           0 :       nextToolCallId,</span></span>
+<span id="L471"><span class="lineNum">     471</span> <span class="tlaUNC">           0 :       reasoningSignature,</span></span>
+<span id="L472"><span class="lineNum">     472</span> <span class="tlaUNC">           0 :       finishReason: candidate.finishReason ?? nextState.finishReason,</span></span>
+<span id="L473"><span class="lineNum">     473</span> <span class="tlaUNC">           0 :     },</span></span>
+<span id="L474"><span class="lineNum">     474</span> <span class="tlaUNC">           0 :     events,</span></span>
+<span id="L475"><span class="lineNum">     475</span> <span class="tlaGNC">           2 :   ] as const)</span></span>
+<span id="L476"><span class="lineNum">     476</span>              : }</span>
+<span id="L477"><span class="lineNum">     477</span>              : </span>
+<span id="L478"><span class="lineNum">     478</span>              : // =============================================================================</span>
+<span id="L479"><span class="lineNum">     479</span>              : // Protocol And Gemini Route</span>
+<span id="L480"><span class="lineNum">     480</span>              : // =============================================================================</span>
+<span id="L481"><span class="lineNum">     481</span>              : /**</span>
+<span id="L482"><span class="lineNum">     482</span>              :  * The Gemini protocol — request body construction, body schema, and the</span>
+<span id="L483"><span class="lineNum">     483</span>              :  * streaming-event state machine. Used by Google AI Studio Gemini and (once</span>
+<span id="L484"><span class="lineNum">     484</span>              :  * registered) Vertex Gemini.</span>
+<span id="L485"><span class="lineNum">     485</span>              :  */</span>
+<span id="L486"><span class="lineNum">     486</span> <span class="tlaGNC">          40 : export const protocol = Protocol.make({</span></span>
+<span id="L487"><span class="lineNum">     487</span> <span class="tlaGNC">          14 :   id: ADAPTER,</span></span>
+<span id="L488"><span class="lineNum">     488</span> <span class="tlaGNC">          11 :   body: {</span></span>
+<span id="L489"><span class="lineNum">     489</span> <span class="tlaGNC">          23 :     schema: GeminiBody,</span></span>
+<span id="L490"><span class="lineNum">     490</span> <span class="tlaGNC">          19 :     from: fromRequest,</span></span>
+<span id="L491"><span class="lineNum">     491</span> <span class="tlaGNC">           4 :   },</span></span>
+<span id="L492"><span class="lineNum">     492</span> <span class="tlaGNC">          13 :   stream: {</span></span>
+<span id="L493"><span class="lineNum">     493</span> <span class="tlaGNC">          43 :     event: Protocol.jsonEvent(GeminiEvent),</span></span>
+<span id="L494"><span class="lineNum">     494</span> <span class="tlaGNC">          13 :     initial: () =&gt; ({ hasToolCalls: false, nextToolCallId: 0, lifecycle: Lifecycle.initial() }),</span></span>
+<span id="L495"><span class="lineNum">     495</span> <span class="tlaGNC">           9 :     step,</span></span>
+<span id="L496"><span class="lineNum">     496</span> <span class="tlaGNC">          16 :     onHalt: finish,</span></span>
+<span id="L497"><span class="lineNum">     497</span> <span class="tlaGNC">           2 :   },</span></span>
+<span id="L498"><span class="lineNum">     498</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L499"><span class="lineNum">     499</span>              : </span>
+<span id="L500"><span class="lineNum">     500</span> <span class="tlaGNC">          34 : export const route = Route.make({</span></span>
+<span id="L501"><span class="lineNum">     501</span> <span class="tlaGNC">          14 :   id: ADAPTER,</span></span>
+<span id="L502"><span class="lineNum">     502</span> <span class="tlaGNC">          21 :   provider: &quot;google&quot;,</span></span>
+<span id="L503"><span class="lineNum">     503</span> <span class="tlaGNC">          11 :   protocol,</span></span>
+<span id="L504"><span class="lineNum">     504</span>              :   // Gemini's path embeds the model id and pins SSE framing at the URL level.</span>
+<span id="L505"><span class="lineNum">     505</span> <span class="tlaGNC">          30 :   endpoint: Endpoint.path(({ request }) =&gt; `/models/${request.model.id}:streamGenerateContent?alt=sse`, {</span></span>
+<span id="L506"><span class="lineNum">     506</span> <span class="tlaGNC">          27 :     baseURL: DEFAULT_BASE_URL,</span></span>
+<span id="L507"><span class="lineNum">     507</span> <span class="tlaGNC">           5 :   }),</span></span>
+<span id="L508"><span class="lineNum">     508</span> <span class="tlaGNC">          18 :   auth: Auth.none,</span></span>
+<span id="L509"><span class="lineNum">     509</span> <span class="tlaGNC">          21 :   framing: Framing.sse,</span></span>
+<span id="L510"><span class="lineNum">     510</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L511"><span class="lineNum">     511</span>              : </span>
+<span id="L512"><span class="lineNum">     512</span> <span class="tlaGNC">          34 : export * as Gemini from &quot;./gemini&quot;</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

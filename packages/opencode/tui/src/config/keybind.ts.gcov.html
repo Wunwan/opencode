@@ -1,0 +1,547 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../tui/src/config/keybind.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../tui/src/config">../tui/src/config</a> - keybind.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">418</td>
+            <td class="headerCovTableEntry">418</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          40 : export * as TuiKeybind from &quot;./keybind&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : import type { KeyEvent, Renderable } from &quot;@opentui/core&quot;</span>
+<span id="L4"><span class="lineNum">       4</span>              : import type { Binding } from &quot;@opentui/keymap&quot;</span>
+<span id="L5"><span class="lineNum">       5</span>              : import type { BindingCommandMap, BindingConfig, BindingDefaults } from &quot;@opentui/keymap/extras&quot;</span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          32 : import { Schema } from &quot;effect&quot;</span></span>
+<span id="L7"><span class="lineNum">       7</span>              : </span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          34 : const KeyStroke = Schema.Struct({</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          22 :   name: Schema.String,</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">          40 :   ctrl: Schema.optional(Schema.Boolean),</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          41 :   shift: Schema.optional(Schema.Boolean),</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">          40 :   meta: Schema.optional(Schema.Boolean),</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">          41 :   super: Schema.optional(Schema.Boolean),</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">          39 :   hyper: Schema.optional(Schema.Boolean),</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">           3 : })</span></span>
+<span id="L16"><span class="lineNum">      16</span>              : </span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">          43 : const BindingObject = Schema.StructWithRest(</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          17 :   Schema.Struct({</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          48 :     key: Schema.Union([Schema.String, KeyStroke]),</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          64 :     event: Schema.optional(Schema.Literals([&quot;press&quot;, &quot;release&quot;])),</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          50 :     preventDefault: Schema.optional(Schema.Boolean),</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          45 :     fallthrough: Schema.optional(Schema.Boolean),</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">           3 :   }),</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          46 :   [Schema.Record(Schema.String, Schema.Unknown)],</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">           3 : )</span></span>
+<span id="L26"><span class="lineNum">      26</span>              : </span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          76 : const BindingItem = Schema.Union([Schema.String, KeyStroke, BindingObject])</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          49 : export const BindingValueSchema = Schema.Union([</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          24 :   Schema.Literal(false),</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">          25 :   Schema.Literal(&quot;none&quot;),</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          14 :   BindingItem,</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">          26 :   Schema.Array(BindingItem),</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">           3 : ])</span></span>
+<span id="L34"><span class="lineNum">      34</span>              : export type BindingValueSchema = Schema.Schema.Type&lt;typeof BindingValueSchema&gt;</span>
+<span id="L35"><span class="lineNum">      35</span>              : </span>
+<span id="L36"><span class="lineNum">      36</span>              : type Definition = {</span>
+<span id="L37"><span class="lineNum">      37</span>              :   default: BindingValueSchema</span>
+<span id="L38"><span class="lineNum">      38</span>              :   description: string</span>
+<span id="L39"><span class="lineNum">      39</span>              : }</span>
+<span id="L40"><span class="lineNum">      40</span>              : </span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          38 : export const LeaderDefault = &quot;ctrl+x&quot;</span></span>
+<span id="L42"><span class="lineNum">      42</span>              : </span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">          72 : const keybind = (value: Definition[&quot;default&quot;], description: string): Definition =&gt; ({ default: value, description })</span></span>
+<span id="L44"><span class="lineNum">      44</span>              : </span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaGNC">          29 : export const Definitions = {</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaGNC">          72 :   leader: keybind(LeaderDefault, &quot;Leader key for keybind combinations&quot;),</span></span>
+<span id="L47"><span class="lineNum">      47</span>              : </span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaGNC">          71 :   app_exit: keybind(&quot;ctrl+c,ctrl+d,&lt;leader&gt;q&quot;, &quot;Exit the application&quot;),</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaGNC">          51 :   app_debug: keybind(&quot;none&quot;, &quot;Toggle debug panel&quot;),</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaGNC">          49 :   app_console: keybind(&quot;none&quot;, &quot;Toggle console&quot;),</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaGNC">          60 :   app_heap_snapshot: keybind(&quot;none&quot;, &quot;Write heap snapshot&quot;),</span></span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaGNC">          62 :   app_toggle_animations: keybind(&quot;none&quot;, &quot;Toggle animations&quot;),</span></span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaGNC">          66 :   app_toggle_file_context: keybind(&quot;none&quot;, &quot;Toggle file context&quot;),</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaGNC">          63 :   app_toggle_diffwrap: keybind(&quot;none&quot;, &quot;Toggle diff wrapping&quot;),</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaGNC">          68 :   app_toggle_paste_summary: keybind(&quot;none&quot;, &quot;Toggle paste summary&quot;),</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaGNC">          93 :   app_toggle_session_directory_filter: keybind(&quot;none&quot;, &quot;Toggle session directory filtering&quot;),</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">          61 :   command_list: keybind(&quot;ctrl+p&quot;, &quot;List available commands&quot;),</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">          49 :   help_show: keybind(&quot;none&quot;, &quot;Open help dialog&quot;),</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaGNC">          51 :   docs_open: keybind(&quot;none&quot;, &quot;Open documentation&quot;),</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">          49 :   diff_open: keybind(&quot;none&quot;, &quot;Open diff viewer&quot;),</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaGNC">          55 :   diff_close: keybind(&quot;escape,q&quot;, &quot;Close diff viewer&quot;),</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaGNC">          65 :   diff_toggle: keybind(&quot;enter,space&quot;, &quot;Toggle diff viewer item&quot;),</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          59 :   diff_expand: keybind(&quot;right&quot;, &quot;Expand diff viewer item&quot;),</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaGNC">          66 :   diff_expand_all: keybind(&quot;E&quot;, &quot;Expand all diff viewer folders&quot;),</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">          62 :   diff_collapse: keybind(&quot;left&quot;, &quot;Collapse diff viewer item&quot;),</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaGNC">          64 :   diff_switch_focus: keybind(&quot;tab&quot;, &quot;Switch diff viewer focus&quot;),</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaGNC">          57 :   diff_next_hunk: keybind(&quot;]&quot;, &quot;Jump to next diff hunk&quot;),</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaGNC">          65 :   diff_previous_hunk: keybind(&quot;[&quot;, &quot;Jump to previous diff hunk&quot;),</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaGNC">          57 :   diff_next_file: keybind(&quot;n&quot;, &quot;Jump to next diff file&quot;),</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaGNC">          65 :   diff_previous_file: keybind(&quot;p&quot;, &quot;Jump to previous diff file&quot;),</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaGNC">          70 :   diff_toggle_file_tree: keybind(&quot;b&quot;, &quot;Toggle diff viewer file tree&quot;),</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaGNC">          62 :   diff_single_patch: keybind(&quot;s&quot;, &quot;Toggle single patch view&quot;),</span></span>
+<span id="L73"><span class="lineNum">      73</span> <span class="tlaGNC">          64 :   diff_switch_source: keybind(&quot;d&quot;, &quot;Switch diff viewer source&quot;),</span></span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">          77 :   diff_toggle_view: keybind(&quot;v&quot;, &quot;Toggle diff viewer split or unified view&quot;),</span></span>
+<span id="L75"><span class="lineNum">      75</span> <span class="tlaGNC">          61 :   diff_help: keybind(&quot;?&quot;, &quot;Show more diff viewer shortcuts&quot;),</span></span>
+<span id="L76"><span class="lineNum">      76</span>              : </span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaGNC">          60 :   editor_open: keybind(&quot;&lt;leader&gt;e&quot;, &quot;Open external editor&quot;),</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaGNC">          60 :   theme_list: keybind(&quot;&lt;leader&gt;t&quot;, &quot;List available themes&quot;),</span></span>
+<span id="L79"><span class="lineNum">      79</span> <span class="tlaGNC">          81 :   theme_switch_mode: keybind(&quot;none&quot;, &quot;Switch between light and dark theme mode&quot;),</span></span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaGNC">          64 :   theme_mode_lock: keybind(&quot;none&quot;, &quot;Lock or unlock theme mode&quot;),</span></span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">          57 :   sidebar_toggle: keybind(&quot;&lt;leader&gt;b&quot;, &quot;Toggle sidebar&quot;),</span></span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">          64 :   scrollbar_toggle: keybind(&quot;none&quot;, &quot;Toggle session scrollbar&quot;),</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          51 :   status_view: keybind(&quot;&lt;leader&gt;s&quot;, &quot;View status&quot;),</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">          49 :   debug_view: keybind(&quot;none&quot;, &quot;View debug info&quot;),</span></span>
+<span id="L85"><span class="lineNum">      85</span>              : </span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">          67 :   session_export: keybind(&quot;&lt;leader&gt;x&quot;, &quot;Export session to editor&quot;),</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          59 :   session_copy: keybind(&quot;none&quot;, &quot;Copy session transcript&quot;),</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          48 :   session_move: keybind(&quot;none&quot;, &quot;Move session&quot;),</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          60 :   session_new: keybind(&quot;&lt;leader&gt;n&quot;, &quot;Create a new session&quot;),</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          58 :   session_list: keybind(&quot;&lt;leader&gt;l&quot;, &quot;List all sessions&quot;),</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">          66 :   session_timeline: keybind(&quot;&lt;leader&gt;g&quot;, &quot;Show session timeline&quot;),</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">          61 :   session_fork: keybind(&quot;none&quot;, &quot;Fork session from message&quot;),</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaGNC">          54 :   session_rename: keybind(&quot;ctrl+r&quot;, &quot;Rename session&quot;),</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          54 :   session_delete: keybind(&quot;ctrl+d&quot;, &quot;Delete session&quot;),</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">          58 :   session_share: keybind(&quot;none&quot;, &quot;Share current session&quot;),</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaGNC">          62 :   session_unshare: keybind(&quot;none&quot;, &quot;Unshare current session&quot;),</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaGNC">          68 :   session_interrupt: keybind(&quot;escape&quot;, &quot;Interrupt current session&quot;),</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaGNC">          76 :   session_background: keybind(&quot;ctrl+b&quot;, &quot;Background synchronous subagents&quot;),</span></span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaGNC">          63 :   session_compact: keybind(&quot;&lt;leader&gt;c&quot;, &quot;Compact the session&quot;),</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaGNC">          74 :   session_toggle_timestamps: keybind(&quot;none&quot;, &quot;Toggle message timestamps&quot;),</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaGNC">          84 :   session_toggle_generic_tool_output: keybind(&quot;none&quot;, &quot;Toggle generic tool output&quot;),</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">          72 :   session_queued_prompts: keybind(&quot;&lt;leader&gt;q&quot;, &quot;Manage queued prompts&quot;),</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          76 :   session_child_first: keybind(&quot;&lt;leader&gt;down&quot;, &quot;Go to first child session&quot;),</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">          68 :   session_child_cycle: keybind(&quot;right&quot;, &quot;Go to next child session&quot;),</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">          79 :   session_child_cycle_reverse: keybind(&quot;left&quot;, &quot;Go to previous child session&quot;),</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaGNC">          56 :   session_parent: keybind(&quot;up&quot;, &quot;Go to parent session&quot;),</span></span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaGNC">          84 :   session_pin_toggle: keybind(&quot;ctrl+f&quot;, &quot;Pin or unpin session in the session list&quot;),</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">          84 :   session_quick_switch_1: keybind(&quot;&lt;leader&gt;1&quot;, &quot;Switch to session in quick slot 1&quot;),</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaGNC">          84 :   session_quick_switch_2: keybind(&quot;&lt;leader&gt;2&quot;, &quot;Switch to session in quick slot 2&quot;),</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaGNC">          84 :   session_quick_switch_3: keybind(&quot;&lt;leader&gt;3&quot;, &quot;Switch to session in quick slot 3&quot;),</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">          84 :   session_quick_switch_4: keybind(&quot;&lt;leader&gt;4&quot;, &quot;Switch to session in quick slot 4&quot;),</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaGNC">          84 :   session_quick_switch_5: keybind(&quot;&lt;leader&gt;5&quot;, &quot;Switch to session in quick slot 5&quot;),</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaGNC">          84 :   session_quick_switch_6: keybind(&quot;&lt;leader&gt;6&quot;, &quot;Switch to session in quick slot 6&quot;),</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaGNC">          84 :   session_quick_switch_7: keybind(&quot;&lt;leader&gt;7&quot;, &quot;Switch to session in quick slot 7&quot;),</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaGNC">          84 :   session_quick_switch_8: keybind(&quot;&lt;leader&gt;8&quot;, &quot;Switch to session in quick slot 8&quot;),</span></span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaGNC">          84 :   session_quick_switch_9: keybind(&quot;&lt;leader&gt;9&quot;, &quot;Switch to session in quick slot 9&quot;),</span></span>
+<span id="L117"><span class="lineNum">     117</span>              : </span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaGNC">          56 :   stash_delete: keybind(&quot;ctrl+d&quot;, &quot;Delete stash entry&quot;),</span></span>
+<span id="L119"><span class="lineNum">     119</span> <span class="tlaGNC">          81 :   model_provider_list: keybind(&quot;ctrl+a&quot;, &quot;Open provider list from model dialog&quot;),</span></span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaGNC">          75 :   model_favorite_toggle: keybind(&quot;ctrl+f&quot;, &quot;Toggle model favorite status&quot;),</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaGNC">          60 :   model_list: keybind(&quot;&lt;leader&gt;m&quot;, &quot;List available models&quot;),</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaGNC">          64 :   model_cycle_recent: keybind(&quot;f2&quot;, &quot;Next recently used model&quot;),</span></span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaGNC">          82 :   model_cycle_recent_reverse: keybind(&quot;shift+f2&quot;, &quot;Previous recently used model&quot;),</span></span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaGNC">          63 :   model_cycle_favorite: keybind(&quot;none&quot;, &quot;Next favorite model&quot;),</span></span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaGNC">          75 :   model_cycle_favorite_reverse: keybind(&quot;none&quot;, &quot;Previous favorite model&quot;),</span></span>
+<span id="L126"><span class="lineNum">     126</span> <span class="tlaGNC">          48 :   mcp_list: keybind(&quot;none&quot;, &quot;List MCP servers&quot;),</span></span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaGNC">          56 :   provider_connect: keybind(&quot;none&quot;, &quot;Connect provider&quot;),</span></span>
+<span id="L128"><span class="lineNum">     128</span> <span class="tlaGNC">          69 :   console_org_switch: keybind(&quot;none&quot;, &quot;Switch console organization&quot;),</span></span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaGNC">          50 :   agent_list: keybind(&quot;&lt;leader&gt;a&quot;, &quot;List agents&quot;),</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaGNC">          44 :   agent_cycle: keybind(&quot;tab&quot;, &quot;Next agent&quot;),</span></span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaGNC">          62 :   agent_cycle_reverse: keybind(&quot;shift+tab&quot;, &quot;Previous agent&quot;),</span></span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaGNC">          59 :   variant_cycle: keybind(&quot;ctrl+t&quot;, &quot;Cycle model variants&quot;),</span></span>
+<span id="L133"><span class="lineNum">     133</span> <span class="tlaGNC">          55 :   variant_list: keybind(&quot;none&quot;, &quot;List model variants&quot;),</span></span>
+<span id="L134"><span class="lineNum">     134</span>              : </span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">          83 :   messages_page_up: keybind(&quot;pageup,ctrl+alt+b&quot;, &quot;Scroll messages up by one page&quot;),</span></span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaGNC">          89 :   messages_page_down: keybind(&quot;pagedown,ctrl+alt+f&quot;, &quot;Scroll messages down by one page&quot;),</span></span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">          76 :   messages_line_up: keybind(&quot;ctrl+alt+y&quot;, &quot;Scroll messages up by one line&quot;),</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">          80 :   messages_line_down: keybind(&quot;ctrl+alt+e&quot;, &quot;Scroll messages down by one line&quot;),</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">          82 :   messages_half_page_up: keybind(&quot;ctrl+alt+u&quot;, &quot;Scroll messages up by half page&quot;),</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">          86 :   messages_half_page_down: keybind(&quot;ctrl+alt+d&quot;, &quot;Scroll messages down by half page&quot;),</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaGNC">          70 :   messages_first: keybind(&quot;ctrl+g,home&quot;, &quot;Navigate to first message&quot;),</span></span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">          71 :   messages_last: keybind(&quot;ctrl+alt+g,end&quot;, &quot;Navigate to last message&quot;),</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">          61 :   messages_next: keybind(&quot;none&quot;, &quot;Navigate to next message&quot;),</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">          69 :   messages_previous: keybind(&quot;none&quot;, &quot;Navigate to previous message&quot;),</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaGNC">          71 :   messages_last_user: keybind(&quot;none&quot;, &quot;Navigate to last user message&quot;),</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaGNC">          54 :   messages_copy: keybind(&quot;&lt;leader&gt;y&quot;, &quot;Copy message&quot;),</span></span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaGNC">          54 :   messages_undo: keybind(&quot;&lt;leader&gt;u&quot;, &quot;Undo message&quot;),</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaGNC">          54 :   messages_redo: keybind(&quot;&lt;leader&gt;r&quot;, &quot;Redo message&quot;),</span></span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">          93 :   messages_toggle_conceal: keybind(&quot;&lt;leader&gt;h&quot;, &quot;Toggle code block concealment in messages&quot;),</span></span>
+<span id="L150"><span class="lineNum">     150</span> <span class="tlaGNC">          66 :   tool_details: keybind(&quot;none&quot;, &quot;Toggle tool details visibility&quot;),</span></span>
+<span id="L151"><span class="lineNum">     151</span> <span class="tlaGNC">          73 :   display_thinking: keybind(&quot;none&quot;, &quot;Toggle thinking blocks visibility&quot;),</span></span>
+<span id="L152"><span class="lineNum">     152</span>              : </span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaGNC">          50 :   prompt_submit: keybind(&quot;none&quot;, &quot;Submit prompt&quot;),</span></span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaGNC">          71 :   prompt_editor_context_clear: keybind(&quot;none&quot;, &quot;Clear editor context&quot;),</span></span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaGNC">          56 :   prompt_skills: keybind(&quot;none&quot;, &quot;Open skill selector&quot;),</span></span>
+<span id="L156"><span class="lineNum">     156</span> <span class="tlaGNC">          48 :   prompt_stash: keybind(&quot;none&quot;, &quot;Stash prompt&quot;),</span></span>
+<span id="L157"><span class="lineNum">     157</span> <span class="tlaGNC">          58 :   prompt_stash_pop: keybind(&quot;none&quot;, &quot;Pop stashed prompt&quot;),</span></span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaGNC">          61 :   prompt_stash_list: keybind(&quot;none&quot;, &quot;List stashed prompts&quot;),</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaGNC">          50 :   workspace_set: keybind(&quot;none&quot;, &quot;Set workspace&quot;),</span></span>
+<span id="L160"><span class="lineNum">     160</span>              : </span>
+<span id="L161"><span class="lineNum">     161</span> <span class="tlaGNC">          54 :   input_clear: keybind(&quot;ctrl+c&quot;, &quot;Clear input field&quot;),</span></span>
+<span id="L162"><span class="lineNum">     162</span> <span class="tlaGNC">          89 :   input_paste: keybind({ key: &quot;ctrl+v&quot;, preventDefault: false }, &quot;Paste from clipboard&quot;),</span></span>
+<span id="L163"><span class="lineNum">     163</span> <span class="tlaGNC">          50 :   input_submit: keybind(&quot;return&quot;, &quot;Submit input&quot;),</span></span>
+<span id="L164"><span class="lineNum">     164</span> <span class="tlaGNC">          98 :   input_newline: keybind(&quot;shift+return,ctrl+return,alt+return,ctrl+j&quot;, &quot;Insert newline in input&quot;),</span></span>
+<span id="L165"><span class="lineNum">     165</span> <span class="tlaGNC">          71 :   input_move_left: keybind(&quot;left,ctrl+b&quot;, &quot;Move cursor left in input&quot;),</span></span>
+<span id="L166"><span class="lineNum">     166</span> <span class="tlaGNC">          74 :   input_move_right: keybind(&quot;right,ctrl+f&quot;, &quot;Move cursor right in input&quot;),</span></span>
+<span id="L167"><span class="lineNum">     167</span> <span class="tlaGNC">          58 :   input_move_up: keybind(&quot;up&quot;, &quot;Move cursor up in input&quot;),</span></span>
+<span id="L168"><span class="lineNum">     168</span> <span class="tlaGNC">          64 :   input_move_down: keybind(&quot;down&quot;, &quot;Move cursor down in input&quot;),</span></span>
+<span id="L169"><span class="lineNum">     169</span> <span class="tlaGNC">          67 :   input_select_left: keybind(&quot;shift+left&quot;, &quot;Select left in input&quot;),</span></span>
+<span id="L170"><span class="lineNum">     170</span> <span class="tlaGNC">          70 :   input_select_right: keybind(&quot;shift+right&quot;, &quot;Select right in input&quot;),</span></span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaGNC">          61 :   input_select_up: keybind(&quot;shift+up&quot;, &quot;Select up in input&quot;),</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaGNC">          67 :   input_select_down: keybind(&quot;shift+down&quot;, &quot;Select down in input&quot;),</span></span>
+<span id="L173"><span class="lineNum">     173</span> <span class="tlaGNC">          71 :   input_line_home: keybind(&quot;ctrl+a&quot;, &quot;Move to start of line in input&quot;),</span></span>
+<span id="L174"><span class="lineNum">     174</span> <span class="tlaGNC">          68 :   input_line_end: keybind(&quot;ctrl+e&quot;, &quot;Move to end of line in input&quot;),</span></span>
+<span id="L175"><span class="lineNum">     175</span> <span class="tlaGNC">          86 :   input_select_line_home: keybind(&quot;ctrl+shift+a&quot;, &quot;Select to start of line in input&quot;),</span></span>
+<span id="L176"><span class="lineNum">     176</span> <span class="tlaGNC">          83 :   input_select_line_end: keybind(&quot;ctrl+shift+e&quot;, &quot;Select to end of line in input&quot;),</span></span>
+<span id="L177"><span class="lineNum">     177</span> <span class="tlaGNC">          84 :   input_visual_line_home: keybind(&quot;alt+a&quot;, &quot;Move to start of visual line in input&quot;),</span></span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaGNC">          81 :   input_visual_line_end: keybind(&quot;alt+e&quot;, &quot;Move to end of visual line in input&quot;),</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaGNC">          99 :   input_select_visual_line_home: keybind(&quot;alt+shift+a&quot;, &quot;Select to start of visual line in input&quot;),</span></span>
+<span id="L180"><span class="lineNum">     180</span> <span class="tlaGNC">          96 :   input_select_visual_line_end: keybind(&quot;alt+shift+e&quot;, &quot;Select to end of visual line in input&quot;),</span></span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaGNC">          73 :   input_buffer_home: keybind(&quot;home&quot;, &quot;Move to start of buffer in input&quot;),</span></span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaGNC">          69 :   input_buffer_end: keybind(&quot;end&quot;, &quot;Move to end of buffer in input&quot;),</span></span>
+<span id="L183"><span class="lineNum">     183</span> <span class="tlaGNC">          88 :   input_select_buffer_home: keybind(&quot;shift+home&quot;, &quot;Select to start of buffer in input&quot;),</span></span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaGNC">          84 :   input_select_buffer_end: keybind(&quot;shift+end&quot;, &quot;Select to end of buffer in input&quot;),</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">          69 :   input_delete_line: keybind(&quot;ctrl+shift+d&quot;, &quot;Delete line in input&quot;),</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaGNC">          80 :   input_delete_to_line_end: keybind(&quot;ctrl+k&quot;, &quot;Delete to end of line in input&quot;),</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">          84 :   input_delete_to_line_start: keybind(&quot;ctrl+u&quot;, &quot;Delete to start of line in input&quot;),</span></span>
+<span id="L188"><span class="lineNum">     188</span> <span class="tlaGNC">          78 :   input_backspace: keybind(&quot;backspace,shift+backspace&quot;, &quot;Backspace in input&quot;),</span></span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          83 :   input_delete: keybind(&quot;ctrl+d,delete,shift+delete&quot;, &quot;Delete character in input&quot;),</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaGNC">          57 :   input_undo: keybind(&quot;ctrl+-,super+z&quot;, &quot;Undo in input&quot;),</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaGNC">          63 :   input_redo: keybind(&quot;ctrl+.,super+shift+z&quot;, &quot;Redo in input&quot;),</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaGNC">          90 :   input_word_forward: keybind(&quot;alt+f,alt+right,ctrl+right&quot;, &quot;Move word forward in input&quot;),</span></span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaGNC">          90 :   input_word_backward: keybind(&quot;alt+b,alt+left,ctrl+left&quot;, &quot;Move word backward in input&quot;),</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaGNC">         100 :   input_select_word_forward: keybind(&quot;alt+shift+f,alt+shift+right&quot;, &quot;Select word forward in input&quot;),</span></span>
+<span id="L195"><span class="lineNum">     195</span> <span class="tlaGNC">         101 :   input_select_word_backward: keybind(&quot;alt+shift+b,alt+shift+left&quot;, &quot;Select word backward in input&quot;),</span></span>
+<span id="L196"><span class="lineNum">     196</span> <span class="tlaGNC">         101 :   input_delete_word_forward: keybind(&quot;alt+d,alt+delete,ctrl+delete&quot;, &quot;Delete word forward in input&quot;),</span></span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaGNC">         110 :   input_delete_word_backward: keybind(&quot;ctrl+w,ctrl+backspace,alt+backspace&quot;, &quot;Delete word backward in input&quot;),</span></span>
+<span id="L198"><span class="lineNum">     198</span> <span class="tlaGNC">          62 :   input_select_all: keybind(&quot;super+a&quot;, &quot;Select all in input&quot;),</span></span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaGNC">          59 :   history_previous: keybind(&quot;up&quot;, &quot;Previous history item&quot;),</span></span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaGNC">          53 :   history_next: keybind(&quot;down&quot;, &quot;Next history item&quot;),</span></span>
+<span id="L201"><span class="lineNum">     201</span>              : </span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaGNC">          77 :   &quot;dialog.select.prev&quot;: keybind(&quot;up,ctrl+p&quot;, &quot;Move to previous dialog item&quot;),</span></span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaGNC">          75 :   &quot;dialog.select.next&quot;: keybind(&quot;down,ctrl+n&quot;, &quot;Move to next dialog item&quot;),</span></span>
+<span id="L204"><span class="lineNum">     204</span> <span class="tlaGNC">          75 :   &quot;dialog.select.page_up&quot;: keybind(&quot;pageup&quot;, &quot;Move up one page in dialog&quot;),</span></span>
+<span id="L205"><span class="lineNum">     205</span> <span class="tlaGNC">          81 :   &quot;dialog.select.page_down&quot;: keybind(&quot;pagedown&quot;, &quot;Move down one page in dialog&quot;),</span></span>
+<span id="L206"><span class="lineNum">     206</span> <span class="tlaGNC">          69 :   &quot;dialog.select.home&quot;: keybind(&quot;home&quot;, &quot;Move to first dialog item&quot;),</span></span>
+<span id="L207"><span class="lineNum">     207</span> <span class="tlaGNC">          66 :   &quot;dialog.select.end&quot;: keybind(&quot;end&quot;, &quot;Move to last dialog item&quot;),</span></span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaGNC">          75 :   &quot;dialog.select.submit&quot;: keybind(&quot;return&quot;, &quot;Submit selected dialog item&quot;),</span></span>
+<span id="L209"><span class="lineNum">     209</span> <span class="tlaGNC">          68 :   &quot;dialog.prompt.submit&quot;: keybind(&quot;return&quot;, &quot;Submit dialog prompt&quot;),</span></span>
+<span id="L210"><span class="lineNum">     210</span> <span class="tlaGNC">          68 :   &quot;dialog.mcp.toggle&quot;: keybind(&quot;space&quot;, &quot;Toggle MCP in MCP dialog&quot;),</span></span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaGNC">          67 :   &quot;dialog.move_session.new&quot;: keybind(&quot;ctrl+m&quot;, &quot;New project copy&quot;),</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaGNC">          73 :   &quot;dialog.move_session.delete&quot;: keybind(&quot;ctrl+d&quot;, &quot;Delete project copy&quot;),</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaGNC">          77 :   &quot;dialog.move_session.refresh&quot;: keybind(&quot;ctrl+r&quot;, &quot;Refresh project copies&quot;),</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaGNC">          89 :   &quot;prompt.autocomplete.prev&quot;: keybind(&quot;up,ctrl+p&quot;, &quot;Move to previous autocomplete item&quot;),</span></span>
+<span id="L215"><span class="lineNum">     215</span> <span class="tlaGNC">          87 :   &quot;prompt.autocomplete.next&quot;: keybind(&quot;down,ctrl+n&quot;, &quot;Move to next autocomplete item&quot;),</span></span>
+<span id="L216"><span class="lineNum">     216</span> <span class="tlaGNC">          69 :   &quot;prompt.autocomplete.hide&quot;: keybind(&quot;escape&quot;, &quot;Hide autocomplete&quot;),</span></span>
+<span id="L217"><span class="lineNum">     217</span> <span class="tlaGNC">          78 :   &quot;prompt.autocomplete.select&quot;: keybind(&quot;return&quot;, &quot;Select autocomplete item&quot;),</span></span>
+<span id="L218"><span class="lineNum">     218</span> <span class="tlaGNC">          79 :   &quot;prompt.autocomplete.complete&quot;: keybind(&quot;tab&quot;, &quot;Complete autocomplete item&quot;),</span></span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaGNC">          91 :   &quot;permission.prompt.fullscreen&quot;: keybind(&quot;ctrl+f&quot;, &quot;Toggle permission prompt fullscreen&quot;),</span></span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaGNC">          54 :   &quot;plugins.toggle&quot;: keybind(&quot;space&quot;, &quot;Toggle plugin&quot;),</span></span>
+<span id="L221"><span class="lineNum">     221</span> <span class="tlaGNC">          84 :   &quot;dialog.plugins.install&quot;: keybind(&quot;shift+i&quot;, &quot;Install plugin from plugin dialog&quot;),</span></span>
+<span id="L222"><span class="lineNum">     222</span>              : </span>
+<span id="L223"><span class="lineNum">     223</span> <span class="tlaGNC">          58 :   terminal_suspend: keybind(&quot;ctrl+z&quot;, &quot;Suspend terminal&quot;),</span></span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaGNC">          66 :   terminal_title_toggle: keybind(&quot;none&quot;, &quot;Toggle terminal title&quot;),</span></span>
+<span id="L225"><span class="lineNum">     225</span> <span class="tlaGNC">          66 :   tips_toggle: keybind(&quot;&lt;leader&gt;h&quot;, &quot;Toggle tips on home screen&quot;),</span></span>
+<span id="L226"><span class="lineNum">     226</span> <span class="tlaGNC">          64 :   plugin_manager: keybind(&quot;none&quot;, &quot;Open plugin manager dialog&quot;),</span></span>
+<span id="L227"><span class="lineNum">     227</span> <span class="tlaGNC">          52 :   plugin_install: keybind(&quot;none&quot;, &quot;Install plugin&quot;),</span></span>
+<span id="L228"><span class="lineNum">     228</span>              : </span>
+<span id="L229"><span class="lineNum">     229</span> <span class="tlaGNC">          68 :   which_key_toggle: keybind(&quot;ctrl+alt+k&quot;, &quot;Toggle which-key panel&quot;),</span></span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaGNC">          82 :   which_key_layout_toggle: keybind(&quot;ctrl+alt+shift+k&quot;, &quot;Switch which-key layout&quot;),</span></span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaGNC">          92 :   which_key_pending_toggle: keybind(&quot;ctrl+alt+shift+p&quot;, &quot;Toggle which-key pending preview&quot;),</span></span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaGNC">          92 :   which_key_group_previous: keybind(&quot;ctrl+alt+left,ctrl+alt+[&quot;, &quot;Previous which-key group&quot;),</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaGNC">          85 :   which_key_group_next: keybind(&quot;ctrl+alt+right,ctrl+alt+]&quot;, &quot;Next which-key group&quot;),</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaGNC">          80 :   which_key_scroll_up: keybind(&quot;ctrl+alt+up,ctrl+alt+p&quot;, &quot;Scroll which-key up&quot;),</span></span>
+<span id="L235"><span class="lineNum">     235</span> <span class="tlaGNC">          86 :   which_key_scroll_down: keybind(&quot;ctrl+alt+down,ctrl+alt+n&quot;, &quot;Scroll which-key down&quot;),</span></span>
+<span id="L236"><span class="lineNum">     236</span> <span class="tlaGNC">          69 :   which_key_page_up: keybind(&quot;ctrl+alt+pageup&quot;, &quot;Page which-key up&quot;),</span></span>
+<span id="L237"><span class="lineNum">     237</span> <span class="tlaGNC">          75 :   which_key_page_down: keybind(&quot;ctrl+alt+pagedown&quot;, &quot;Page which-key down&quot;),</span></span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaGNC">          78 :   which_key_home: keybind(&quot;ctrl+alt+home&quot;, &quot;Jump to first which-key binding&quot;),</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaGNC">          73 :   which_key_end: keybind(&quot;ctrl+alt+end&quot;, &quot;Jump to last which-key binding&quot;),</span></span>
+<span id="L240"><span class="lineNum">     240</span> <span class="tlaGNC">           2 : } satisfies Record&lt;string, Definition&gt;</span></span>
+<span id="L241"><span class="lineNum">     241</span>              : </span>
+<span id="L242"><span class="lineNum">     242</span>              : type KeybindName = keyof typeof Definitions</span>
+<span id="L243"><span class="lineNum">     243</span> <span class="tlaGNC">          55 : const KeybindNames = new Set&lt;string&gt;(Object.keys(Definitions))</span></span>
+<span id="L244"><span class="lineNum">     244</span>              : </span>
+<span id="L245"><span class="lineNum">     245</span> <span class="tlaGNC">          45 : export const KeybindOverrides = Schema.Struct(</span></span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaGNC">          19 :   Object.fromEntries(</span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC">          52 :     Object.entries(Definitions).map(([name, item]) =&gt; [</span></span>
+<span id="L248"><span class="lineNum">     248</span> <span class="tlaGNC">           7 :       name,</span></span>
+<span id="L249"><span class="lineNum">     249</span> <span class="tlaGNC">          80 :       Schema.optional(BindingValueSchema).annotate({ description: item.description }),</span></span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaGNC">           1 :     ]),</span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaGNC">           1 :   ),</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaGNC">          57 : ).annotate({ description: &quot;TUI keybinding overrides&quot; })</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaGNC">          46 : export const Descriptions = Object.fromEntries(</span></span>
+<span id="L254"><span class="lineNum">     254</span> <span class="tlaGNC">          73 :   Object.entries(Definitions).map(([name, item]) =&gt; [name, item.description]),</span></span>
+<span id="L255"><span class="lineNum">     255</span> <span class="tlaGNC">           3 : ) as Record&lt;KeybindName, string&gt;</span></span>
+<span id="L256"><span class="lineNum">     256</span> <span class="tlaGNC">          28 : export const CommandMap = {</span></span>
+<span id="L257"><span class="lineNum">     257</span> <span class="tlaGNC">          23 :   app_exit: &quot;app.exit&quot;,</span></span>
+<span id="L258"><span class="lineNum">     258</span> <span class="tlaGNC">          25 :   app_debug: &quot;app.debug&quot;,</span></span>
+<span id="L259"><span class="lineNum">     259</span> <span class="tlaGNC">          29 :   app_console: &quot;app.console&quot;,</span></span>
+<span id="L260"><span class="lineNum">     260</span> <span class="tlaGNC">          41 :   app_heap_snapshot: &quot;app.heap_snapshot&quot;,</span></span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaGNC">          49 :   app_toggle_animations: &quot;app.toggle.animations&quot;,</span></span>
+<span id="L262"><span class="lineNum">     262</span> <span class="tlaGNC">          53 :   app_toggle_file_context: &quot;app.toggle.file_context&quot;,</span></span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaGNC">          45 :   app_toggle_diffwrap: &quot;app.toggle.diffwrap&quot;,</span></span>
+<span id="L264"><span class="lineNum">     264</span> <span class="tlaGNC">          55 :   app_toggle_paste_summary: &quot;app.toggle.paste_summary&quot;,</span></span>
+<span id="L265"><span class="lineNum">     265</span> <span class="tlaGNC">          77 :   app_toggle_session_directory_filter: &quot;app.toggle.session_directory_filter&quot;,</span></span>
+<span id="L266"><span class="lineNum">     266</span> <span class="tlaGNC">          39 :   command_list: &quot;command.palette.show&quot;,</span></span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaGNC">          25 :   help_show: &quot;help.show&quot;,</span></span>
+<span id="L268"><span class="lineNum">     268</span> <span class="tlaGNC">          25 :   docs_open: &quot;docs.open&quot;,</span></span>
+<span id="L269"><span class="lineNum">     269</span> <span class="tlaGNC">          25 :   diff_open: &quot;diff.open&quot;,</span></span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaGNC">          27 :   diff_close: &quot;diff.close&quot;,</span></span>
+<span id="L271"><span class="lineNum">     271</span> <span class="tlaGNC">          29 :   diff_toggle: &quot;diff.toggle&quot;,</span></span>
+<span id="L272"><span class="lineNum">     272</span> <span class="tlaGNC">          29 :   diff_expand: &quot;diff.expand&quot;,</span></span>
+<span id="L273"><span class="lineNum">     273</span> <span class="tlaGNC">          37 :   diff_expand_all: &quot;diff.expand_all&quot;,</span></span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaGNC">          33 :   diff_collapse: &quot;diff.collapse&quot;,</span></span>
+<span id="L275"><span class="lineNum">     275</span> <span class="tlaGNC">          41 :   diff_switch_focus: &quot;diff.switch_focus&quot;,</span></span>
+<span id="L276"><span class="lineNum">     276</span> <span class="tlaGNC">          35 :   diff_next_hunk: &quot;diff.next_hunk&quot;,</span></span>
+<span id="L277"><span class="lineNum">     277</span> <span class="tlaGNC">          43 :   diff_previous_hunk: &quot;diff.previous_hunk&quot;,</span></span>
+<span id="L278"><span class="lineNum">     278</span> <span class="tlaGNC">          35 :   diff_next_file: &quot;diff.next_file&quot;,</span></span>
+<span id="L279"><span class="lineNum">     279</span> <span class="tlaGNC">          43 :   diff_previous_file: &quot;diff.previous_file&quot;,</span></span>
+<span id="L280"><span class="lineNum">     280</span> <span class="tlaGNC">          49 :   diff_toggle_file_tree: &quot;diff.toggle_file_tree&quot;,</span></span>
+<span id="L281"><span class="lineNum">     281</span> <span class="tlaGNC">          41 :   diff_single_patch: &quot;diff.single_patch&quot;,</span></span>
+<span id="L282"><span class="lineNum">     282</span> <span class="tlaGNC">          43 :   diff_switch_source: &quot;diff.switch_source&quot;,</span></span>
+<span id="L283"><span class="lineNum">     283</span> <span class="tlaGNC">          39 :   diff_toggle_view: &quot;diff.toggle_view&quot;,</span></span>
+<span id="L284"><span class="lineNum">     284</span> <span class="tlaGNC">          25 :   diff_help: &quot;diff.help&quot;,</span></span>
+<span id="L285"><span class="lineNum">     285</span> <span class="tlaGNC">          31 :   editor_open: &quot;prompt.editor&quot;,</span></span>
+<span id="L286"><span class="lineNum">     286</span> <span class="tlaGNC">          29 :   theme_list: &quot;theme.switch&quot;,</span></span>
+<span id="L287"><span class="lineNum">     287</span> <span class="tlaGNC">          41 :   theme_switch_mode: &quot;theme.switch_mode&quot;,</span></span>
+<span id="L288"><span class="lineNum">     288</span> <span class="tlaGNC">          37 :   theme_mode_lock: &quot;theme.mode.lock&quot;,</span></span>
+<span id="L289"><span class="lineNum">     289</span> <span class="tlaGNC">          43 :   sidebar_toggle: &quot;session.sidebar.toggle&quot;,</span></span>
+<span id="L290"><span class="lineNum">     290</span> <span class="tlaGNC">          47 :   scrollbar_toggle: &quot;session.toggle.scrollbar&quot;,</span></span>
+<span id="L291"><span class="lineNum">     291</span> <span class="tlaGNC">          33 :   status_view: &quot;opencode.status&quot;,</span></span>
+<span id="L292"><span class="lineNum">     292</span> <span class="tlaGNC">          31 :   debug_view: &quot;opencode.debug&quot;,</span></span>
+<span id="L293"><span class="lineNum">     293</span> <span class="tlaGNC">          35 :   session_export: &quot;session.export&quot;,</span></span>
+<span id="L294"><span class="lineNum">     294</span> <span class="tlaGNC">          31 :   session_copy: &quot;session.copy&quot;,</span></span>
+<span id="L295"><span class="lineNum">     295</span> <span class="tlaGNC">          31 :   session_move: &quot;session.move&quot;,</span></span>
+<span id="L296"><span class="lineNum">     296</span> <span class="tlaGNC">          29 :   session_new: &quot;session.new&quot;,</span></span>
+<span id="L297"><span class="lineNum">     297</span> <span class="tlaGNC">          31 :   session_list: &quot;session.list&quot;,</span></span>
+<span id="L298"><span class="lineNum">     298</span> <span class="tlaGNC">          39 :   session_timeline: &quot;session.timeline&quot;,</span></span>
+<span id="L299"><span class="lineNum">     299</span> <span class="tlaGNC">          31 :   session_fork: &quot;session.fork&quot;,</span></span>
+<span id="L300"><span class="lineNum">     300</span> <span class="tlaGNC">          35 :   session_rename: &quot;session.rename&quot;,</span></span>
+<span id="L301"><span class="lineNum">     301</span> <span class="tlaGNC">          35 :   session_delete: &quot;session.delete&quot;,</span></span>
+<span id="L302"><span class="lineNum">     302</span> <span class="tlaGNC">          33 :   session_share: &quot;session.share&quot;,</span></span>
+<span id="L303"><span class="lineNum">     303</span> <span class="tlaGNC">          37 :   session_unshare: &quot;session.unshare&quot;,</span></span>
+<span id="L304"><span class="lineNum">     304</span> <span class="tlaGNC">          41 :   session_interrupt: &quot;session.interrupt&quot;,</span></span>
+<span id="L305"><span class="lineNum">     305</span> <span class="tlaGNC">          43 :   session_background: &quot;session.background&quot;,</span></span>
+<span id="L306"><span class="lineNum">     306</span> <span class="tlaGNC">          37 :   session_compact: &quot;session.compact&quot;,</span></span>
+<span id="L307"><span class="lineNum">     307</span> <span class="tlaGNC">          57 :   session_toggle_timestamps: &quot;session.toggle.timestamps&quot;,</span></span>
+<span id="L308"><span class="lineNum">     308</span> <span class="tlaGNC">          75 :   session_toggle_generic_tool_output: &quot;session.toggle.generic_tool_output&quot;,</span></span>
+<span id="L309"><span class="lineNum">     309</span> <span class="tlaGNC">          51 :   session_queued_prompts: &quot;session.queued_prompts&quot;,</span></span>
+<span id="L310"><span class="lineNum">     310</span> <span class="tlaGNC">          45 :   session_child_first: &quot;session.child.first&quot;,</span></span>
+<span id="L311"><span class="lineNum">     311</span> <span class="tlaGNC">          44 :   session_child_cycle: &quot;session.child.next&quot;,</span></span>
+<span id="L312"><span class="lineNum">     312</span> <span class="tlaGNC">          56 :   session_child_cycle_reverse: &quot;session.child.previous&quot;,</span></span>
+<span id="L313"><span class="lineNum">     313</span> <span class="tlaGNC">          35 :   session_parent: &quot;session.parent&quot;,</span></span>
+<span id="L314"><span class="lineNum">     314</span> <span class="tlaGNC">          43 :   session_pin_toggle: &quot;session.pin.toggle&quot;,</span></span>
+<span id="L315"><span class="lineNum">     315</span> <span class="tlaGNC">          51 :   session_quick_switch_1: &quot;session.quick_switch.1&quot;,</span></span>
+<span id="L316"><span class="lineNum">     316</span> <span class="tlaGNC">          51 :   session_quick_switch_2: &quot;session.quick_switch.2&quot;,</span></span>
+<span id="L317"><span class="lineNum">     317</span> <span class="tlaGNC">          51 :   session_quick_switch_3: &quot;session.quick_switch.3&quot;,</span></span>
+<span id="L318"><span class="lineNum">     318</span> <span class="tlaGNC">          51 :   session_quick_switch_4: &quot;session.quick_switch.4&quot;,</span></span>
+<span id="L319"><span class="lineNum">     319</span> <span class="tlaGNC">          51 :   session_quick_switch_5: &quot;session.quick_switch.5&quot;,</span></span>
+<span id="L320"><span class="lineNum">     320</span> <span class="tlaGNC">          51 :   session_quick_switch_6: &quot;session.quick_switch.6&quot;,</span></span>
+<span id="L321"><span class="lineNum">     321</span> <span class="tlaGNC">          51 :   session_quick_switch_7: &quot;session.quick_switch.7&quot;,</span></span>
+<span id="L322"><span class="lineNum">     322</span> <span class="tlaGNC">          51 :   session_quick_switch_8: &quot;session.quick_switch.8&quot;,</span></span>
+<span id="L323"><span class="lineNum">     323</span> <span class="tlaGNC">          51 :   session_quick_switch_9: &quot;session.quick_switch.9&quot;,</span></span>
+<span id="L324"><span class="lineNum">     324</span> <span class="tlaGNC">          31 :   stash_delete: &quot;stash.delete&quot;,</span></span>
+<span id="L325"><span class="lineNum">     325</span> <span class="tlaGNC">          47 :   model_provider_list: &quot;model.dialog.provider&quot;,</span></span>
+<span id="L326"><span class="lineNum">     326</span> <span class="tlaGNC">          49 :   model_favorite_toggle: &quot;model.dialog.favorite&quot;,</span></span>
+<span id="L327"><span class="lineNum">     327</span> <span class="tlaGNC">          27 :   model_list: &quot;model.list&quot;,</span></span>
+<span id="L328"><span class="lineNum">     328</span> <span class="tlaGNC">          43 :   model_cycle_recent: &quot;model.cycle_recent&quot;,</span></span>
+<span id="L329"><span class="lineNum">     329</span> <span class="tlaGNC">          59 :   model_cycle_recent_reverse: &quot;model.cycle_recent_reverse&quot;,</span></span>
+<span id="L330"><span class="lineNum">     330</span> <span class="tlaGNC">          47 :   model_cycle_favorite: &quot;model.cycle_favorite&quot;,</span></span>
+<span id="L331"><span class="lineNum">     331</span> <span class="tlaGNC">          63 :   model_cycle_favorite_reverse: &quot;model.cycle_favorite_reverse&quot;,</span></span>
+<span id="L332"><span class="lineNum">     332</span> <span class="tlaGNC">          23 :   mcp_list: &quot;mcp.list&quot;,</span></span>
+<span id="L333"><span class="lineNum">     333</span> <span class="tlaGNC">          39 :   provider_connect: &quot;provider.connect&quot;,</span></span>
+<span id="L334"><span class="lineNum">     334</span> <span class="tlaGNC">          43 :   console_org_switch: &quot;console.org.switch&quot;,</span></span>
+<span id="L335"><span class="lineNum">     335</span> <span class="tlaGNC">          27 :   agent_list: &quot;agent.list&quot;,</span></span>
+<span id="L336"><span class="lineNum">     336</span> <span class="tlaGNC">          29 :   agent_cycle: &quot;agent.cycle&quot;,</span></span>
+<span id="L337"><span class="lineNum">     337</span> <span class="tlaGNC">          45 :   agent_cycle_reverse: &quot;agent.cycle.reverse&quot;,</span></span>
+<span id="L338"><span class="lineNum">     338</span> <span class="tlaGNC">          33 :   variant_cycle: &quot;variant.cycle&quot;,</span></span>
+<span id="L339"><span class="lineNum">     339</span> <span class="tlaGNC">          31 :   variant_list: &quot;variant.list&quot;,</span></span>
+<span id="L340"><span class="lineNum">     340</span> <span class="tlaGNC">          38 :   messages_page_up: &quot;session.page.up&quot;,</span></span>
+<span id="L341"><span class="lineNum">     341</span> <span class="tlaGNC">          42 :   messages_page_down: &quot;session.page.down&quot;,</span></span>
+<span id="L342"><span class="lineNum">     342</span> <span class="tlaGNC">          38 :   messages_line_up: &quot;session.line.up&quot;,</span></span>
+<span id="L343"><span class="lineNum">     343</span> <span class="tlaGNC">          42 :   messages_line_down: &quot;session.line.down&quot;,</span></span>
+<span id="L344"><span class="lineNum">     344</span> <span class="tlaGNC">          48 :   messages_half_page_up: &quot;session.half.page.up&quot;,</span></span>
+<span id="L345"><span class="lineNum">     345</span> <span class="tlaGNC">          52 :   messages_half_page_down: &quot;session.half.page.down&quot;,</span></span>
+<span id="L346"><span class="lineNum">     346</span> <span class="tlaGNC">          34 :   messages_first: &quot;session.first&quot;,</span></span>
+<span id="L347"><span class="lineNum">     347</span> <span class="tlaGNC">          32 :   messages_last: &quot;session.last&quot;,</span></span>
+<span id="L348"><span class="lineNum">     348</span> <span class="tlaGNC">          40 :   messages_next: &quot;session.message.next&quot;,</span></span>
+<span id="L349"><span class="lineNum">     349</span> <span class="tlaGNC">          48 :   messages_previous: &quot;session.message.previous&quot;,</span></span>
+<span id="L350"><span class="lineNum">     350</span> <span class="tlaGNC">          51 :   messages_last_user: &quot;session.messages_last_user&quot;,</span></span>
+<span id="L351"><span class="lineNum">     351</span> <span class="tlaGNC">          33 :   messages_copy: &quot;messages.copy&quot;,</span></span>
+<span id="L352"><span class="lineNum">     352</span> <span class="tlaGNC">          32 :   messages_undo: &quot;session.undo&quot;,</span></span>
+<span id="L353"><span class="lineNum">     353</span> <span class="tlaGNC">          32 :   messages_redo: &quot;session.redo&quot;,</span></span>
+<span id="L354"><span class="lineNum">     354</span> <span class="tlaGNC">          52 :   messages_toggle_conceal: &quot;session.toggle.conceal&quot;,</span></span>
+<span id="L355"><span class="lineNum">     355</span> <span class="tlaGNC">          41 :   tool_details: &quot;session.toggle.actions&quot;,</span></span>
+<span id="L356"><span class="lineNum">     356</span> <span class="tlaGNC">          46 :   display_thinking: &quot;session.toggle.thinking&quot;,</span></span>
+<span id="L357"><span class="lineNum">     357</span> <span class="tlaGNC">          33 :   prompt_submit: &quot;prompt.submit&quot;,</span></span>
+<span id="L358"><span class="lineNum">     358</span> <span class="tlaGNC">          61 :   prompt_editor_context_clear: &quot;prompt.editor_context.clear&quot;,</span></span>
+<span id="L359"><span class="lineNum">     359</span> <span class="tlaGNC">          33 :   prompt_skills: &quot;prompt.skills&quot;,</span></span>
+<span id="L360"><span class="lineNum">     360</span> <span class="tlaGNC">          31 :   prompt_stash: &quot;prompt.stash&quot;,</span></span>
+<span id="L361"><span class="lineNum">     361</span> <span class="tlaGNC">          39 :   prompt_stash_pop: &quot;prompt.stash.pop&quot;,</span></span>
+<span id="L362"><span class="lineNum">     362</span> <span class="tlaGNC">          41 :   prompt_stash_list: &quot;prompt.stash.list&quot;,</span></span>
+<span id="L363"><span class="lineNum">     363</span> <span class="tlaGNC">          33 :   workspace_set: &quot;workspace.set&quot;,</span></span>
+<span id="L364"><span class="lineNum">     364</span> <span class="tlaGNC">          30 :   input_clear: &quot;prompt.clear&quot;,</span></span>
+<span id="L365"><span class="lineNum">     365</span> <span class="tlaGNC">          30 :   input_paste: &quot;prompt.paste&quot;,</span></span>
+<span id="L366"><span class="lineNum">     366</span> <span class="tlaGNC">          31 :   input_submit: &quot;input.submit&quot;,</span></span>
+<span id="L367"><span class="lineNum">     367</span> <span class="tlaGNC">          33 :   input_newline: &quot;input.newline&quot;,</span></span>
+<span id="L368"><span class="lineNum">     368</span> <span class="tlaGNC">          37 :   input_move_left: &quot;input.move.left&quot;,</span></span>
+<span id="L369"><span class="lineNum">     369</span> <span class="tlaGNC">          39 :   input_move_right: &quot;input.move.right&quot;,</span></span>
+<span id="L370"><span class="lineNum">     370</span> <span class="tlaGNC">          33 :   input_move_up: &quot;input.move.up&quot;,</span></span>
+<span id="L371"><span class="lineNum">     371</span> <span class="tlaGNC">          37 :   input_move_down: &quot;input.move.down&quot;,</span></span>
+<span id="L372"><span class="lineNum">     372</span> <span class="tlaGNC">          41 :   input_select_left: &quot;input.select.left&quot;,</span></span>
+<span id="L373"><span class="lineNum">     373</span> <span class="tlaGNC">          43 :   input_select_right: &quot;input.select.right&quot;,</span></span>
+<span id="L374"><span class="lineNum">     374</span> <span class="tlaGNC">          37 :   input_select_up: &quot;input.select.up&quot;,</span></span>
+<span id="L375"><span class="lineNum">     375</span> <span class="tlaGNC">          41 :   input_select_down: &quot;input.select.down&quot;,</span></span>
+<span id="L376"><span class="lineNum">     376</span> <span class="tlaGNC">          37 :   input_line_home: &quot;input.line.home&quot;,</span></span>
+<span id="L377"><span class="lineNum">     377</span> <span class="tlaGNC">          35 :   input_line_end: &quot;input.line.end&quot;,</span></span>
+<span id="L378"><span class="lineNum">     378</span> <span class="tlaGNC">          51 :   input_select_line_home: &quot;input.select.line.home&quot;,</span></span>
+<span id="L379"><span class="lineNum">     379</span> <span class="tlaGNC">          49 :   input_select_line_end: &quot;input.select.line.end&quot;,</span></span>
+<span id="L380"><span class="lineNum">     380</span> <span class="tlaGNC">          51 :   input_visual_line_home: &quot;input.visual.line.home&quot;,</span></span>
+<span id="L381"><span class="lineNum">     381</span> <span class="tlaGNC">          49 :   input_visual_line_end: &quot;input.visual.line.end&quot;,</span></span>
+<span id="L382"><span class="lineNum">     382</span> <span class="tlaGNC">          65 :   input_select_visual_line_home: &quot;input.select.visual.line.home&quot;,</span></span>
+<span id="L383"><span class="lineNum">     383</span> <span class="tlaGNC">          63 :   input_select_visual_line_end: &quot;input.select.visual.line.end&quot;,</span></span>
+<span id="L384"><span class="lineNum">     384</span> <span class="tlaGNC">          41 :   input_buffer_home: &quot;input.buffer.home&quot;,</span></span>
+<span id="L385"><span class="lineNum">     385</span> <span class="tlaGNC">          39 :   input_buffer_end: &quot;input.buffer.end&quot;,</span></span>
+<span id="L386"><span class="lineNum">     386</span> <span class="tlaGNC">          55 :   input_select_buffer_home: &quot;input.select.buffer.home&quot;,</span></span>
+<span id="L387"><span class="lineNum">     387</span> <span class="tlaGNC">          53 :   input_select_buffer_end: &quot;input.select.buffer.end&quot;,</span></span>
+<span id="L388"><span class="lineNum">     388</span> <span class="tlaGNC">          41 :   input_delete_line: &quot;input.delete.line&quot;,</span></span>
+<span id="L389"><span class="lineNum">     389</span> <span class="tlaGNC">          55 :   input_delete_to_line_end: &quot;input.delete.to.line.end&quot;,</span></span>
+<span id="L390"><span class="lineNum">     390</span> <span class="tlaGNC">          59 :   input_delete_to_line_start: &quot;input.delete.to.line.start&quot;,</span></span>
+<span id="L391"><span class="lineNum">     391</span> <span class="tlaGNC">          37 :   input_backspace: &quot;input.backspace&quot;,</span></span>
+<span id="L392"><span class="lineNum">     392</span> <span class="tlaGNC">          31 :   input_delete: &quot;input.delete&quot;,</span></span>
+<span id="L393"><span class="lineNum">     393</span> <span class="tlaGNC">          27 :   input_undo: &quot;input.undo&quot;,</span></span>
+<span id="L394"><span class="lineNum">     394</span> <span class="tlaGNC">          27 :   input_redo: &quot;input.redo&quot;,</span></span>
+<span id="L395"><span class="lineNum">     395</span> <span class="tlaGNC">          43 :   input_word_forward: &quot;input.word.forward&quot;,</span></span>
+<span id="L396"><span class="lineNum">     396</span> <span class="tlaGNC">          45 :   input_word_backward: &quot;input.word.backward&quot;,</span></span>
+<span id="L397"><span class="lineNum">     397</span> <span class="tlaGNC">          57 :   input_select_word_forward: &quot;input.select.word.forward&quot;,</span></span>
+<span id="L398"><span class="lineNum">     398</span> <span class="tlaGNC">          59 :   input_select_word_backward: &quot;input.select.word.backward&quot;,</span></span>
+<span id="L399"><span class="lineNum">     399</span> <span class="tlaGNC">          57 :   input_delete_word_forward: &quot;input.delete.word.forward&quot;,</span></span>
+<span id="L400"><span class="lineNum">     400</span> <span class="tlaGNC">          59 :   input_delete_word_backward: &quot;input.delete.word.backward&quot;,</span></span>
+<span id="L401"><span class="lineNum">     401</span> <span class="tlaGNC">          39 :   input_select_all: &quot;input.select.all&quot;,</span></span>
+<span id="L402"><span class="lineNum">     402</span> <span class="tlaGNC">          46 :   history_previous: &quot;prompt.history.previous&quot;,</span></span>
+<span id="L403"><span class="lineNum">     403</span> <span class="tlaGNC">          38 :   history_next: &quot;prompt.history.next&quot;,</span></span>
+<span id="L404"><span class="lineNum">     404</span> <span class="tlaGNC">          39 :   terminal_suspend: &quot;terminal.suspend&quot;,</span></span>
+<span id="L405"><span class="lineNum">     405</span> <span class="tlaGNC">          49 :   terminal_title_toggle: &quot;terminal.title.toggle&quot;,</span></span>
+<span id="L406"><span class="lineNum">     406</span> <span class="tlaGNC">          29 :   tips_toggle: &quot;tips.toggle&quot;,</span></span>
+<span id="L407"><span class="lineNum">     407</span> <span class="tlaGNC">          33 :   plugin_manager: &quot;plugins.list&quot;,</span></span>
+<span id="L408"><span class="lineNum">     408</span> <span class="tlaGNC">          36 :   plugin_install: &quot;plugins.install&quot;,</span></span>
+<span id="L409"><span class="lineNum">     409</span> <span class="tlaGNC">          39 :   which_key_toggle: &quot;which-key.toggle&quot;,</span></span>
+<span id="L410"><span class="lineNum">     410</span> <span class="tlaGNC">          53 :   which_key_layout_toggle: &quot;which-key.layout.toggle&quot;,</span></span>
+<span id="L411"><span class="lineNum">     411</span> <span class="tlaGNC">          55 :   which_key_pending_toggle: &quot;which-key.pending.toggle&quot;,</span></span>
+<span id="L412"><span class="lineNum">     412</span> <span class="tlaGNC">          55 :   which_key_group_previous: &quot;which-key.group.previous&quot;,</span></span>
+<span id="L413"><span class="lineNum">     413</span> <span class="tlaGNC">          47 :   which_key_group_next: &quot;which-key.group.next&quot;,</span></span>
+<span id="L414"><span class="lineNum">     414</span> <span class="tlaGNC">          45 :   which_key_scroll_up: &quot;which-key.scroll.up&quot;,</span></span>
+<span id="L415"><span class="lineNum">     415</span> <span class="tlaGNC">          49 :   which_key_scroll_down: &quot;which-key.scroll.down&quot;,</span></span>
+<span id="L416"><span class="lineNum">     416</span> <span class="tlaGNC">          41 :   which_key_page_up: &quot;which-key.page.up&quot;,</span></span>
+<span id="L417"><span class="lineNum">     417</span> <span class="tlaGNC">          45 :   which_key_page_down: &quot;which-key.page.down&quot;,</span></span>
+<span id="L418"><span class="lineNum">     418</span> <span class="tlaGNC">          35 :   which_key_home: &quot;which-key.home&quot;,</span></span>
+<span id="L419"><span class="lineNum">     419</span> <span class="tlaGNC">          31 :   which_key_end: &quot;which-key.end&quot;,</span></span>
+<span id="L420"><span class="lineNum">     420</span> <span class="tlaGNC">           2 : } satisfies BindingCommandMap</span></span>
+<span id="L421"><span class="lineNum">     421</span> <span class="tlaGNC">          46 : const CommandDescriptions = Object.fromEntries(</span></span>
+<span id="L422"><span class="lineNum">     422</span> <span class="tlaGNC">          52 :   Object.entries(Definitions).map(([name, item]) =&gt; [</span></span>
+<span id="L423"><span class="lineNum">     423</span> <span class="tlaGNC">          27 :     CommandMap[name as keyof typeof CommandMap] ?? name,</span></span>
+<span id="L424"><span class="lineNum">     424</span> <span class="tlaGNC">          17 :     item.description,</span></span>
+<span id="L425"><span class="lineNum">     425</span> <span class="tlaGNC">           1 :   ]),</span></span>
+<span id="L426"><span class="lineNum">     426</span> <span class="tlaGNC">           3 : ) as Record&lt;string, string&gt;</span></span>
+<span id="L427"><span class="lineNum">     427</span>              : </span>
+<span id="L428"><span class="lineNum">     428</span>              : export type Keybinds = { [K in KeybindName]: BindingValueSchema }</span>
+<span id="L429"><span class="lineNum">     429</span>              : export type KeybindOverrides = Partial&lt;Keybinds&gt;</span>
+<span id="L430"><span class="lineNum">     430</span>              : export type BindingLookupView = {</span>
+<span id="L431"><span class="lineNum">     431</span>              :   readonly bindings: readonly Binding&lt;Renderable, KeyEvent&gt;[]</span>
+<span id="L432"><span class="lineNum">     432</span>              :   get(command: string): readonly Binding&lt;Renderable, KeyEvent&gt;[]</span>
+<span id="L433"><span class="lineNum">     433</span>              :   has(command: string): boolean</span>
+<span id="L434"><span class="lineNum">     434</span>              :   gather(name: string, commands: readonly string[]): readonly Binding&lt;Renderable, KeyEvent&gt;[]</span>
+<span id="L435"><span class="lineNum">     435</span>              :   pick(name: string, commands: readonly string[]): Binding&lt;Renderable, KeyEvent&gt;[]</span>
+<span id="L436"><span class="lineNum">     436</span>              :   omit(name: string, commands: readonly string[]): Binding&lt;Renderable, KeyEvent&gt;[]</span>
+<span id="L437"><span class="lineNum">     437</span>              : }</span>
+<span id="L438"><span class="lineNum">     438</span>              : </span>
+<span id="L439"><span class="lineNum">     439</span> <span class="tlaGNC">          19 : export function toBindingConfig(keybinds: Keybinds): BindingConfig&lt;Renderable, KeyEvent&gt; {</span></span>
+<span id="L440"><span class="lineNum">     440</span> <span class="tlaGNC">          52 :   return Object.fromEntries(Object.entries(keybinds)) as BindingConfig&lt;Renderable, KeyEvent&gt;</span></span>
+<span id="L441"><span class="lineNum">     441</span>              : }</span>
+<span id="L442"><span class="lineNum">     442</span>              : </span>
+<span id="L443"><span class="lineNum">     443</span> <span class="tlaGNC">          72 : const decodeBindingValue = Schema.decodeUnknownSync(BindingValueSchema)</span></span>
+<span id="L444"><span class="lineNum">     444</span>              : </span>
+<span id="L445"><span class="lineNum">     445</span> <span class="tlaGNC">          15 : export function defaultValue(name: KeybindName) {</span></span>
+<span id="L446"><span class="lineNum">     446</span> <span class="tlaGNC">          33 :   return Definitions[name].default</span></span>
+<span id="L447"><span class="lineNum">     447</span>              : }</span>
+<span id="L448"><span class="lineNum">     448</span>              : </span>
+<span id="L449"><span class="lineNum">     449</span> <span class="tlaGNC">          19 : export function parse(keybinds: KeybindOverrides): Keybinds {</span></span>
+<span id="L450"><span class="lineNum">     450</span> <span class="tlaGNC">          40 :   const invalid = unknownKeys(keybinds)</span></span>
+<span id="L451"><span class="lineNum">     451</span> <span class="tlaGNC">          24 :   if (invalid.length) throw new Error(`Unrecognized keybind${invalid.length === 1 ? &quot;&quot; : &quot;s&quot;}: ${invalid.join(&quot;, &quot;)}`)</span></span>
+<span id="L452"><span class="lineNum">     452</span> <span class="tlaGNC">          26 :   return Object.fromEntries(</span></span>
+<span id="L453"><span class="lineNum">     453</span> <span class="tlaGNC">          54 :     Object.entries(Definitions).map(([name, item]) =&gt; [</span></span>
+<span id="L454"><span class="lineNum">     454</span> <span class="tlaGNC">           9 :       name,</span></span>
+<span id="L455"><span class="lineNum">     455</span> <span class="tlaGNC">          52 :       decodeBindingValue(keybinds[name as KeybindName] ?? item.default),</span></span>
+<span id="L456"><span class="lineNum">     456</span> <span class="tlaGNC">           1 :     ]),</span></span>
+<span id="L457"><span class="lineNum">     457</span> <span class="tlaGNC">           2 :   ) as Keybinds</span></span>
+<span id="L458"><span class="lineNum">     458</span>              : }</span>
+<span id="L459"><span class="lineNum">     459</span>              : </span>
+<span id="L460"><span class="lineNum">     460</span> <span class="tlaGNC">          34 : export const Keybinds = { parse }</span></span>
+<span id="L461"><span class="lineNum">     461</span>              : </span>
+<span id="L462"><span class="lineNum">     462</span> <span class="tlaGNC">          16 : export function unknownKeys(input: object) {</span></span>
+<span id="L463"><span class="lineNum">     463</span> <span class="tlaGNC">          64 :   return Object.keys(input).filter((key) =&gt; !KeybindNames.has(key))</span></span>
+<span id="L464"><span class="lineNum">     464</span>              : }</span>
+<span id="L465"><span class="lineNum">     465</span>              : </span>
+<span id="L466"><span class="lineNum">     466</span> <span class="tlaGNC">          11 : export function bindingDefaults(): BindingDefaults&lt;Renderable, KeyEvent&gt; {</span></span>
+<span id="L467"><span class="lineNum">     467</span> <span class="tlaGNC">          37 :   return ({ command, binding }) =&gt; {</span></span>
+<span id="L468"><span class="lineNum">     468</span> <span class="tlaGNC">          40 :     if (binding.desc !== undefined) return</span></span>
+<span id="L469"><span class="lineNum">     469</span> <span class="tlaGNC">          45 :     return { desc: CommandDescriptions[command] }</span></span>
+<span id="L470"><span class="lineNum">     470</span>              :   }</span>
+<span id="L471"><span class="lineNum">     471</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

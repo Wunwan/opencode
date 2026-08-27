@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/effect/layer-node.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src/effect">../core/src/effect</a> - layer-node.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">92.9&nbsp;%</td>
+            <td class="headerCovTableEntry">184</td>
+            <td class="headerCovTableEntry">171</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          38 : import { Brand, Context, Layer } from &quot;effect&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : type AnyNode = Node&lt;unknown, unknown, any&gt;</span>
+<span id="L4"><span class="lineNum">       4</span>              : type RuntimeLayer = Layer.Layer&lt;never, unknown, unknown&gt;</span>
+<span id="L5"><span class="lineNum">       5</span>              : type NodeList&lt;Item extends AnyNode = AnyNode&gt; = readonly [] | readonly [Item, ...Item[]]</span>
+<span id="L6"><span class="lineNum">       6</span>              : export type Output&lt;Item&gt; = [Item] extends [never] ? never : Item extends Node&lt;infer A, unknown, any&gt; ? A : never</span>
+<span id="L7"><span class="lineNum">       7</span>              : export type Error&lt;Item&gt; = [Item] extends [never] ? never : Item extends Node&lt;unknown, infer E, any&gt; ? E : never</span>
+<span id="L8"><span class="lineNum">       8</span>              : type NodeTag&lt;Item&gt; = [Item] extends [never] ? undefined : Item extends Node&lt;unknown, unknown, infer T&gt; ? T : never</span>
+<span id="L9"><span class="lineNum">       9</span>              : type Missing&lt;Required, Dependencies extends NodeList&gt; = Exclude&lt;Required, Output&lt;Dependencies[number]&gt;&gt;</span>
+<span id="L10"><span class="lineNum">      10</span>              : type CheckDependencies&lt;Implementation extends Layer.Any, Dependencies extends NodeList&gt; = [</span>
+<span id="L11"><span class="lineNum">      11</span>              :   Missing&lt;Layer.Services&lt;Implementation&gt;, Dependencies&gt;,</span>
+<span id="L12"><span class="lineNum">      12</span>              : ] extends [never]</span>
+<span id="L13"><span class="lineNum">      13</span>              :   ? unknown</span>
+<span id="L14"><span class="lineNum">      14</span>              :   : { readonly &quot;Missing dependencies&quot;: Missing&lt;Layer.Services&lt;Implementation&gt;, Dependencies&gt; }</span>
+<span id="L15"><span class="lineNum">      15</span>              : declare const $OutputType: unique symbol</span>
+<span id="L16"><span class="lineNum">      16</span>              : declare const $ErrorType: unique symbol</span>
+<span id="L17"><span class="lineNum">      17</span>              : </span>
+<span id="L18"><span class="lineNum">      18</span>              : export type Tag&lt;Name extends string = string&gt; = Name &amp; Brand.Brand&lt;&quot;LayerNode.Tag&quot;&gt;</span>
+<span id="L19"><span class="lineNum">      19</span>              : </span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          32 : const makeTag = Brand.nominal&lt;Tag&gt;()</span></span>
+<span id="L21"><span class="lineNum">      21</span>              : </span>
+<span id="L22"><span class="lineNum">      22</span>              : export interface Node&lt;A, E = never, T extends Tag | undefined = undefined&gt; {</span>
+<span id="L23"><span class="lineNum">      23</span>              :   readonly kind: &quot;layer&quot; | &quot;unbound&quot; | &quot;group&quot;</span>
+<span id="L24"><span class="lineNum">      24</span>              :   readonly name: string</span>
+<span id="L25"><span class="lineNum">      25</span>              :   readonly service?: Context.Service.Any</span>
+<span id="L26"><span class="lineNum">      26</span>              :   readonly implementation?: Layer.Any</span>
+<span id="L27"><span class="lineNum">      27</span>              :   readonly dependencies: readonly AnyNode[]</span>
+<span id="L28"><span class="lineNum">      28</span>              :   readonly tag?: T</span>
+<span id="L29"><span class="lineNum">      29</span>              :   readonly [$OutputType]?: () =&gt; A</span>
+<span id="L30"><span class="lineNum">      30</span>              :   readonly [$ErrorType]?: () =&gt; E</span>
+<span id="L31"><span class="lineNum">      31</span>              : }</span>
+<span id="L32"><span class="lineNum">      32</span>              : </span>
+<span id="L33"><span class="lineNum">      33</span>              : type NodeIdentity =</span>
+<span id="L34"><span class="lineNum">      34</span>              :   | { readonly service: Context.Service.Any; readonly name?: never }</span>
+<span id="L35"><span class="lineNum">      35</span>              :   | { readonly name: string; readonly service?: never }</span>
+<span id="L36"><span class="lineNum">      36</span>              : type DistributiveOmit&lt;A, K extends PropertyKey&gt; = A extends unknown ? Omit&lt;A, K&gt; : never</span>
+<span id="L37"><span class="lineNum">      37</span>              : </span>
+<span id="L38"><span class="lineNum">      38</span>              : export type TagConfig = Readonly&lt;Record&lt;string, readonly string[]&gt;&gt;</span>
+<span id="L39"><span class="lineNum">      39</span>              : type TagNames&lt;Config extends TagConfig&gt; = keyof Config &amp; string</span>
+<span id="L40"><span class="lineNum">      40</span>              : type NodeInTags&lt;Names extends string&gt; = Node&lt;unknown, unknown, Tag&lt;Names&gt; | undefined&gt;</span>
+<span id="L41"><span class="lineNum">      41</span>              : type CheckTags&lt;Items extends NodeList, Names extends string&gt; = [Exclude&lt;Items[number], NodeInTags&lt;Names&gt;&gt;] extends [</span>
+<span id="L42"><span class="lineNum">      42</span>              :   never,</span>
+<span id="L43"><span class="lineNum">      43</span>              : ]</span>
+<span id="L44"><span class="lineNum">      44</span>              :   ? unknown</span>
+<span id="L45"><span class="lineNum">      45</span>              :   : { readonly &quot;Invalid tag dependencies&quot;: Exclude&lt;Items[number], NodeInTags&lt;Names&gt;&gt; }</span>
+<span id="L46"><span class="lineNum">      46</span>              : </span>
+<span id="L47"><span class="lineNum">      47</span>              : export interface Tags&lt;Config extends TagConfig&gt; {</span>
+<span id="L48"><span class="lineNum">      48</span>              :   readonly values: { readonly [Name in TagNames&lt;Config&gt;]: Tag&lt;Name&gt; }</span>
+<span id="L49"><span class="lineNum">      49</span>              :   readonly make: &lt;Name extends TagNames&lt;Config&gt;&gt;(</span>
+<span id="L50"><span class="lineNum">      50</span>              :     name: Name,</span>
+<span id="L51"><span class="lineNum">      51</span>              :   ) =&gt; &lt;const Implementation extends Layer.Any, const Items extends NodeList&gt;(</span>
+<span id="L52"><span class="lineNum">      52</span>              :     input: DistributiveOmit&lt;MakeInput&lt;Implementation, Items, Tag&lt;Name&gt;&gt;, &quot;tag&quot;&gt; &amp;</span>
+<span id="L53"><span class="lineNum">      53</span>              :       CheckTags&lt;Items, Name | Extract&lt;Config[Name][number], string&gt;&gt;,</span>
+<span id="L54"><span class="lineNum">      54</span>              :   ) =&gt; Node&lt;Layer.Success&lt;Implementation&gt;, Layer.Error&lt;Implementation&gt; | Error&lt;Items[number]&gt;, Tag&lt;Name&gt;&gt;</span>
+<span id="L55"><span class="lineNum">      55</span>              : }</span>
+<span id="L56"><span class="lineNum">      56</span>              : </span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaGNC">           6 : export function tags&lt;const Config extends { readonly [Name in keyof Config]: readonly (keyof Config &amp; string)[] }&gt;(</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaGNC">           8 :   config: Config,</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaGNC">           3 : ): Tags&lt;Config&gt; {</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaGNC">          36 :   const names = Object.keys(config) as TagNames&lt;Config&gt;[]</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaGNC">          78 :   const values = Object.fromEntries(names.map((name) =&gt; [name, makeTag(name)])) as Tags&lt;Config&gt;[&quot;values&quot;]</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaGNC">          11 :     values,</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaGNC">          25 :     make: ((name: TagNames&lt;Config&gt;) =&gt; (input: DistributiveOmit&lt;MakeInput&lt;Layer.Any, NodeList, Tag&gt;, &quot;tag&quot;&gt;) =&gt;</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaGNC">          39 :       make({ ...input, tag: values[name] })) as Tags&lt;Config&gt;[&quot;make&quot;],</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L67"><span class="lineNum">      67</span>              : }</span>
+<span id="L68"><span class="lineNum">      68</span>              : </span>
+<span id="L69"><span class="lineNum">      69</span>              : // Nodes ---------------------------------------------------------------------</span>
+<span id="L70"><span class="lineNum">      70</span>              : </span>
+<span id="L71"><span class="lineNum">      71</span>              : type MakeInput&lt;</span>
+<span id="L72"><span class="lineNum">      72</span>              :   Implementation extends Layer.Any,</span>
+<span id="L73"><span class="lineNum">      73</span>              :   Items extends NodeList,</span>
+<span id="L74"><span class="lineNum">      74</span>              :   T extends Tag | undefined = undefined,</span>
+<span id="L75"><span class="lineNum">      75</span>              : &gt; = NodeIdentity &amp; {</span>
+<span id="L76"><span class="lineNum">      76</span>              :   readonly layer: Implementation</span>
+<span id="L77"><span class="lineNum">      77</span>              :   readonly deps: Items &amp; CheckDependencies&lt;Implementation, NoInfer&lt;Items&gt;&gt;</span>
+<span id="L78"><span class="lineNum">      78</span>              :   readonly tag?: T</span>
+<span id="L79"><span class="lineNum">      79</span>              : }</span>
+<span id="L80"><span class="lineNum">      80</span>              : </span>
+<span id="L81"><span class="lineNum">      81</span> <span class="tlaGNC">           5 : export function make&lt;</span></span>
+<span id="L82"><span class="lineNum">      82</span>              :   const Implementation extends Layer.Any,</span>
+<span id="L83"><span class="lineNum">      83</span>              :   const Items extends NodeList,</span>
+<span id="L84"><span class="lineNum">      84</span>              :   const T extends Tag | undefined = undefined,</span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">           1 : &gt;(</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaGNC">           7 :   input: MakeInput&lt;Implementation, Items, T&gt;,</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">           3 : ): Node&lt;Layer.Success&lt;Implementation&gt;, Layer.Error&lt;Implementation&gt; | Error&lt;Items[number]&gt;, T&gt; {</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaGNC">          18 :     kind: &quot;layer&quot;,</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaGNC">          68 :     name: input.service !== undefined ? input.service.key : input.name,</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaGNC">          27 :     service: input.service,</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaGNC">          32 :     implementation: input.layer,</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaGNC">          29 :     dependencies: input.deps,</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaGNC">          16 :     tag: input.tag,</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L96"><span class="lineNum">      96</span>              : }</span>
+<span id="L97"><span class="lineNum">      97</span>              : </span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaGNC">          23 : export function unbound&lt;R, Shape, const T extends Tag&gt;(service: Context.Key&lt;R, Shape&gt;, tag: T): Node&lt;R, never, T&gt; {</span></span>
+<span id="L99"><span class="lineNum">      99</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L100"><span class="lineNum">     100</span> <span class="tlaGNC">          20 :     kind: &quot;unbound&quot;,</span></span>
+<span id="L101"><span class="lineNum">     101</span> <span class="tlaGNC">          22 :     name: service.key,</span></span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaGNC">          12 :     service,</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaGNC">          21 :     dependencies: [],</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaGNC">           5 :     tag,</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L106"><span class="lineNum">     106</span>              : }</span>
+<span id="L107"><span class="lineNum">     107</span>              : </span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaGNC">           6 : export function group&lt;const Items extends readonly AnyNode[]&gt;(</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaGNC">          14 :   dependencies: Items,</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaGNC">           3 : ): Node&lt;Output&lt;Items[number]&gt;, Error&lt;Items[number]&gt;, NodeTag&lt;Items[number]&gt;&gt; {</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaGNC">          53 :   return { kind: &quot;group&quot;, name: &quot;group&quot;, dependencies }</span></span>
+<span id="L112"><span class="lineNum">     112</span>              : }</span>
+<span id="L113"><span class="lineNum">     113</span>              : </span>
+<span id="L114"><span class="lineNum">     114</span>              : export type Replacement = readonly [source: AnyNode, replacement: AnyNode | Layer.Any]</span>
+<span id="L115"><span class="lineNum">     115</span>              : export type Replacements = readonly Replacement[]</span>
+<span id="L116"><span class="lineNum">     116</span>              : </span>
+<span id="L117"><span class="lineNum">     117</span>              : type CheckReplacementErrors&lt;SourceError, ReplacementError&gt; = [Exclude&lt;ReplacementError, SourceError&gt;] extends [never]</span>
+<span id="L118"><span class="lineNum">     118</span>              :   ? unknown</span>
+<span id="L119"><span class="lineNum">     119</span>              :   : { readonly &quot;New replacement errors&quot;: Exclude&lt;ReplacementError, SourceError&gt; }</span>
+<span id="L120"><span class="lineNum">     120</span>              : </span>
+<span id="L121"><span class="lineNum">     121</span>              : type CheckReplacement&lt;Item&gt; = Item extends readonly [Node&lt;infer A, infer E, infer T&gt;, infer Replacement]</span>
+<span id="L122"><span class="lineNum">     122</span>              :   ? Replacement extends Node&lt;NoInfer&lt;A&gt;, infer E2, T&gt;</span>
+<span id="L123"><span class="lineNum">     123</span>              :     ? CheckReplacementErrors&lt;E, NoInfer&lt;E2&gt;&gt;</span>
+<span id="L124"><span class="lineNum">     124</span>              :     : Replacement extends Layer.Layer&lt;NoInfer&lt;A&gt;, infer E2, never&gt;</span>
+<span id="L125"><span class="lineNum">     125</span>              :       ? CheckReplacementErrors&lt;E, NoInfer&lt;E2&gt;&gt;</span>
+<span id="L126"><span class="lineNum">     126</span>              :       : { readonly &quot;Invalid replacement&quot;: Replacement }</span>
+<span id="L127"><span class="lineNum">     127</span>              :   : { readonly &quot;Invalid replacement&quot;: Item }</span>
+<span id="L128"><span class="lineNum">     128</span>              : </span>
+<span id="L129"><span class="lineNum">     129</span>              : type CheckReplacements&lt;Items extends Replacements&gt; = {</span>
+<span id="L130"><span class="lineNum">     130</span>              :   readonly [K in keyof Items]: CheckReplacement&lt;Items[K]&gt;</span>
+<span id="L131"><span class="lineNum">     131</span>              : }</span>
+<span id="L132"><span class="lineNum">     132</span>              : </span>
+<span id="L133"><span class="lineNum">     133</span>              : type ValidReplacements&lt;Items extends Replacements&gt; = Items &amp; CheckReplacements&lt;Items&gt;</span>
+<span id="L134"><span class="lineNum">     134</span>              : </span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaGNC">          25 : function replacementNode(source: AnyNode, replacement: AnyNode | Layer.Any) {</span></span>
+<span id="L136"><span class="lineNum">     136</span> <span class="tlaGNC">          45 :   const replacementNode = isNode(replacement)</span></span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaGNC">          13 :     ? replacement</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaGNC">          13 :     : make({</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaGNC">          29 :         ...nodeMakeIdentity(source),</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaGNC">          23 :         layer: replacement as Layer.Layer&lt;unknown, unknown&gt;,</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaGNC">          13 :         deps: [],</span></span>
+<span id="L142"><span class="lineNum">     142</span> <span class="tlaGNC">          17 :         tag: source.tag,</span></span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaGNC">           4 :       })</span></span>
+<span id="L144"><span class="lineNum">     144</span> <span class="tlaGNC">          41 :   if (source.name !== replacementNode.name) {</span></span>
+<span id="L145"><span class="lineNum">     145</span> <span class="tlaUNC">           0 :     throw new Error(`Cannot replace ${source.name} with ${replacementNode.name}`)</span></span>
+<span id="L146"><span class="lineNum">     146</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L147"><span class="lineNum">     147</span> <span class="tlaGNC">          39 :   if (source.tag !== replacementNode.tag) {</span></span>
+<span id="L148"><span class="lineNum">     148</span> <span class="tlaUNC">           0 :     throw new Error(`Cannot replace ${source.name} across tags`)</span></span>
+<span id="L149"><span class="lineNum">     149</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L150"><span class="lineNum">     150</span> <span class="tlaGNC">          22 :   return replacementNode</span></span>
+<span id="L151"><span class="lineNum">     151</span>              : }</span>
+<span id="L152"><span class="lineNum">     152</span>              : </span>
+<span id="L153"><span class="lineNum">     153</span> <span class="tlaGNC">          10 : function nodeMakeIdentity(node: AnyNode): NodeIdentity {</span></span>
+<span id="L154"><span class="lineNum">     154</span> <span class="tlaGNC">          66 :   if (node.service !== undefined) return { service: node.service }</span></span>
+<span id="L155"><span class="lineNum">     155</span> <span class="tlaUNC">           0 :   return { name: node.name }</span></span>
+<span id="L156"><span class="lineNum">     156</span>              : }</span>
+<span id="L157"><span class="lineNum">     157</span>              : </span>
+<span id="L158"><span class="lineNum">     158</span> <span class="tlaGNC">          11 : function isNode(input: Layer.Any | AnyNode): input is AnyNode {</span></span>
+<span id="L159"><span class="lineNum">     159</span> <span class="tlaGNC">          49 :   return &quot;kind&quot; in input &amp;&amp; &quot;dependencies&quot; in input</span></span>
+<span id="L160"><span class="lineNum">     160</span>              : }</span>
+<span id="L161"><span class="lineNum">     161</span>              : </span>
+<span id="L162"><span class="lineNum">     162</span>              : // Tree -----------------------------------------------------------------------</span>
+<span id="L163"><span class="lineNum">     163</span>              : </span>
+<span id="L164"><span class="lineNum">     164</span>              : type Visit&lt;Result&gt; = (node: AnyNode, context: VisitContext&lt;Result&gt;) =&gt; Result</span>
+<span id="L165"><span class="lineNum">     165</span>              : </span>
+<span id="L166"><span class="lineNum">     166</span>              : type VisitContext&lt;Result&gt; = {</span>
+<span id="L167"><span class="lineNum">     167</span>              :   readonly cache: Map&lt;AnyNode, Result&gt;</span>
+<span id="L168"><span class="lineNum">     168</span>              :   readonly visit: (node: AnyNode) =&gt; Result</span>
+<span id="L169"><span class="lineNum">     169</span>              : }</span>
+<span id="L170"><span class="lineNum">     170</span>              : </span>
+<span id="L171"><span class="lineNum">     171</span> <span class="tlaGNC">           1 : function walk&lt;Result&gt;(</span></span>
+<span id="L172"><span class="lineNum">     172</span> <span class="tlaGNC">           6 :   root: AnyNode,</span></span>
+<span id="L173"><span class="lineNum">     173</span> <span class="tlaGNC">           7 :   visit: Visit&lt;Result&gt;,</span></span>
+<span id="L174"><span class="lineNum">     174</span> <span class="tlaGNC">          10 :   options: {</span></span>
+<span id="L175"><span class="lineNum">     175</span>              :     readonly cache?: Map&lt;AnyNode, Result&gt;</span>
+<span id="L176"><span class="lineNum">     176</span>              :     readonly resolve?: (node: AnyNode) =&gt; AnyNode</span>
+<span id="L177"><span class="lineNum">     177</span>              :     readonly detectCycles?: boolean</span>
+<span id="L178"><span class="lineNum">     178</span> <span class="tlaGNC">           4 :   } = {},</span></span>
+<span id="L179"><span class="lineNum">     179</span> <span class="tlaGNC">           3 : ) {</span></span>
+<span id="L180"><span class="lineNum">     180</span> <span class="tlaGNC">          41 :   const cache = options.cache ?? new Map&lt;AnyNode, Result&gt;()</span></span>
+<span id="L181"><span class="lineNum">     181</span> <span class="tlaGNC">          27 :   const visiting = new Set&lt;AnyNode&gt;()</span></span>
+<span id="L182"><span class="lineNum">     182</span> <span class="tlaGNC">          19 :   const stack: AnyNode[] = []</span></span>
+<span id="L183"><span class="lineNum">     183</span>              : </span>
+<span id="L184"><span class="lineNum">     184</span> <span class="tlaGNC">          28 :   const recur = (node: AnyNode): Result =&gt; {</span></span>
+<span id="L185"><span class="lineNum">     185</span> <span class="tlaGNC">          51 :     const target = options.resolve?.(node) ?? node</span></span>
+<span id="L186"><span class="lineNum">     186</span> <span class="tlaGNC">          37 :     const cached = cache.get(target)</span></span>
+<span id="L187"><span class="lineNum">     187</span> <span class="tlaGNC">          68 :     if (cached !== undefined || cache.has(target)) return cached!</span></span>
+<span id="L188"><span class="lineNum">     188</span>              : </span>
+<span id="L189"><span class="lineNum">     189</span> <span class="tlaGNC">          59 :     if (options.detectCycles !== false &amp;&amp; visiting.has(target)) {</span></span>
+<span id="L190"><span class="lineNum">     190</span> <span class="tlaUNC">           0 :       const start = stack.indexOf(target)</span></span>
+<span id="L191"><span class="lineNum">     191</span> <span class="tlaUNC">           0 :       throw new Error(</span></span>
+<span id="L192"><span class="lineNum">     192</span> <span class="tlaUNC">           0 :         `Cycle detected in layer tree: ${[...stack.slice(start), target].map((item) =&gt; item.name).join(&quot; -&gt; &quot;)}`,</span></span>
+<span id="L193"><span class="lineNum">     193</span> <span class="tlaUNC">           0 :       )</span></span>
+<span id="L194"><span class="lineNum">     194</span> <span class="tlaGNC">           4 :     }</span></span>
+<span id="L195"><span class="lineNum">     195</span>              : </span>
+<span id="L196"><span class="lineNum">     196</span> <span class="tlaGNC">          25 :     visiting.add(target)</span></span>
+<span id="L197"><span class="lineNum">     197</span> <span class="tlaGNC">          23 :     stack.push(target)</span></span>
+<span id="L198"><span class="lineNum">     198</span> <span class="tlaGNC">          11 :     try {</span></span>
+<span id="L199"><span class="lineNum">     199</span> <span class="tlaGNC">          60 :       const result = visit(target, { cache, visit: recur })</span></span>
+<span id="L200"><span class="lineNum">     200</span> <span class="tlaGNC">          61 :       if (!cache.has(target)) cache.set(target, result)</span></span>
+<span id="L201"><span class="lineNum">     201</span> <span class="tlaGNC">          22 :       return result</span></span>
+<span id="L202"><span class="lineNum">     202</span> <span class="tlaGNC">           7 :     } finally {</span></span>
+<span id="L203"><span class="lineNum">     203</span> <span class="tlaGNC">          18 :       stack.pop()</span></span>
+<span id="L204"><span class="lineNum">     204</span> <span class="tlaGNC">          31 :       visiting.delete(target)</span></span>
+<span id="L205"><span class="lineNum">     205</span>              :     }</span>
+<span id="L206"><span class="lineNum">     206</span>              :   }</span>
+<span id="L207"><span class="lineNum">     207</span>              : </span>
+<span id="L208"><span class="lineNum">     208</span> <span class="tlaGNC">          19 :   return recur(root)</span></span>
+<span id="L209"><span class="lineNum">     209</span>              : }</span>
+<span id="L210"><span class="lineNum">     210</span>              : </span>
+<span id="L211"><span class="lineNum">     211</span> <span class="tlaGNC">           6 : export function hoist&lt;A, E, T extends Tag, const Items extends Replacements = readonly []&gt;(</span></span>
+<span id="L212"><span class="lineNum">     212</span> <span class="tlaGNC">           6 :   root: Node&lt;A, E, any&gt;,</span></span>
+<span id="L213"><span class="lineNum">     213</span> <span class="tlaGNC">           5 :   tag: T,</span></span>
+<span id="L214"><span class="lineNum">     214</span> <span class="tlaGNC">          14 :   replacements?: ValidReplacements&lt;Items&gt;,</span></span>
+<span id="L215"><span class="lineNum">     215</span>              : ): {</span>
+<span id="L216"><span class="lineNum">     216</span>              :   readonly node: Node&lt;A, E&gt;</span>
+<span id="L217"><span class="lineNum">     217</span>              :   readonly hoisted: Node&lt;unknown, E&gt;</span>
+<span id="L218"><span class="lineNum">     218</span> <span class="tlaGNC">           3 : } {</span></span>
+<span id="L219"><span class="lineNum">     219</span> <span class="tlaGNC">          26 :   const hoisted = new Map&lt;string, AnyNode&gt;()</span></span>
+<span id="L220"><span class="lineNum">     220</span> <span class="tlaGNC">          58 :   const replacementMap = replacementMapFrom(replacements)</span></span>
+<span id="L221"><span class="lineNum">     221</span>              : </span>
+<span id="L222"><span class="lineNum">     222</span> <span class="tlaGNC">          18 :   const node = walk&lt;AnyNode&gt;(</span></span>
+<span id="L223"><span class="lineNum">     223</span> <span class="tlaGNC">           5 :     root,</span></span>
+<span id="L224"><span class="lineNum">     224</span> <span class="tlaGNC">          24 :     (node, context) =&gt; {</span></span>
+<span id="L225"><span class="lineNum">     225</span> <span class="tlaGNC">          33 :       if (node.kind === &quot;group&quot;) {</span></span>
+<span id="L226"><span class="lineNum">     226</span> <span class="tlaGNC">          70 :         return { ...node, dependencies: node.dependencies.map(context.visit) }</span></span>
+<span id="L227"><span class="lineNum">     227</span> <span class="tlaGNC">           4 :       }</span></span>
+<span id="L228"><span class="lineNum">     228</span> <span class="tlaGNC">          28 :       if (node.tag === tag) {</span></span>
+<span id="L229"><span class="lineNum">     229</span> <span class="tlaGNC">          46 :         const existing = hoisted.get(node.name)</span></span>
+<span id="L230"><span class="lineNum">     230</span> <span class="tlaGNC">          34 :         if (existing &amp;&amp; existing !== node) {</span></span>
+<span id="L231"><span class="lineNum">     231</span> <span class="tlaUNC">           0 :           throw new Error(`Tag ${tag} has conflicting implementations for ${node.name}`)</span></span>
+<span id="L232"><span class="lineNum">     232</span> <span class="tlaGNC">           6 :         }</span></span>
+<span id="L233"><span class="lineNum">     233</span> <span class="tlaGNC">          83 :         hoisted.set(node.name, rewriteReplacementDependencies(node, replacementMap))</span></span>
+<span id="L234"><span class="lineNum">     234</span> <span class="tlaGNC">          16 :         return group([])</span></span>
+<span id="L235"><span class="lineNum">     235</span> <span class="tlaGNC">           4 :       }</span></span>
+<span id="L236"><span class="lineNum">     236</span> <span class="tlaGNC">          28 :       if (node.kind === &quot;unbound&quot;) {</span></span>
+<span id="L237"><span class="lineNum">     237</span> <span class="tlaUNC">           0 :         return node</span></span>
+<span id="L238"><span class="lineNum">     238</span> <span class="tlaGNC">           4 :       }</span></span>
+<span id="L239"><span class="lineNum">     239</span> <span class="tlaGNC">          72 :       return { ...node, dependencies: node.dependencies.map(context.visit) }</span></span>
+<span id="L240"><span class="lineNum">     240</span>              :     },</span>
+<span id="L241"><span class="lineNum">     241</span> <span class="tlaGNC">          58 :     { resolve: (node) =&gt; replacementMap.get(node.name) ?? node },</span></span>
+<span id="L242"><span class="lineNum">     242</span> <span class="tlaGNC">           4 :   )</span></span>
+<span id="L243"><span class="lineNum">     243</span>              : </span>
+<span id="L244"><span class="lineNum">     244</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L245"><span class="lineNum">     245</span> <span class="tlaGNC">           9 :     node: node as Node&lt;A, E&gt;,</span></span>
+<span id="L246"><span class="lineNum">     246</span> <span class="tlaGNC">          46 :     hoisted: group(Array.from(hoisted.values())) as Node&lt;unknown, E&gt;,</span></span>
+<span id="L247"><span class="lineNum">     247</span> <span class="tlaGNC">           2 :   }</span></span>
+<span id="L248"><span class="lineNum">     248</span>              : }</span>
+<span id="L249"><span class="lineNum">     249</span>              : </span>
+<span id="L250"><span class="lineNum">     250</span> <span class="tlaGNC">           6 : export function compile&lt;A, E, const Items extends Replacements = readonly []&gt;(</span></span>
+<span id="L251"><span class="lineNum">     251</span> <span class="tlaGNC">           6 :   root: Node&lt;A, E, any&gt;,</span></span>
+<span id="L252"><span class="lineNum">     252</span> <span class="tlaGNC">          14 :   replacements?: ValidReplacements&lt;Items&gt;,</span></span>
+<span id="L253"><span class="lineNum">     253</span> <span class="tlaGNC">           3 : ): Layer.Layer&lt;A, E&gt; {</span></span>
+<span id="L254"><span class="lineNum">     254</span> <span class="tlaGNC">          58 :   const replacementMap = replacementMapFrom(replacements)</span></span>
+<span id="L255"><span class="lineNum">     255</span> <span class="tlaGNC">          24 :   const cache = new Map&lt;AnyNode, RuntimeLayer&gt;()</span></span>
+<span id="L256"><span class="lineNum">     256</span> <span class="tlaGNC">          29 :   const compileNode = (node: AnyNode) =&gt;</span></span>
+<span id="L257"><span class="lineNum">     257</span> <span class="tlaGNC">           5 :     walk&lt;RuntimeLayer&gt;(</span></span>
+<span id="L258"><span class="lineNum">     258</span> <span class="tlaGNC">           5 :       node,</span></span>
+<span id="L259"><span class="lineNum">     259</span> <span class="tlaGNC">          24 :       (node, context) =&gt; {</span></span>
+<span id="L260"><span class="lineNum">     260</span> <span class="tlaGNC">          37 :         if (node.kind === &quot;unbound&quot;) throw new Error(`Unbound layer node: ${node.name}`)</span></span>
+<span id="L261"><span class="lineNum">     261</span> <span class="tlaGNC">          79 :         const dependencies = node.dependencies.flatMap(flatten).map(context.visit)</span></span>
+<span id="L262"><span class="lineNum">     262</span> <span class="tlaGNC">          47 :         const implementation = node.implementation! as RuntimeLayer</span></span>
+<span id="L263"><span class="lineNum">     263</span> <span class="tlaGNC">          34 :         return dependencies.length === 0</span></span>
+<span id="L264"><span class="lineNum">     264</span> <span class="tlaGNC">          16 :           ? implementation</span></span>
+<span id="L265"><span class="lineNum">     265</span> <span class="tlaGNC">          50 :           : implementation.pipe(Layer.provide(dependencies as [RuntimeLayer, ...RuntimeLayer[]]))</span></span>
+<span id="L266"><span class="lineNum">     266</span>              :       },</span>
+<span id="L267"><span class="lineNum">     267</span> <span class="tlaGNC">          65 :       { cache, resolve: (node) =&gt; replacementMap.get(node.name) ?? node },</span></span>
+<span id="L268"><span class="lineNum">     268</span> <span class="tlaGNC">           3 :     )</span></span>
+<span id="L269"><span class="lineNum">     269</span> <span class="tlaGNC">          62 :   const layers = flatten(root).map((node) =&gt; compileNode(node))</span></span>
+<span id="L270"><span class="lineNum">     270</span> <span class="tlaGNC">         100 :   const layer = layers.reduce&lt;RuntimeLayer&gt;((result, layer) =&gt; layer.pipe(Layer.provideMerge(result)), Layer.empty)</span></span>
+<span id="L271"><span class="lineNum">     271</span> <span class="tlaGNC">          12 :   return layer as Layer.Layer&lt;A, E&gt;</span></span>
+<span id="L272"><span class="lineNum">     272</span>              : }</span>
+<span id="L273"><span class="lineNum">     273</span>              : </span>
+<span id="L274"><span class="lineNum">     274</span> <span class="tlaGNC">          18 : function replacementMapFrom(replacements?: Replacements) {</span></span>
+<span id="L275"><span class="lineNum">     275</span> <span class="tlaGNC">           7 :   return (</span></span>
+<span id="L276"><span class="lineNum">     276</span> <span class="tlaGNC">          57 :     replacements?.reduce((map, [source, replacement]) =&gt; {</span></span>
+<span id="L277"><span class="lineNum">     277</span> <span class="tlaGNC">          97 :       const normalized = rewriteReplacementDependencies(replacementNode(source, replacement), map)</span></span>
+<span id="L278"><span class="lineNum">     278</span> <span class="tlaGNC">          57 :       const current = new Map([[source.name, normalized]])</span></span>
+<span id="L279"><span class="lineNum">     279</span> <span class="tlaGNC">         100 :       for (const [name, node] of map) map.set(name, rewriteReplacementDependencies(node, current))</span></span>
+<span id="L280"><span class="lineNum">     280</span> <span class="tlaGNC">          37 :       map.set(source.name, normalized)</span></span>
+<span id="L281"><span class="lineNum">     281</span> <span class="tlaGNC">          12 :       return map</span></span>
+<span id="L282"><span class="lineNum">     282</span> <span class="tlaGNC">          19 :     }, new Map&lt;string, AnyNode&gt;()) ?? new Map&lt;string, AnyNode&gt;()</span></span>
+<span id="L283"><span class="lineNum">     283</span>              :   )</span>
+<span id="L284"><span class="lineNum">     284</span>              : }</span>
+<span id="L285"><span class="lineNum">     285</span>              : </span>
+<span id="L286"><span class="lineNum">     286</span> <span class="tlaGNC">          24 : function rewriteReplacementDependencies(root: AnyNode, replacements: ReadonlyMap&lt;string, AnyNode&gt;) {</span></span>
+<span id="L287"><span class="lineNum">     287</span> <span class="tlaGNC">          44 :   if (replacements.size === 0) return root</span></span>
+<span id="L288"><span class="lineNum">     288</span> <span class="tlaGNC">          24 :   const cache = new Map&lt;AnyNode, AnyNode&gt;()</span></span>
+<span id="L289"><span class="lineNum">     289</span> <span class="tlaGNC">          27 :   const visiting = new Set&lt;AnyNode&gt;()</span></span>
+<span id="L290"><span class="lineNum">     290</span> <span class="tlaGNC">          19 :   const stack: AnyNode[] = []</span></span>
+<span id="L291"><span class="lineNum">     291</span>              : </span>
+<span id="L292"><span class="lineNum">     292</span> <span class="tlaGNC">          44 :   const recur = (node: AnyNode, isRoot = false): AnyNode =&gt; {</span></span>
+<span id="L293"><span class="lineNum">     293</span> <span class="tlaGNC">          68 :     const target = isRoot ? node : (replacements.get(node.name) ?? node)</span></span>
+<span id="L294"><span class="lineNum">     294</span> <span class="tlaGNC">          37 :     const cached = cache.get(target)</span></span>
+<span id="L295"><span class="lineNum">     295</span> <span class="tlaGNC">          68 :     if (cached !== undefined || cache.has(target)) return cached!</span></span>
+<span id="L296"><span class="lineNum">     296</span> <span class="tlaGNC">          25 :     if (visiting.has(target)) {</span></span>
+<span id="L297"><span class="lineNum">     297</span> <span class="tlaUNC">           0 :       const start = stack.indexOf(target)</span></span>
+<span id="L298"><span class="lineNum">     298</span> <span class="tlaUNC">           0 :       throw new Error(</span></span>
+<span id="L299"><span class="lineNum">     299</span> <span class="tlaUNC">           0 :         `Cycle detected in layer tree: ${[...stack.slice(start), target].map((item) =&gt; item.name).join(&quot; -&gt; &quot;)}`,</span></span>
+<span id="L300"><span class="lineNum">     300</span> <span class="tlaUNC">           0 :       )</span></span>
+<span id="L301"><span class="lineNum">     301</span> <span class="tlaGNC">           4 :     }</span></span>
+<span id="L302"><span class="lineNum">     302</span>              : </span>
+<span id="L303"><span class="lineNum">     303</span> <span class="tlaGNC">          25 :     visiting.add(target)</span></span>
+<span id="L304"><span class="lineNum">     304</span> <span class="tlaGNC">          23 :     stack.push(target)</span></span>
+<span id="L305"><span class="lineNum">     305</span> <span class="tlaGNC">          11 :     try {</span></span>
+<span id="L306"><span class="lineNum">     306</span> <span class="tlaGNC">          84 :       const dependencies = target.dependencies.map((dependency) =&gt; recur(dependency))</span></span>
+<span id="L307"><span class="lineNum">     307</span> <span class="tlaGNC">          99 :       const result = dependencies.every((dependency, index) =&gt; dependency === target.dependencies[index])</span></span>
+<span id="L308"><span class="lineNum">     308</span> <span class="tlaGNC">           8 :         ? target</span></span>
+<span id="L309"><span class="lineNum">     309</span> <span class="tlaGNC">          33 :         : { ...target, dependencies }</span></span>
+<span id="L310"><span class="lineNum">     310</span> <span class="tlaGNC">          32 :       cache.set(target, result)</span></span>
+<span id="L311"><span class="lineNum">     311</span> <span class="tlaGNC">          22 :       return result</span></span>
+<span id="L312"><span class="lineNum">     312</span> <span class="tlaGNC">           7 :     } finally {</span></span>
+<span id="L313"><span class="lineNum">     313</span> <span class="tlaGNC">          18 :       stack.pop()</span></span>
+<span id="L314"><span class="lineNum">     314</span> <span class="tlaGNC">          31 :       visiting.delete(target)</span></span>
+<span id="L315"><span class="lineNum">     315</span>              :     }</span>
+<span id="L316"><span class="lineNum">     316</span>              :   }</span>
+<span id="L317"><span class="lineNum">     317</span>              : </span>
+<span id="L318"><span class="lineNum">     318</span> <span class="tlaGNC">          25 :   return recur(root, true)</span></span>
+<span id="L319"><span class="lineNum">     319</span>              : }</span>
+<span id="L320"><span class="lineNum">     320</span>              : </span>
+<span id="L321"><span class="lineNum">     321</span> <span class="tlaGNC">          23 : export function hasUnbound(root: Node&lt;unknown, unknown, any&gt;, source: AnyNode): boolean {</span></span>
+<span id="L322"><span class="lineNum">     322</span> <span class="tlaGNC">          35 :   if (source.kind !== &quot;unbound&quot;) throw new Error(`Cannot check non-unbound layer node: ${source.name}`)</span></span>
+<span id="L323"><span class="lineNum">     323</span> <span class="tlaGNC">          41 :   return walk&lt;boolean&gt;(root, (node, context) =&gt; {</span></span>
+<span id="L324"><span class="lineNum">     324</span> <span class="tlaGNC">          40 :     if (node === source) return true</span></span>
+<span id="L325"><span class="lineNum">     325</span> <span class="tlaGNC">          44 :     return node.dependencies.some(context.visit)</span></span>
+<span id="L326"><span class="lineNum">     326</span> <span class="tlaGNC">           1 :   })</span></span>
+<span id="L327"><span class="lineNum">     327</span>              : }</span>
+<span id="L328"><span class="lineNum">     328</span>              : </span>
+<span id="L329"><span class="lineNum">     329</span> <span class="tlaGNC">          10 : function flatten(node: AnyNode): readonly AnyNode[] {</span></span>
+<span id="L330"><span class="lineNum">     330</span> <span class="tlaGNC">          73 :   return node.kind === &quot;group&quot; ? node.dependencies.flatMap(flatten) : [node]</span></span>
+<span id="L331"><span class="lineNum">     331</span>              : }</span>
+<span id="L332"><span class="lineNum">     332</span>              : </span>
+<span id="L333"><span class="lineNum">     333</span> <span class="tlaGNC">          41 : export * as LayerNode from &quot;./layer-node&quot;</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

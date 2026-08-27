@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../core/src/database/migration.gen.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../core/src/database">../core/src/database</a> - migration.gen.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntry">42</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import type { DatabaseMigration } from &quot;./migration&quot;</span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          26 : export const migrations = (</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          21 :   await Promise.all([</span></span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260127222353_familiar_lady_ursula&quot;),</span></span>
+<span id="L6"><span class="lineNum">       6</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260211171708_add_project_commands&quot;),</span></span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          61 :     import(&quot;./migration/20260213144116_wakeful_the_professor&quot;),</span></span>
+<span id="L8"><span class="lineNum">       8</span> <span class="tlaGNC">          49 :     import(&quot;./migration/20260225215848_workspace&quot;),</span></span>
+<span id="L9"><span class="lineNum">       9</span> <span class="tlaGNC">          64 :     import(&quot;./migration/20260227213759_add_session_workspace_id&quot;),</span></span>
+<span id="L10"><span class="lineNum">      10</span> <span class="tlaGNC">          52 :     import(&quot;./migration/20260228203230_blue_harpoon&quot;),</span></span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260303231226_add_workspace_fields&quot;),</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">          57 :     import(&quot;./migration/20260309230000_move_org_to_state&quot;),</span></span>
+<span id="L13"><span class="lineNum">      13</span> <span class="tlaGNC">          62 :     import(&quot;./migration/20260312043431_session_message_cursor&quot;),</span></span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaGNC">          46 :     import(&quot;./migration/20260323234822_events&quot;),</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaGNC">          54 :     import(&quot;./migration/20260410174513_workspace-name&quot;),</span></span>
+<span id="L16"><span class="lineNum">      16</span> <span class="tlaGNC">          55 :     import(&quot;./migration/20260413175956_chief_energizer&quot;),</span></span>
+<span id="L17"><span class="lineNum">      17</span> <span class="tlaGNC">          61 :     import(&quot;./migration/20260423070820_add_icon_url_override&quot;),</span></span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          54 :     import(&quot;./migration/20260427172553_slow_nightmare&quot;),</span></span>
+<span id="L19"><span class="lineNum">      19</span> <span class="tlaGNC">          56 :     import(&quot;./migration/20260428004200_add_session_path&quot;),</span></span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          50 :     import(&quot;./migration/20260501142318_next_venus&quot;),</span></span>
+<span id="L21"><span class="lineNum">      21</span> <span class="tlaGNC">          54 :     import(&quot;./migration/20260504145000_add_sync_owner&quot;),</span></span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          58 :     import(&quot;./migration/20260507164347_add_workspace_time&quot;),</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          53 :     import(&quot;./migration/20260510033149_session_usage&quot;),</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260511000411_data_migration_state&quot;),</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          56 :     import(&quot;./migration/20260511173437_session-metadata&quot;),</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">          63 :     import(&quot;./migration/20260601010001_normalize_storage_paths&quot;),</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          55 :     import(&quot;./migration/20260601202201_amazing_prowler&quot;),</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          56 :     import(&quot;./migration/20260602002951_lowly_union_jack&quot;),</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          63 :     import(&quot;./migration/20260602182828_add_project_directories&quot;),</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">          74 :     import(&quot;./migration/20260603001617_session_message_projection_indexes&quot;),</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaGNC">          72 :     import(&quot;./migration/20260603040000_session_message_projection_order&quot;),</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">          59 :     import(&quot;./migration/20260603141458_session_input_inbox&quot;),</span></span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">          61 :     import(&quot;./migration/20260603160727_jittery_ezekiel_stane&quot;),</span></span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaGNC">          67 :     import(&quot;./migration/20260604172448_event_sourced_session_input&quot;),</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          68 :     import(&quot;./migration/20260605003541_add_session_context_snapshot&quot;),</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">          63 :     import(&quot;./migration/20260605042240_add_context_epoch_agent&quot;),</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          50 :     import(&quot;./migration/20260611035744_credential&quot;),</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          52 :     import(&quot;./migration/20260611192811_lush_chimera&quot;),</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260612174303_project_dir_strategy&quot;),</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaGNC">          70 :     import(&quot;./migration/20260622142730_simplify_session_context_epoch&quot;),</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaGNC">          62 :     import(&quot;./migration/20260622170816_reset_v2_session_state&quot;),</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">          60 :     import(&quot;./migration/20260622202450_simplify_session_input&quot;),</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">           3 :   ])</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaGNC">          30 : ).map((module) =&gt; module.default) satisfies DatabaseMigration.Migration[]</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

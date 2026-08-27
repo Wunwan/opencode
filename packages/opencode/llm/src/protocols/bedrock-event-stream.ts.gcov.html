@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../llm/src/protocols/bedrock-event-stream.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../llm/src/protocols">../llm/src/protocols</a> - bedrock-event-stream.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">23.3&nbsp;%</td>
+            <td class="headerCovTableEntry">60</td>
+            <td class="headerCovTableEntry">14</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span> <span class="tlaGNC">          61 : import { EventStreamCodec } from &quot;@smithy/eventstream-codec&quot;</span></span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          53 : import { fromUtf8, toUtf8 } from &quot;@smithy/util-utf8&quot;</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          40 : import { Effect, Stream } from &quot;effect&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span>              : import type { Framing } from &quot;../route/framing&quot;</span>
+<span id="L5"><span class="lineNum">       5</span> <span class="tlaGNC">          42 : import { ProviderShared } from &quot;./shared&quot;</span></span>
+<span id="L6"><span class="lineNum">       6</span>              : </span>
+<span id="L7"><span class="lineNum">       7</span>              : // Bedrock streams responses using the AWS event stream binary protocol — each</span>
+<span id="L8"><span class="lineNum">       8</span>              : // frame is `[length:4][headers-length:4][prelude-crc:4][headers][payload][crc:4]`.</span>
+<span id="L9"><span class="lineNum">       9</span>              : // We use `@smithy/eventstream-codec` to validate framing and CRCs, then</span>
+<span id="L10"><span class="lineNum">      10</span>              : // reconstruct the JSON wrapping by `:event-type` so the chunk schema can match.</span>
+<span id="L11"><span class="lineNum">      11</span> <span class="tlaGNC">          58 : const eventCodec = new EventStreamCodec(toUtf8, fromUtf8)</span></span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaGNC">          29 : const utf8 = new TextDecoder()</span></span>
+<span id="L13"><span class="lineNum">      13</span>              : </span>
+<span id="L14"><span class="lineNum">      14</span>              : // Cursor-tracking buffer state. Bytes accumulate in `buffer`; `offset` is the</span>
+<span id="L15"><span class="lineNum">      15</span>              : // read position. Reading by `subarray` is zero-copy. We only allocate a fresh</span>
+<span id="L16"><span class="lineNum">      16</span>              : // buffer when a new network chunk arrives and we need to append.</span>
+<span id="L17"><span class="lineNum">      17</span>              : interface FrameBufferState {</span>
+<span id="L18"><span class="lineNum">      18</span>              :   readonly buffer: Uint8Array</span>
+<span id="L19"><span class="lineNum">      19</span>              :   readonly offset: number</span>
+<span id="L20"><span class="lineNum">      20</span>              : }</span>
+<span id="L21"><span class="lineNum">      21</span>              : </span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          68 : const initialFrameBuffer: FrameBufferState = { buffer: new Uint8Array(0), offset: 0 }</span></span>
+<span id="L23"><span class="lineNum">      23</span>              : </span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaUNC">           0 : const appendChunk = (state: FrameBufferState, chunk: Uint8Array): FrameBufferState =&gt; {</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaUNC">           0 :   const remaining = state.buffer.length - state.offset</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaUNC">           0 :   // Compact: drop the consumed prefix and append the new chunk in one alloc.</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaUNC">           0 :   // This bounds buffer growth to at most one network chunk past the live</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaUNC">           0 :   // window, regardless of stream length.</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaUNC">           0 :   const next = new Uint8Array(remaining + chunk.length)</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaUNC">           0 :   next.set(state.buffer.subarray(state.offset), 0)</span></span>
+<span id="L31"><span class="lineNum">      31</span> <span class="tlaUNC">           0 :   next.set(chunk, remaining)</span></span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaGNC">           2 :   return { buffer: next, offset: 0 }</span></span>
+<span id="L33"><span class="lineNum">      33</span>              : }</span>
+<span id="L34"><span class="lineNum">      34</span>              : </span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC">           0 : const consumeFrames = (route: string) =&gt; (state: FrameBufferState, chunk: Uint8Array) =&gt;</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaUNC">           0 :   Effect.gen(function* () {</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaUNC">           0 :     let cursor = appendChunk(state, chunk)</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaUNC">           0 :     const out: object[] = []</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :     while (cursor.buffer.length - cursor.offset &gt;= 4) {</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :       const view = cursor.buffer.subarray(cursor.offset)</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaUNC">           0 :       const totalLength = new DataView(view.buffer, view.byteOffset, view.byteLength).getUint32(0, false)</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaUNC">           0 :       if (view.length &lt; totalLength) break</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaUNC">           0 :       const decoded = yield* Effect.try({</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaUNC">           0 :         try: () =&gt; eventCodec.decode(view.subarray(0, totalLength)),</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaUNC">           0 :         catch: (error) =&gt;</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :           ProviderShared.eventError(</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :             route,</span></span>
+<span id="L49"><span class="lineNum">      49</span> <span class="tlaUNC">           0 :             `Failed to decode Bedrock Converse event-stream frame: ${</span></span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaUNC">           0 :               error instanceof Error ? error.message : String(error)</span></span>
+<span id="L51"><span class="lineNum">      51</span> <span class="tlaUNC">           0 :             }`,</span></span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaUNC">           0 :           ),</span></span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaUNC">           0 :       })</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaUNC">           0 :       cursor = { buffer: cursor.buffer, offset: cursor.offset + totalLength }</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaUNC">           0 : </span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaUNC">           0 :       if (decoded.headers[&quot;:message-type&quot;]?.value !== &quot;event&quot;) continue</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :       const eventType = decoded.headers[&quot;:event-type&quot;]?.value</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :       if (typeof eventType !== &quot;string&quot;) continue</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaUNC">           0 :       const payload = utf8.decode(decoded.body)</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaUNC">           0 :       if (!payload) continue</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaUNC">           0 :       // The AWS event stream pads short payloads with a `p` field. Drop it</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaUNC">           0 :       // before handing the object to the chunk schema. JSON decode goes</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaUNC">           0 :       // through the shared Schema-driven codec to satisfy the package rule</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :       // against ad-hoc `JSON.parse` calls.</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaUNC">           0 :       const parsed = (yield* ProviderShared.parseJson(</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaUNC">           0 :         route,</span></span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaUNC">           0 :         payload,</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :         &quot;Failed to parse Bedrock Converse event-stream payload&quot;,</span></span>
+<span id="L69"><span class="lineNum">      69</span> <span class="tlaUNC">           0 :       )) as Record&lt;string, unknown&gt;</span></span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :       delete parsed.p</span></span>
+<span id="L71"><span class="lineNum">      71</span> <span class="tlaUNC">           0 :       out.push({ [eventType]: parsed })</span></span>
+<span id="L72"><span class="lineNum">      72</span> <span class="tlaUNC">           0 :     }</span></span>
+<span id="L73"><span class="lineNum">      73</span>              :     return [cursor, out] as const</span>
+<span id="L74"><span class="lineNum">      74</span> <span class="tlaGNC">           2 :   })</span></span>
+<span id="L75"><span class="lineNum">      75</span>              : </span>
+<span id="L76"><span class="lineNum">      76</span>              : /**</span>
+<span id="L77"><span class="lineNum">      77</span>              :  * AWS event-stream framing for Bedrock Converse. Each frame is decoded by</span>
+<span id="L78"><span class="lineNum">      78</span>              :  * `@smithy/eventstream-codec` (length + header + payload + CRC) and rewrapped</span>
+<span id="L79"><span class="lineNum">      79</span>              :  * under its `:event-type` header so the chunk schema can match the JSON</span>
+<span id="L80"><span class="lineNum">      80</span>              :  * payload directly.</span>
+<span id="L81"><span class="lineNum">      81</span>              :  */</span>
+<span id="L82"><span class="lineNum">      82</span> <span class="tlaGNC">          36 : export const framing = (route: string): Framing&lt;object&gt; =&gt; ({</span></span>
+<span id="L83"><span class="lineNum">      83</span> <span class="tlaGNC">          25 :   id: &quot;aws-event-stream&quot;,</span></span>
+<span id="L84"><span class="lineNum">      84</span> <span class="tlaGNC">           7 :   frame: (bytes) =&gt; bytes.pipe(Stream.mapAccumEffect(() =&gt; initialFrameBuffer, consumeFrames(route))),</span></span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaGNC">           2 : })</span></span>
+<span id="L86"><span class="lineNum">      86</span>              : </span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaGNC">          60 : export * as BedrockEventStream from &quot;./bedrock-event-stream&quot;</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - ../llm/src/providers/amazon-bedrock.ts</title>
+  <link rel="stylesheet" type="text/css" href="../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory ../llm/src/providers">../llm/src/providers</a> - amazon-bedrock.ts</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryHi">100.0&nbsp;%</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">24</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2026-08-27 17:29:07</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import type { RouteDefaultsInput } from &quot;../route/client&quot;</span>
+<span id="L2"><span class="lineNum">       2</span> <span class="tlaGNC">          37 : import { Auth } from &quot;../route/auth&quot;</span></span>
+<span id="L3"><span class="lineNum">       3</span> <span class="tlaGNC">          39 : import { ProviderID, type ModelID } from &quot;../schema&quot;</span></span>
+<span id="L4"><span class="lineNum">       4</span> <span class="tlaGNC">          65 : import * as BedrockConverse from &quot;../protocols/bedrock-converse&quot;</span></span>
+<span id="L5"><span class="lineNum">       5</span>              : import type { BedrockCredentials } from &quot;../protocols/bedrock-converse&quot;</span>
+<span id="L6"><span class="lineNum">       6</span>              : </span>
+<span id="L7"><span class="lineNum">       7</span> <span class="tlaGNC">          52 : export const id = ProviderID.make(&quot;amazon-bedrock&quot;)</span></span>
+<span id="L8"><span class="lineNum">       8</span>              : </span>
+<span id="L9"><span class="lineNum">       9</span>              : export type Config = RouteDefaultsInput &amp; {</span>
+<span id="L10"><span class="lineNum">      10</span>              :   readonly apiKey?: string</span>
+<span id="L11"><span class="lineNum">      11</span>              :   readonly headers?: Record&lt;string, string&gt;</span>
+<span id="L12"><span class="lineNum">      12</span>              :   readonly credentials?: BedrockCredentials</span>
+<span id="L13"><span class="lineNum">      13</span>              :   /** AWS region. Defaults to `us-east-1` when neither this nor `credentials.region` is set. */</span>
+<span id="L14"><span class="lineNum">      14</span>              :   readonly region?: string</span>
+<span id="L15"><span class="lineNum">      15</span>              :   /** Override the computed `https://bedrock-runtime.&lt;region&gt;.amazonaws.com` URL. */</span>
+<span id="L16"><span class="lineNum">      16</span>              :   readonly baseURL?: string</span>
+<span id="L17"><span class="lineNum">      17</span>              : }</span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaGNC">          46 : export const routes = [BedrockConverse.route]</span></span>
+<span id="L19"><span class="lineNum">      19</span>              : </span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaGNC">          83 : const bedrockBaseURL = (region: string) =&gt; `https://bedrock-runtime.${region}.amazonaws.com`</span></span>
+<span id="L21"><span class="lineNum">      21</span>              : </span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaGNC">          36 : const configuredRoute = (input: Config) =&gt; {</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaGNC">          66 :   const { apiKey, credentials, region, baseURL, ...rest } = input</span></span>
+<span id="L24"><span class="lineNum">      24</span> <span class="tlaGNC">          70 :   const resolvedRegion = region ?? credentials?.region ?? &quot;us-east-1&quot;</span></span>
+<span id="L25"><span class="lineNum">      25</span> <span class="tlaGNC">          42 :   return BedrockConverse.route.with({</span></span>
+<span id="L26"><span class="lineNum">      26</span> <span class="tlaGNC">           9 :     ...rest,</span></span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaGNC">          17 :     provider: id,</span></span>
+<span id="L28"><span class="lineNum">      28</span> <span class="tlaGNC">          69 :     endpoint: { baseURL: baseURL ?? bedrockBaseURL(resolvedRegion) },</span></span>
+<span id="L29"><span class="lineNum">      29</span> <span class="tlaGNC">          67 :     auth: apiKey === undefined ? BedrockConverse.sigV4Auth(credentials) : Auth.bearer(apiKey),</span></span>
+<span id="L30"><span class="lineNum">      30</span> <span class="tlaGNC">           4 :   })</span></span>
+<span id="L31"><span class="lineNum">      31</span>              : }</span>
+<span id="L32"><span class="lineNum">      32</span>              : </span>
+<span id="L33"><span class="lineNum">      33</span> <span class="tlaGNC">          42 : export const configure = (input: Config = {}) =&gt; {</span></span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaGNC">          39 :   const route = configuredRoute(input)</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaGNC">          12 :   return {</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaGNC">           7 :     id,</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaGNC">          11 :     model: (modelID: string | ModelID) =&gt; route.model({ id: modelID }),</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaGNC">          11 :     configure,</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaGNC">           3 :   }</span></span>
+<span id="L40"><span class="lineNum">      40</span>              : }</span>
+<span id="L41"><span class="lineNum">      41</span>              : </span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaGNC">          36 : export const provider = configure()</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaGNC">          35 : export const model = provider.model</span></span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.0-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>
